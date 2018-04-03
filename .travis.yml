@@ -8,8 +8,10 @@ env:
 before_install:
   - |
       declare -r SSH_FILE=$(mktemp -u $HOME/.ssh/XXXXX)
-      openssl aes-256-cbc -K $encrypted_c4a5200a5eb5_key -iv $encrypted_c4a5200a5eb5_iv -in "${TRAVIS_BUILD_DIR}/.travis/github_deploy_key.enc" -out "$SSH_FILE" -d
-      chmod 600 "$SSH_FILE" && printf "%s\n" \
+
+      openssl aes-256-cbc -K $encrypted_c4a5200a5eb5_key -iv $encrypted_c4a5200a5eb5_iv -in ".travis/github_deploy_key.enc" -out "$SSH_FILE" -d
+
+      chmod 600 $SSH_FILE && printf "%s\n" \
         "Host github.com" \
         " IdentityFile $SSH_FILE" \
         " LogLevel ERROR" >> $HOME/.ssh/config
@@ -27,9 +29,9 @@ before_script:
   - /tmp/helm repo add nlnwa https://nlnwa.github.io/charts
 
 script:
-  - helm lint */
-  - helm package -u */
-  - helm repo index .
+  - /tmp/helm lint */
+  - /tmp/helm package -u */
+  - /tmp/helm repo index .
 
 after_success:
   - git config user.name "$(git log -1 $TRAVIS_COMMIT --pretty="%aN")"
