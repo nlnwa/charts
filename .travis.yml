@@ -1,0 +1,44 @@
+sudo: false
+
+env:
+  global:
+    - HELM_VERSION="v2.8.2"
+
+# Setup SSH
+before_install:
+  - declare -r SSH_FILE=$(mktemp -u $HOME/.ssh/XXXXX)
+  - openssl aes-256-cbc \
+      -K $encrypted_c4a5200a5eb5_key \
+      -iv $encrypted_c4a5200a5eb5_iv \
+      -in ".travis/github_deploy_key.enc" \
+      -out "$SSH_FILE" -d
+  - chmod 600 "$SSH_FILE"
+  - printf "%s\n" \
+      "Host github.com" \
+      " IdentityFile $SSH_FILE" \
+      " LogLevel ERROR" >> $HOME/.ssh/config
+
+# Install helm
+install:
+  - wget https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz -O /tmp/helm.tar.gz
+  - tar xvzf /tmp/helm.tar.gz -C /tmp --strip-components=1
+  - chmod +x /tmp/helm
+
+# Initialize helm
+before_script:
+  - /tmp/helm init --client-only
+  - /tmp/helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
+  - /tmp/helm repo add nlnwa https://nlnwa.github.io/charts
+
+script:
+  - helm lint */
+  - helm package -u */
+  - helm repo index .
+
+after_success:
+  - git config user.name "$(git log -1 $TRAVIS_COMMIT --pretty="%aN")"
+  - git config user.email "$(git log -1 $TRAVIS_COMMIT --pretty="%cE")"
+  - git checkout gh-pages
+  - git add .
+  - git commit -m "chore: publish helm charts"
+  - git push origin gh-pages
