@@ -1,0 +1,27 @@
+dependencies:
+  - name: jaeger
+    version: ~0.3.9
+    repository: https://kubernetes-charts-incubator.storage.googleapis.com/
+    condition: provision.tracing
+  - name: dex
+    version: 0.2.1
+    repository: https://nlnwa.github.io/charts
+    condition: provision.auth
+  - name: linkerd
+    repository: https://nlnwa.github.io/charts
+    version: 0.4.0
+    condition: provision.linkerd
+  - name: namerd
+    version: 0.2.0
+    repository: https://nlnwa.github.io/charts
+    condition: provision.namerd
+  - name: rethinkdb
+    version: ~0.1.0
+    repository: https://nlnwa.github.io/charts
+    condition: provision.clustered-db
+  - name: rethinkdb-single
+    version: ~0.1.0
+    repository: https://nlnwa.github.io/charts
+    condition: provision.single-db
+
+
