@@ -34,9 +34,10 @@ script:
   - /tmp/helm repo index .
 
 after_success:
+  - git clone --quiet --branch=gh-pages git@github.com:nlnwa/charts.git /tmp/gh-pages
+  - mv $TRAVIS_BUILD_DIR/*.tgz index.yaml /tmp/gh-pages
   - git config user.name "$(git log -1 $TRAVIS_COMMIT --pretty="%aN")"
   - git config user.email "$(git log -1 $TRAVIS_COMMIT --pretty="%cE")"
-  - git checkout gh-pages
   - git add .
-  - git commit -m "chore: publish helm charts"
-  - git push origin gh-pages
+  - git commit -fm "chore(travis): $TRAVIS_BUILD_NUMBER"
+  - git push -fq origin gh-pages
