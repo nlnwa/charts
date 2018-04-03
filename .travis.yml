@@ -7,11 +7,7 @@ env:
 # Setup SSH
 before_install:
   - declare -r SSH_FILE=$(mktemp -u $HOME/.ssh/XXXXX)
-  - openssl aes-256-cbc \
-      -K $encrypted_c4a5200a5eb5_key \
-      -iv $encrypted_c4a5200a5eb5_iv \
-      -in ".travis/github_deploy_key.enc" \
-      -out "$SSH_FILE" -d
+  - openssl aes-256-cbc -K $encrypted_c4a5200a5eb5_key -iv $encrypted_c4a5200a5eb5_iv -in ".travis/github_deploy_key.enc" -out "$SSH_FILE" -d
   - chmod 600 "$SSH_FILE"
   - printf "%s\n" \
       "Host github.com" \
