@@ -3,42 +3,53 @@ sudo: false
 env:
   global:
     - HELM_VERSION="v2.8.2"
-
-# Setup SSH
-before_install:
-  - |
-      declare -r SSH_FILE=$(mktemp -u $HOME/.ssh/XXXXX)
-
-      openssl aes-256-cbc -K $encrypted_c4a5200a5eb5_key -iv $encrypted_c4a5200a5eb5_iv -in ".travis/github_deploy_key.enc" -out "$SSH_FILE" -d
-
-      chmod 600 $SSH_FILE && printf "%s\n" \
-        "Host github.com" \
-        " IdentityFile $SSH_FILE" \
-        " LogLevel ERROR" >> $HOME/.ssh/config
+    - CHART_REPO="https://nlnwa.github.io/charts"
 
 # Install helm
 install:
   - wget -q https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz -O /tmp/helm.tar.gz
   - tar xvzf /tmp/helm.tar.gz -C /tmp --strip-components=1
-  - chmod +x /tmp/helm
+  - mkdir -p $HOME/bin
+  - export PATH=$PATH:$HOME/bin
+  - mv /tmp/helm $HOME/bin
+  - chmod +x $HOME/bin/helm
 
 # Initialize helm
 before_script:
-  - /tmp/helm init --client-only
-  - /tmp/helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
-  - /tmp/helm repo add nlnwa https://nlnwa.github.io/charts
+  - helm init --client-only
+  - helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
 
 script:
-  - /tmp/helm lint */
-  - /tmp/helm package -u */
-  - /tmp/helm repo index .
+  # Helm lint (shold use --strict but some charts is not strictly valid yet)
+  - find . -name Chart.yaml -printf "%h\n" | xargs helm lint
+  # Create helm packages for everything except the veidemann chart
+  - ls -d1 */ | grep -v veidemann/ | xargs helm package
+  # Copy packages to veidemann's chart directory
+  - cp *.tgz veidemann/charts
+  # Fetch external dependencies for the veidemann chart except the ones we copied in previous step)
+  - helm dep up --skip-refresh veidemann/
+  # Create veidemann helm package
+  - helm package veidemann
+  # Create helm repository index
+  - helm repo index . --url $CHART_REPO
 
-after_success:
-  - git config user.name "$(git log -1 $TRAVIS_COMMIT --pretty="%aN")"
-  - git config user.email "$(git log -1 $TRAVIS_COMMIT --pretty="%cE")"
-  - git clone --quiet --branch=gh-pages git@github.com:nlnwa/charts.git /tmp/gh-pages
-  - mv *.tgz index.yaml /tmp/gh-pages
-  - cd /tmp/gh-pages
-  - git add .
-  - git commit -fm "chore(travis): $TRAVIS_BUILD_NUMBER"
-  - git push -fq origin gh-pages
+# Setup GIT
+before_deploy:
+  - |
+      declare -r SSH_FILE=$(mktemp -u $HOME/.ssh/XXXXX)
+
+      openssl aes-256-cbc -K $encrypted_c4a5200a5eb5_key -iv $encrypted_c4a5200a5eb5_iv -in ".travis/github_deploy_key.enc" -out "$SSH_FILE" -d
+
+      chmod 600 $SSH_FILE
+
+      printf "%s\n" \
+        "Host github.com" \
+        " IdentityFile $SSH_FILE" \
+        " LogLevel ERROR" >> $HOME/.ssh/config
+
+deploy:
+  - provider: script
+    script: bash .travis/deploy.sh
+    skip_cleanup: true # preserve assets from build step
+    on:
+      branch: master

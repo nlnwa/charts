@@ -1,27 +1,69 @@
 dependencies:
+  - name: veidemann-admin
+    version: 0.1.1
+    repository: file://../veidemann-admin
+  - name: veidemann-api-gateway
+    version: 0.1.1
+    repository: file://../veidemann-api-gateway
+  - name: veidemann-cache
+    version: 0.1.1
+    repository: file://../veidemann-cache
+  - name: veidemann-contentexplorer
+    version: 0.1.1
+    repository: file://../veidemann-contentexplorer
+  - name: veidemann-contentwriter
+    version: 0.1.1
+    repository: file://../veidemann-contentwriter
+  - name: veidemann-controller
+    version: 0.1.1
+    repository: file://../veidemann-controller
+  - name: veidemann-dnsresolver
+    version: 0.1.1
+    repository: file://../veidemann-dnsresolver
+  - name: veidemann-frontier
+    version: 0.1.1
+    repository: file://../veidemann-frontier
+  - name: veidemann-harvester
+    version: 0.1.1
+    repository: file://../veidemann-harvester
+  - name: veidemann-initdb
+    version: 0.1.1
+    repository: file://../veidemann-initdb
+  - name: veidemann-robots
+    version: 0.1.1
+    repository: file://../veidemann-robots
+  - name: veidemann-warcvalidator
+    version: 0.1.1
+    repository: file://../veidemann-warcvalidator
+  # Jaeger
   - name: jaeger
     version: ~0.3.9
     repository: https://kubernetes-charts-incubator.storage.googleapis.com/
     condition: provision.tracing
+  # Dex
   - name: dex
     version: 0.2.1
-    repository: https://nlnwa.github.io/charts
+    repository: file://../dex
     condition: provision.auth
+  # Linkerd
   - name: linkerd
-    repository: https://nlnwa.github.io/charts
+    repository: file://../linkerd
     version: 0.4.0
     condition: provision.linkerd
+  # Namerd
   - name: namerd
     version: 0.2.0
-    repository: https://nlnwa.github.io/charts
+    repository: file://../namerd
     condition: provision.namerd
+  # Rethinkdb
   - name: rethinkdb
     version: ~0.1.0
-    repository: https://nlnwa.github.io/charts
+    repository: file://../rethinkdb
     condition: provision.clustered-db
+  # Rethinkdb single
   - name: rethinkdb-single
     version: ~0.1.0
-    repository: https://nlnwa.github.io/charts
+    repository: file://../rethinkdb-single
     condition: provision.single-db
 
 
