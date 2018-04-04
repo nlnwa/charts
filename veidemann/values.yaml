@@ -307,10 +307,6 @@ veidemann-controller:
     issuer: *issuer
     tls: true
     tlsSecretName: *ca-cert-name
-    hostAliases:
-      - ip: ${MINIKUBE_IP}
-        hostnames:
-          - *hostname
 # End: veidemann-controller
 
 # Begin: veidemann-cache
