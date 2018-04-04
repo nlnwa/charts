@@ -47,6 +47,9 @@ before_deploy:
         " IdentityFile $SSH_FILE" \
         " LogLevel ERROR" >> $HOME/.ssh/config
 
+      git config user.name "$(git log -1 $TRAVIS_COMMIT --pretty="%aN")"
+      git config user.email "$(git log -1 $TRAVIS_COMMIT --pretty="%cE")"
+
 deploy:
   - provider: script
     script: bash .travis/deploy.sh
