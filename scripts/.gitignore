@@ -1,0 +1,4 @@
+# Certificate generation artifacts
+ca.key
+*.csr
+*.srl
