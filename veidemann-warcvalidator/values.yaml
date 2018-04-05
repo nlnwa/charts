@@ -54,3 +54,7 @@ config:
   persistence:
     enabled: true
     name: warc-data
+  db:
+    host: rethinkdb-proxy
+    port: 28015
+    secretName: rethinkdb
