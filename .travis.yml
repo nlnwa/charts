@@ -1,5 +1,8 @@
 sudo: false
 
+notifications:
+  email: false
+
 env:
   global:
     - HELM_VERSION="v2.8.2"
