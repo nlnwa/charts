@@ -263,6 +263,7 @@ veidemann-warcvalidator:
   persistence:
     name: *valid-warc-claim-name
   config:
+    <<: *rethinkdb
     persistence:
       name: *warc-claim-name
 # End: veidemann-warcvalidator
