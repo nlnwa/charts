@@ -45,6 +45,8 @@ spec:
             - mountPath: /warcs
               name: warcs
           env:
+            - name: SLEEP_TIME
+              value: {{ .Values.config.sleepTime | quote }}
             - name: DB_HOST
               value: {{ .Values.config.db.host | quote }}
             - name: DB_PORT

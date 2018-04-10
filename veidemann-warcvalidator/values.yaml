@@ -51,6 +51,7 @@ tolerations: []
 affinity: {}
 
 config:
+  sleepTime: 5
   persistence:
     enabled: true
     name: warc-data
