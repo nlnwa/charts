@@ -26,13 +26,7 @@ script:
   # Helm lint (shold use --strict but some charts is not strictly valid yet)
   - find . -name Chart.yaml -printf "%h\n" | xargs helm lint
   # Create helm packages for everything except the veidemann chart
-  - find . -name Chart.yaml -printf "%h\n" | grep -v veidemann$ | xargs helm package
-  # Copy packages to veidemann's chart directory
-  - mkdir -p veidemann/charts && cp *.tgz veidemann/charts
-  # Fetch external dependencies for the veidemann chart except the ones we copied in previous step)
-  - helm dep up --skip-refresh veidemann/
-  # Create veidemann helm package
-  - helm package veidemann
+  - find . -name Chart.yaml -printf "%h\n" | xargs helm package -u
   # Create helm repository index
   - helm repo index . --url $CHART_REPO
 
