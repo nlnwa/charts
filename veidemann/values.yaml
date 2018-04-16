@@ -274,7 +274,7 @@ veidemann-warcvalidator-api:
     annotations:
       kubernetes.io/ingress.class: "nginx"
   config:
-   <<: *rethinkdb
+    <<: *rethinkdb
 
 # Begin: veidemann-contentwriter
 veidemann-contentwriter:
