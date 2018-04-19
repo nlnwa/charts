@@ -61,12 +61,12 @@ dependencies:
     condition: provision.namerd
   # Rethinkdb
   - name: rethinkdb
-    version: ~0.1.0
+    version: ~0.1.3
     repository: file://../rethinkdb
     condition: provision.clustered-db
   # Rethinkdb single
   - name: rethinkdb-single
-    version: ~0.1.0
+    version: ~0.1.1
     repository: file://../rethinkdb-single
     condition: provision.single-db
 
