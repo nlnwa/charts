@@ -64,6 +64,10 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.config.db.secretName }}
                   key: password
+            - name: FRONTIER_HOST
+              value: {{ .Values.config.frontier.host | quote }}
+            - name: FRONTIER_PORT
+              value: {{ .Values.config.frontier.port | quote }}
             - name: CONTENT_WRITER_HOST
               value: {{ .Values.config.contentWriter.host | quote }}
             - name: CONTENT_WRITER_PORT

@@ -49,6 +49,9 @@ config:
   browser:
     host: localhost
     port: 9222
+  frontier:
+    host: $(NODE_NAME)
+    port: 4340
   contentWriter:
     host: $(NODE_NAME)
     port: 4340

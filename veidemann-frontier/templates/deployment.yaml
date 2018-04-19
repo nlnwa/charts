@@ -58,10 +58,6 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.config.db.secretName }}
                   key: password
-            - name: HARVESTER_HOST
-              value: {{ .Values.config.harvester.host | quote }}
-            - name: HARVESTER_PORT
-              value: {{ .Values.config.harvester.port | quote }}
             - name: ROBOTS_EVALUATOR_HOST
               value: {{ .Values.config.robotsEvaluator.host | quote }}
             - name: ROBOTS_EVALUATOR_PORT
