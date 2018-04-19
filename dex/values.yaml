@@ -4,7 +4,7 @@ replicaCount: 1
 
 image:
   repository: quay.io/coreos/dex
-  tag: v2.9.0
+  tag: v2.10.0
   pullPolicy: IfNotPresent
 
 service:
