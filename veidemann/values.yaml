@@ -38,13 +38,6 @@ anchor_linkerd: &linkerd
   host: $(NODE_NAME)
   port: 4140
 
-# RBAC
-anchor_rbac: &rbac
-  rbac:
-    create: false
-  serviceAccount:
-    create: false
-
 # Jaeger
 anchor_jaeger: &jaeger
   jaeger:
@@ -357,7 +350,6 @@ jaeger:
 
 # Begin: dex
 dex:
-  <<: *rbac
   ingress:
     <<: *ingress
     annotations:
@@ -435,10 +427,6 @@ linkerd:
     - name: admin
       containerPort: 9990
 #      hostPort: 9990
-  rbac:
-    create: false
-  serviceAccount:
-    create: false
   resources:
     limits:
       cpu: 500m
@@ -493,10 +481,6 @@ linkerd:
 
 # Begin: namerd
 namerd:
-  rbac:
-    create: false
-  serviceAccount:
-    create: false
   resources:
     limits:
       cpu: 500m
