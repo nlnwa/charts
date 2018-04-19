@@ -43,9 +43,6 @@ config:
     sampler:
       type: probabilistic
       param: 0.1
-  harvester:
-    host: $(NODE_NAME)
-    port: 4340
   robotsEvaluator:
     host: $(NODE_NAME)
     port: 4340
