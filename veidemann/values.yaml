@@ -69,6 +69,30 @@ anchor_ingress: &ingress
       hosts:
         - *hostname
 
+# Warcs PCV
+anchor_warcs: &warcspcv
+  warcs:
+    name: *warcs-claim-name
+    enabled: true
+
+# Valid warcs PCV
+anchor_valid_warcs: &validwarcspcv
+  validwarcs:
+    name: *valid-warcs-claim-name
+    enabled: true
+
+# Invalid warcs PCV
+anchor_invalid_warcs: &invalidwarcspcv
+  invalidwarcs:
+    name: *invalid-warcs-claim-name
+    enabled: true
+
+# Delivery PCV
+anchor_delivery: &deliverypcv
+  delivery:
+    name: *delivery-claim-name
+    enabled: true
+
 ##########################
 # ConfigMaps and Secrets #
 ##########################
@@ -296,17 +320,13 @@ veidemann-dnsresolver:
 veidemann-warcvalidator:
   persistence:
     validwarcs:
-      name: *valid-warcs-claim-name
-      enabled: true
+      <<: *validwarcspcv
     warcs:
-      name: *warcs-claim-name
-      enabled: true
+      <<: *warcspcv
     invalidwarcs:
-      name: *invalid-warcs-claim-name
-      enabled: true
+      <<: *invalidwarcspcv
     delivery:
-      name: *delivery-claim-name
-      enabled: true
+      <<: *deliverypcv
   config:
     <<: *rethinkdb
 
@@ -324,8 +344,7 @@ veidemann-warcvalidator-api:
 veidemann-contentwriter:
   persistence:
     warcs:
-      name: *warcs-claim-name
-      enabled: true
+      <<: *warcspcv
   config:
     <<: *jaeger
     <<: *rethinkdb
@@ -346,8 +365,7 @@ veidemann-contentexplorer:
     <<: *rethinkdb
   persistence:
     warcs:
-      name: *warcs-claim-name
-      enabled: true
+      <<: *warcspcv
 
 # End: veidemann-contentexplorer
 
