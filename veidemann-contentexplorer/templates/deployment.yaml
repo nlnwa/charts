@@ -22,14 +22,23 @@ spec:
     spec:
       volumes:
         - emptyDir: {}
-          name: workdir
+            name: workdir
         - name: warcs
-        {{- if .Values.config.persistence.enabled }}
+        {{- if .Values.persistence.warcs.enabled }}
           persistentVolumeClaim:
-            claimName: {{ .Values.config.persistence.name }}
+            claimName: {{ .Values.persistence.warcs.name }}
         {{- else }}
           emptyDir: {}
         {{- end }}
+#        - emptyDir: {}
+#          name: workdir
+#        - name: warcs
+#        {{- if .Values.config.persistence.enabled }}
+#          persistentVolumeClaim:
+#            claimName: {{ .Values.config.persistence.name }}
+#        {{- else }}
+#          emptyDir: {}
+#        {{- end }}
         - name: log4j-config
           configMap:
             name: {{ .Release.Name }}-veidemann

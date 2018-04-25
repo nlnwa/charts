@@ -17,8 +17,10 @@ service:
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
 persistence:
-  enabled: true
-  name: warc-data
+  warcs:
+    name: warcs
+    enabled: false
+
 
   annotations: {}
   #  "helm.sh/resource-policy": "keep"

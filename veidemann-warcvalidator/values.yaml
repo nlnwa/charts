@@ -10,27 +10,19 @@ image:
   pullPolicy: Always
 
 persistence:
-  enabled: true
-  name: valid-warc-data
+  warcs:
+    enabled: false
+    name: warcs
+  invalidwarcs:
+    enabled: false
+    name: invalidwarcs
+  validwarcs:
+    enabled: false
+    name: validwarcs
+  delivery:
+    enabled: false
+    name: delivery
 
-  annotations: {}
-
-  existingClaim: false
-
-  ## Persistent Volume Storage Class
-  ## If defined, storageClassName: <storageClass>
-  ## If set to "-", storageClassName: "", which disables dynamic provisioning
-  ## If undefined (the default) or set to null, no storageClassName spec is
-  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-  ##   GKE, AWS & OpenStack)
-  ##
-  # storageClass: "-"
-  # storageClass: gluster-heketi
-
-  accessModes:
-    - ReadWriteOnce
-
-  size: 1Gi
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -52,9 +44,6 @@ affinity: {}
 
 config:
   sleepTime: 5
-  persistence:
-    enabled: true
-    name: warc-data
   db:
     host: rethinkdb-proxy
     port: 28015
