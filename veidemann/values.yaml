@@ -30,10 +30,10 @@ anchor_issuer: &issuer https://veidemann.local/dex
 anchor_hostname: &hostname veidemann.local
 anchor_cert_name: &cert-name ingress-tls-cert
 anchor_ca_cert_name: &ca-cert-name ingress-tls-ca-cert
-anchor_warc_claim_name: &warcs-claim-name veidemann-warc-data
-anchor_valid_warc_claim_name: &valid-warcs-claim-name veidemann-valid-warc-data
-anchor_invalid_warc_claim_name: &invalid-warcs-claim-name veidemann-invalid-warc-data
-anchor_delivery_claim_name: &delivery-claim-name veidemann-delivery-data
+anchor_warc_claim_name: &warcs-claim-name dev-veidemann-warcs
+anchor_valid_warc_claim_name: &valid-warcs-claim-name dev-veidemann-validwarcs
+anchor_invalid_warc_claim_name: &invalid-warcs-claim-name dev-veidemann-invalidwarcs
+anchor_delivery_claim_name: &delivery-claim-name dev-veidemann-delivery
 
 # Linkerd
 anchor_linkerd: &linkerd
@@ -70,25 +70,25 @@ anchor_ingress: &ingress
         - *hostname
 
 # Warcs PCV
-anchor_warcs: &warcspcv
+anchor_warcs: &persistence-warcs
   warcs:
     name: *warcs-claim-name
     enabled: true
 
 # Valid warcs PCV
-anchor_valid_warcs: &validwarcspcv
+anchor_valid_warcs: &persistence-validwarcs
   validwarcs:
     name: *valid-warcs-claim-name
     enabled: true
 
 # Invalid warcs PCV
-anchor_invalid_warcs: &invalidwarcspcv
+anchor_invalid_warcs: &persistence-invalidwarcs
   invalidwarcs:
     name: *invalid-warcs-claim-name
     enabled: true
 
 # Delivery PCV
-anchor_delivery: &deliverypcv
+anchor_delivery: &persistence-delivery
   delivery:
     name: *delivery-claim-name
     enabled: true
@@ -230,36 +230,32 @@ ca:
 
 persistence:
   warcs:
-    name: warcs
-    enabled: false
-    storageClass: "-"
+    name: *warcs-claim-name
+    enabled: true
     accessMode: ReadWriteOnce
     size: 1Gi
     annotations: {}
     existingClaim: false
 
   invalidwarcs:
-    name: invalidwarcs
-    enabled: false
-    storageClass: "-"
+    name: *invalid-warcs-claim-name
+    enabled: true
     accessMode: ReadWriteOnce
     size: 1Gi
     annotations: {}
     existingClaim: false
 
   validwarcs:
-    name: validwarcs
-    enabled: false
-    storageClass: "-"
+    name: *valid-warcs-claim-name
+    enabled: true
     accessMode: ReadWriteOnce
     size: 1Gi
     annotations: {}
     existingClaim: false
 
   delivery:
-    name: delivery
-    enabled: false
-    storageClass: "-"
+    name: *delivery-claim-name
+    enabled: true
     accessMode: ReadWriteOnce
     size: 1Gi
     annotations: {}
@@ -319,14 +315,10 @@ veidemann-dnsresolver:
 # Begin: veidemann-warcvalidator
 veidemann-warcvalidator:
   persistence:
-    validwarcs:
-      <<: *validwarcspcv
-    warcs:
-      <<: *warcspcv
-    invalidwarcs:
-      <<: *invalidwarcspcv
-    delivery:
-      <<: *deliverypcv
+    <<: *persistence-warcs
+    <<: *persistence-validwarcs
+    <<: *persistence-invalidwarcs
+    <<: *persistence-delivery
   config:
     <<: *rethinkdb
 
@@ -343,8 +335,7 @@ veidemann-warcvalidator-api:
 # Begin: veidemann-contentwriter
 veidemann-contentwriter:
   persistence:
-    warcs:
-      <<: *warcspcv
+    <<: *persistence-warcs
   config:
     <<: *jaeger
     <<: *rethinkdb
@@ -364,8 +355,7 @@ veidemann-contentexplorer:
   config:
     <<: *rethinkdb
   persistence:
-    warcs:
-      <<: *warcspcv
+    <<: *persistence-warcs
 
 # End: veidemann-contentexplorer
 

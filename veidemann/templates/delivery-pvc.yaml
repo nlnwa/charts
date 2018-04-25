@@ -1,12 +1,11 @@
-{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
 {{- $persistence := .Values.persistence.delivery }}
+{{- if and $persistence.enabled (not $persistence.existingClaim) }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "veidemann.fullname" }}-{{ $persistence.name }}
+  name: {{ $persistence.name }}
   labels:
-    app: veidemann
-    component: {{ template "veidemann.name" . }}
+    app: {{ template "veidemann.name" . }}
     chart: {{ template "veidemann.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
