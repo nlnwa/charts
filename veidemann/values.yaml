@@ -30,8 +30,10 @@ anchor_issuer: &issuer https://veidemann.local/dex
 anchor_hostname: &hostname veidemann.local
 anchor_cert_name: &cert-name ingress-tls-cert
 anchor_ca_cert_name: &ca-cert-name ingress-tls-ca-cert
-anchor_warc_claim_name: &warc-claim-name veidemann-warc-data
-anchor_valid_warc_claim_name: &valid-warc-claim-name veidemann-valid-warc-data
+anchor_warc_claim_name: &warcs-claim-name veidemann-warc-data
+anchor_valid_warc_claim_name: &valid-warcs-claim-name veidemann-valid-warc-data
+anchor_invalid_warc_claim_name: &invalid-warcs-claim-name veidemann-invalid-warc-data
+anchor_delivery_claim_name: &delivery-claim-name veidemann-delivery-data
 
 # Linkerd
 anchor_linkerd: &linkerd
@@ -201,6 +203,45 @@ ca:
     rHSmsltMZnMQiHiy92UrPYfELhMmjg5QkCBgvk3i18hmww+cj+kB+g==
     -----END RSA PRIVATE KEY-----
 
+
+persistence:
+  warcs:
+    name: warcs
+    enabled: false
+    storageClass: "-"
+    accessMode: ReadWriteOnce
+    size: 1Gi
+    annotations: {}
+    existingClaim: false
+
+  invalidwarcs:
+    name: invalidwarcs
+    enabled: false
+    storageClass: "-"
+    accessMode: ReadWriteOnce
+    size: 1Gi
+    annotations: {}
+    existingClaim: false
+
+  validwarcs:
+    name: validwarcs
+    enabled: false
+    storageClass: "-"
+    accessMode: ReadWriteOnce
+    size: 1Gi
+    annotations: {}
+    existingClaim: false
+
+  delivery:
+    name: delivery
+    enabled: false
+    storageClass: "-"
+    accessMode: ReadWriteOnce
+    size: 1Gi
+    annotations: {}
+    existingClaim: false
+
+
 #############
 # Subcharts #
 #############
@@ -254,11 +295,21 @@ veidemann-dnsresolver:
 # Begin: veidemann-warcvalidator
 veidemann-warcvalidator:
   persistence:
-    name: *valid-warc-claim-name
+    validwarcs:
+      name: *valid-warcs-claim-name
+      enabled: true
+    warcs:
+      name: *warcs-claim-name
+      enabled: true
+    invalidwarcs:
+      name: *invalid-warcs-claim-name
+      enabled: true
+    delivery:
+      name: *delivery-claim-name
+      enabled: true
   config:
     <<: *rethinkdb
-    persistence:
-      name: *warc-claim-name
+
 # End: veidemann-warcvalidator
 
 veidemann-warcvalidator-api:
@@ -272,7 +323,9 @@ veidemann-warcvalidator-api:
 # Begin: veidemann-contentwriter
 veidemann-contentwriter:
   persistence:
-    name: *warc-claim-name
+    warcs:
+      name: *warcs-claim-name
+      enabled: true
   config:
     <<: *jaeger
     <<: *rethinkdb
@@ -291,8 +344,10 @@ veidemann-contentexplorer:
       kubernetes.io/ingress.class: "nginx"
   config:
     <<: *rethinkdb
-    persistence:
-      name: *warc-claim-name
+  persistence:
+    warcs:
+      name: *warcs-claim-name
+      enabled: true
 
 # End: veidemann-contentexplorer
 

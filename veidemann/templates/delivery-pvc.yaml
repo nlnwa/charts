@@ -1,0 +1,28 @@
+{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
+{{- $persistence := .Values.persistence.delivery }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "veidemann.fullname" }}-{{ $persistence.name }}
+  labels:
+    app: veidemann
+    component: {{ template "veidemann.name" . }}
+    chart: {{ template "veidemann.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+{{ toYaml $persistence.annotations | indent 4 }}
+spec:
+  accessModes:
+    - {{ $persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ $persistence.size | quote }}
+{{- if $persistence.storageClass }}
+{{- if (eq "-" .Values.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ $persistence.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end }}
