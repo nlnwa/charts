@@ -64,10 +64,6 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.config.db.secretName }}
                   key: password
-            - name: FRONTIER_HOST
-              value: {{ .Values.config.frontier.host | quote }}
-            - name: FRONTIER_PORT
-              value: {{ .Values.config.frontier.port | quote }}
             - name: CONTENT_WRITER_HOST
               value: {{ .Values.config.contentWriter.host | quote }}
             - name: CONTENT_WRITER_PORT
@@ -78,6 +74,8 @@ spec:
               value: {{ .Values.config.dnsResolver.port | quote }}
             - name: CACHE_HOST
               value: "{{ .Release.Name }}-{{ .Values.config.cache.host }}"
+            - name: MAX_OPEN_SESSIONS
+              value: {{ .Values.config.maxOpenSessions }}
             - name: JAEGER_AGENT_HOST
               value: {{ .Values.config.jaeger.agent.host | quote }}
             - name: JAEGER_AGENT_PORT
@@ -86,6 +84,10 @@ spec:
               value: {{ .Values.config.jaeger.sampler.type | quote }}
             - name: JAEGER_SAMPLER_PARAM
               value: {{ .Values.config.jaeger.sampler.param | quote }}
+          livenessProbe:
+{{ toYaml .Values.config.livenessProbe | indent 12 }}
+          readynessProbe:
+{{ toYaml .Values.config.readynessProbe | indent 12 }}
           volumeMounts:
             - mountPath: /workdir
               name: workdir
@@ -109,6 +111,8 @@ spec:
             value: {{ .Values.browser.config.chromeOpts | quote }}
           livenessProbe:
 {{ toYaml .Values.browser.livenessProbe | indent 12 }}
+          readynessProbe:
+{{ toYaml .Values.browser.readynessProbe | indent 12 }}
           volumeMounts:
             - mountPath: /data
               name: workdir
