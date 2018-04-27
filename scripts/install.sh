@@ -9,7 +9,7 @@ kubectl config use-context minikube
 helm init --wait
 
 # Add/update helm repo
-helm repo incubator https://kubernetes-charts-incubator.storage.googleapis.com/
+helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
 helm repo update
 helm dep up ../veidemann
 
