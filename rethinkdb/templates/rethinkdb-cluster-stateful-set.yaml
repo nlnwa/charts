@@ -10,14 +10,20 @@ metadata:
 spec:
   serviceName: "{{ template "rethinkdb.fullname" . }}-cluster"
   replicas: {{ .Values.cluster.replicas }}
+  selector:
+    matchLabels:
+      app: "{{ template "rethinkdb.name" . }}-cluster"
+      chart: {{ template "rethinkdb.chart" . }}
+      heritage: {{ .Release.Service | quote }}
+      release: {{ .Release.Name | quote }}
   template:
     metadata:
       name: "{{ template "rethinkdb.fullname" . }}-cluster"
       labels:
         app: "{{ template "rethinkdb.name" . }}-cluster"
+        chart: {{ template "rethinkdb.chart" . }}
         heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
-        chart: {{ template "rethinkdb.chart" . }}
       annotations:
       {{- if .Values.cluster.podAnnotations }}
 {{ toYaml .Values.cluster.podAnnotations | indent 8 }}
