@@ -65,15 +65,15 @@ config:
     port: 28015
     secretName: rethinkdb
   maxOpenSessions: 2
-  livenessProbe:
-    tcpSocket:
-      port: http
-    initialDelaySeconds: 10
-    periodSeconds: 5
+#  livenessProbe:
+#    tcpSocket:
+#      port: http
+#    initialDelaySeconds: 10
+#    periodSeconds: 10
   readinessProbe:
     tcpSocket:
       port: http
-    initialDelaySeconds: 5
+    initialDelaySeconds: 10
     periodSeconds: 10
   jaeger:
     agent:
