@@ -24,10 +24,10 @@ dependencies:
     version: 0.1.1
     repository: file://../veidemann-frontier
   - name: veidemann-harvester
-    version: 0.1.1
+    version: 0.1.2
     repository: file://../veidemann-harvester
   - name: veidemann-initdb
-    version: 0.1.2
+    version: 0.1.1
     repository: file://../veidemann-initdb
   - name: veidemann-robots
     version: 0.1.1
