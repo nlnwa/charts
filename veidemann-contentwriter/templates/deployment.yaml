@@ -24,9 +24,9 @@ spec:
         - emptyDir: {}
           name: workdir
         - name: warcs
-        {{- if .Values.persistence.enabled }}
+        {{- if .Values.persistence.warcs.enabled }}
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.name }}
+            claimName: {{ .Values.persistence.warcs.name }}
         {{- else }}
           emptyDir: {}
         {{- end }}

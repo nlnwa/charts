@@ -2,11 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-################
-# Provisioning #
-################
-
-# configure provisioning (see requirements.yaml)
+# Provisioning (see requirements.yaml)
 provision:
   # linkerd
   linkerd: true
@@ -21,6 +17,7 @@ provision:
   # dex
   auth: true
 
+
 ###########
 # Anchors #
 ###########
@@ -30,8 +27,6 @@ anchor_issuer: &issuer https://veidemann.local/dex
 anchor_hostname: &hostname veidemann.local
 anchor_cert_name: &cert-name ingress-tls-cert
 anchor_ca_cert_name: &ca-cert-name ingress-tls-ca-cert
-anchor_warc_claim_name: &warc-claim-name veidemann-warc-data
-anchor_valid_warc_claim_name: &valid-warc-claim-name veidemann-valid-warc-data
 
 # Linkerd
 anchor_linkerd: &linkerd
@@ -66,6 +61,65 @@ anchor_ingress: &ingress
     - secretName: *cert-name
       hosts:
         - *hostname
+
+# Persistent volume claim names (the claim names are prefixed: [release]-veidemann-[name])
+
+# Warcs PVC
+anchor_warcs_pvc: &persistence-warcs
+  warcs:
+    name: dev-veidemann-warcs
+    enabled: true
+
+# Valid warcs PCV
+anchor_validwarcs_pvc: &persistence-validwarcs
+  validwarcs:
+    name: dev-veidemann-validwarcs
+    enabled: true
+
+# Invalid warcs PCV
+anchor_invalidwarcs_pvc: &persistence-invalidwarcs
+  invalidwarcs:
+    name: dev-veidemann-invalidwarcs
+    enabled: true
+
+# Delivery PCV
+anchor_delivery_pvc: &persistence-delivery
+  delivery:
+    name: dev-veidemann-delivery
+    enabled: true
+
+###############
+# Persistence #
+###############
+
+persistence:
+  warcs:
+    enabled: true
+    accessMode: ReadWriteOnce
+    size: 1Gi
+    annotations: {}
+    existingClaim: false
+
+  invalidwarcs:
+    enabled: true
+    accessMode: ReadWriteOnce
+    size: 1Gi
+    annotations: {}
+    existingClaim: false
+
+  validwarcs:
+    enabled: true
+    accessMode: ReadWriteOnce
+    size: 1Gi
+    annotations: {}
+    existingClaim: false
+
+  delivery:
+    enabled: true
+    accessMode: ReadWriteOnce
+    size: 1Gi
+    annotations: {}
+    existingClaim: false
 
 ##########################
 # ConfigMaps and Secrets #
@@ -254,11 +308,13 @@ veidemann-dnsresolver:
 # Begin: veidemann-warcvalidator
 veidemann-warcvalidator:
   persistence:
-    name: *valid-warc-claim-name
+    <<: *persistence-warcs
+    <<: *persistence-validwarcs
+    <<: *persistence-invalidwarcs
+    <<: *persistence-delivery
   config:
     <<: *rethinkdb
-    persistence:
-      name: *warc-claim-name
+
 # End: veidemann-warcvalidator
 
 veidemann-warcvalidator-api:
@@ -272,7 +328,7 @@ veidemann-warcvalidator-api:
 # Begin: veidemann-contentwriter
 veidemann-contentwriter:
   persistence:
-    name: *warc-claim-name
+    <<: *persistence-warcs
   config:
     <<: *jaeger
     <<: *rethinkdb
@@ -291,8 +347,8 @@ veidemann-contentexplorer:
       kubernetes.io/ingress.class: "nginx"
   config:
     <<: *rethinkdb
-    persistence:
-      name: *warc-claim-name
+  persistence:
+    <<: *persistence-warcs
 
 # End: veidemann-contentexplorer
 

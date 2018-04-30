@@ -9,10 +9,10 @@ dependencies:
     version: 0.1.1
     repository: file://../veidemann-cache
   - name: veidemann-contentexplorer
-    version: 0.1.1
+    version: 0.1.2
     repository: file://../veidemann-contentexplorer
   - name: veidemann-contentwriter
-    version: 0.1.1
+    version: 0.1.2
     repository: file://../veidemann-contentwriter
   - name: veidemann-controller
     version: 0.1.1
@@ -33,7 +33,7 @@ dependencies:
     version: 0.1.1
     repository: file://../veidemann-robots
   - name: veidemann-warcvalidator
-    version: 0.1.1
+    version: 0.1.2
     repository: file://../veidemann-warcvalidator
   - name: veidemann-warcvalidator-api
     version: 0.1.0

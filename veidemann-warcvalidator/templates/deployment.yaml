@@ -22,16 +22,30 @@ spec:
     spec:
       volumes:
         - name: warcs
-        {{- if .Values.config.persistence }}
+        {{- if .Values.persistence.warcs.enabled }}
           persistentVolumeClaim:
-            claimName: {{ .Values.config.persistence.name }}
+            claimName: {{ .Values.persistence.warcs.name }}
         {{- else }}
           emptyDir: {}
         {{- end }}
         - name: validwarcs
-        {{- if .Values.persistence.enabled }}
+        {{- if .Values.persistence.validwarcs.enabled }}
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.name }}
+            claimName: {{ .Values.persistence.validwarcs.name }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+        - name: invalidwarcs
+        {{- if .Values.persistence.invalidwarcs.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.invalidwarcs.name }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+        - name: delivery
+        {{- if .Values.persistence.delivery.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.delivery.name }}
         {{- else }}
           emptyDir: {}
         {{- end }}
@@ -44,6 +58,10 @@ spec:
               name: validwarcs
             - mountPath: /warcs
               name: warcs
+            - mountPath: /invalidwarcs
+              name: invalidwarcs
+            - mountPath: /delivery
+              name: delivery
           env:
             - name: SLEEP_TIME
               value: {{ .Values.config.sleepTime | quote }}
