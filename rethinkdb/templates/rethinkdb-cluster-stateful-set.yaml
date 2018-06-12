@@ -33,8 +33,10 @@ spec:
       affinity:
 {{ toYaml . | indent 8 }}
     {{- end }}
+    {{- with .Values.cluster.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
+    {{- end }}
       serviceAccountName: {{ template "rethinkdb.serviceAccountName" . }}
       containers:
         - name: {{ template "rethinkdb.name" . }}-cluster
