@@ -16,6 +16,7 @@ cluster:
     #   memory: 8Gi
   podAnnotations: {}
   affinity: {}
+  tolerations: []
   service:
     annotations: {}
   storageClass:
