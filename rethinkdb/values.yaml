@@ -17,6 +17,7 @@ cluster:
   podAnnotations: {}
   affinity: {}
   tolerations: []
+  terminationGracePeriodSeconds: nil
   service:
     annotations: {}
   storageClass:
