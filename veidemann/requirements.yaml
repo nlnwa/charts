@@ -24,7 +24,7 @@ dependencies:
     version: 0.1.1
     repository: file://../veidemann-frontier
   - name: veidemann-harvester
-    version: 0.1.3
+    version: 0.1.4
     repository: file://../veidemann-harvester
   - name: veidemann-initdb
     version: 0.1.1
