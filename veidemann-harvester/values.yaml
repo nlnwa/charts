@@ -21,7 +21,7 @@ service:
       targetPort: http-alt
       protocol: TCP
     debug:
-      port: 9222
+      port: 3000
       targetPort: debug
       protocol: TCP
 
@@ -46,9 +46,7 @@ resources:
   #  memory: 128Mi
 
 config:
-  browser:
-    host: localhost
-    port: 9222
+  browserWSEndpoint: ws://localhost:3000/?--proxy-server=localhost:8080
   frontier:
     host: $(NODE_NAME)
     port: 4340
@@ -85,12 +83,12 @@ config:
 
 browser:
   image:
-    repository:  norsknettarkiv/chrome-headless
-    tag: 65.0.3322.3
+    repository:  browserless/chrome
+    tag: release-puppeteer-1.5.0
     pullPolicy: IfNotPresent
   ports:
     - name: debug
-      containerPort: 9222
+      containerPort: 3000
   resources: {}
   livenessProbe:
     httpGet:
@@ -104,9 +102,7 @@ browser:
     initialDelaySeconds: 5
     periodSeconds: 10
   config:
-    chromeOpts: "--proxy-server=localhost:8080 --hide-scrollbars"
-    # --disable-background-networking
-    # --disable-dev-shm-usage
+    connectionTimeout: "60000"
 
 nodeSelector: {}
 
