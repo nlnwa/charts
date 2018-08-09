@@ -41,7 +41,7 @@ dependencies:
 
   # Jaeger
   - name: jaeger
-    version: ~0.3.11
+    version: ~0.7.0
     repository: https://kubernetes-charts-incubator.storage.googleapis.com/
     condition: provision.tracing
   # Dex
