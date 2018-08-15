@@ -470,9 +470,6 @@ rethinkdb-single:
 
 # Begin: linkerd
 linkerd:
-  daemonset:
-    hostNetwork: &hostNetwork true
-    dnsPolicy: ClusterFirst
   ports:
     - name: incoming
       containerPort: 4141
@@ -482,7 +479,6 @@ linkerd:
       hostPort: 4140
     - name: admin
       containerPort: 9990
-#      hostPort: 9990
   resources:
     limits:
       cpu: 500m
@@ -558,10 +554,7 @@ namerd:
     else
       echo "
         # use the k8s namer for resolution
-        /srv                                => /#/io.l5d.k8s/default ;
-
-        # identifier: io.l5d.ingress
-        /svc/default/http/dev-veidemann-controller  => /srv/http/dev-veidemann-controller ;
+        /svc  => /#/io.l5d.k8s ;
       " | namerctl dtab create ingress -
     fi
 
