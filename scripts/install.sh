@@ -21,5 +21,12 @@ helm dep up ../veidemann
 helm upgrade dev ../veidemann --install --namespace default \
 --set veidemann-controller.config.hostAliases[0].ip=$(minikube ip) \
 --set veidemann-controller.config.hostAliases[0].hostnames[0]=veidemann.local \
+--set jaeger.cassandra.config.max_heap_size=1024M \
+--set jaeger.cassandra.config.heap_new_size=256M \
+--set jaeger.cassandra.resources.requests.memory=2048Mi \
+--set jaeger.cassandra.resources.requests.cpu=0.4 \
+--set jaeger.cassandra.resources.limits.memory=2048Mi \
+--set jaeger.cassandra.resources.limits.cpu=0.4 \
+--set jaeger.cassandra.config.cluster_size=1 \
 $@
 
