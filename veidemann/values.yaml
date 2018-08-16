@@ -532,14 +532,6 @@ namerd:
   createNamespace: |-
     #!/bin/sh
     set -e
-    if namerctl dtab get ingress > /dev/null 2>&1; then
-      echo "ingress namespace already exists"
-    else
-      echo "
-        # use the k8s namer for resolution
-        /svc  => /#/io.l5d.k8s ;
-      " | namerctl dtab create ingress -
-    fi
 
     if namerctl dtab get grpc > /dev/null 2>&1; then
       echo "grpc namespace already exists"
