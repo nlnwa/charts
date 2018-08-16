@@ -13,10 +13,9 @@ provision:
   # clustered rethinkdb
   clustered-db: false
   # jaeger
-  tracing: false
+  tracing: true
   # dex
   auth: true
-
 
 ###########
 # Anchors #
@@ -56,11 +55,11 @@ anchor_rethinkdb: &rethinkdb
 anchor_ingress: &ingress
   enabled: true
   hosts:
-    - *hostname
+  - *hostname
   tls:
-    - secretName: *cert-name
-      hosts:
-        - *hostname
+  - secretName: *cert-name
+    hosts:
+    - *hostname
 
 # Persistent volume claim names (the claim names are prefixed: [release]-veidemann-[name])
 
@@ -203,8 +202,6 @@ tls:
     -----END PRIVATE KEY-----
 
 ca:
-  create: true
-  name: *ca-cert-name
   crt: |-
     -----BEGIN CERTIFICATE-----
     MIIDHTCCAgWgAwIBAgIJAJVjIW/pbBZ4MA0GCSqGSIb3DQEBCwUAMCUxCzAJBgNV
@@ -254,6 +251,8 @@ ca:
     iRHfuzD3vxKGbHg4JaW4Wyq3nkTO5X/YUuxBJSPSNUb1mIhTzvce6ZK73O058Wu4
     rHSmsltMZnMQiHiy92UrPYfELhMmjg5QkCBgvk3i18hmww+cj+kB+g==
     -----END RSA PRIVATE KEY-----
+  create: true
+  name: *ca-cert-name
 
 #############
 # Subcharts #
@@ -268,6 +267,9 @@ veidemann-robots:
 
 # Begin: veidemann-initdb
 veidemann-initdb:
+  annotations:
+    "helm.sh/hook": "post-install,pre-upgrade"
+    "helm.sh/hook-delete-policy": "before-hook-creation"
   config:
     <<: *rethinkdb
 # End: veidemann-initdb
@@ -357,7 +359,9 @@ veidemann-controller:
   ingress:
     <<: *ingress
     annotations:
-      kubernetes.io/ingress.class: "linkerd"
+      kubernetes.io/ingress.class: "nginx"
+      nginx.ingress.kubernetes.io/grpc-backend: "true"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
   config:
     <<: *rethinkdb
     frontier:
@@ -398,7 +402,7 @@ veidemann-admin:
 jaeger:
   agent:
     daemonset:
-      useHostPort: false
+      useHostPort: true
   cassandra:
     persistence:
       enabled: false
@@ -425,8 +429,8 @@ dex:
     web:
       http: 0.0.0.0:5556
       allowedOrigins:
-        - https://veidemann.local
-        - https://localhost:4200
+      - https://veidemann.local
+      - https://localhost:4200
     # Options for controlling the logger.
     logger:
       level: "debug"
@@ -442,22 +446,22 @@ dex:
     #
     # If this option isn't chosen clients may be added through the gRPC API.
     staticClients:
-      - id: veidemann-gui
-        redirectURIs:
-          - "https://veidemann.local/veidemann/activity"
-          - "https://localhost:4200/activity" # Allow development with: ng serve --ssl 1 --ssl-key ... --ssl-cert ...
-        name: "Veidemann Admin GUI"
-        secret: ZXhhbXBsZS1hcHAtc2VjcmV0
-      - id: veidemann-cli
-        public: true
-        name: "Veidemann CLI"
-        secret: cli-app-secret
-      - id: veidemann-api
-        name: "Veidemann API"
-        secret: VerySecret
-        trustedPeers:
-          - veidemann-cli
-          - veidemann-gui
+    - id: veidemann-gui
+      redirectURIs:
+      - "https://veidemann.local/veidemann/activity"
+      - "https://localhost:4200/activity" # Allow development with: ng serve --ssl 1 --ssl-key ... --ssl-cert ...
+      name: "Veidemann Admin GUI"
+      secret: ZXhhbXBsZS1hcHAtc2VjcmV0
+    - id: veidemann-cli
+      public: true
+      name: "Veidemann CLI"
+      secret: cli-app-secret
+    - id: veidemann-api
+      name: "Veidemann API"
+      secret: VerySecret
+      trustedPeers:
+      - veidemann-cli
+      - veidemann-gui
 
 # End: dex
 
@@ -465,20 +469,17 @@ dex:
 rethinkdb-single:
   resources:
     requests:
-        memory: "500Mi"
+      memory: "500Mi"
 # End: rethinkdb-single
 
 # Begin: linkerd
 linkerd:
   ports:
-    - name: incoming
-      containerPort: 4141
-      hostPort: 4443
-    - name: outgoing
-      containerPort: 4140
-      hostPort: 4140
-    - name: admin
-      containerPort: 9990
+  - name: outgoing
+    containerPort: 4140
+    hostPort: 4140
+  - name: admin
+    containerPort: 9990
   resources:
     limits:
       cpu: 500m
@@ -498,24 +499,6 @@ linkerd:
       enabled: false
 
     routers:
-    - protocol: h2
-      label: ingress-grpc
-      identifier:
-        kind: io.l5d.ingress
-        namespace: default
-      interpreter:
-        kind: io.l5d.mesh
-        experimental: true
-        dst: /$/inet/dev-namerd.default.svc.cluster.local/4321
-        root: /ingress
-      servers:
-      - port: 4141
-        ip: 0.0.0.0
-        clearContext: true
-        tls:
-          certPath: /io.buoyant/linkerd/certs/tls.crt
-          keyPath: /io.buoyant/linkerd/certs/tls.key
-
     - protocol: h2
       label: internal-grpc
       identifier:
@@ -577,4 +560,4 @@ namerd:
         /svc/veidemann.api.Report           => /grpc/dev-veidemann-controller ;
       " | namerctl dtab create grpc -
     fi
-# End: namerd
+  # End: namerd
