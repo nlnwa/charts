@@ -42,7 +42,7 @@ dependencies:
   # Jaeger
   - name: jaeger
     version: ~0.7.0
-    repository: https://kubernetes-charts-incubator.storage.googleapis.com/
+    repository: "@incubator"
     condition: provision.tracing
   # Dex
   - name: dex
@@ -52,11 +52,11 @@ dependencies:
   # Linkerd
   - name: linkerd
     repository: file://../linkerd
-    version: 0.4.0
+    version: ~0.4.1
     condition: provision.linkerd
   # Namerd
   - name: namerd
-    version: 0.2.0
+    version: ~0.2.0
     repository: file://../namerd
     condition: provision.namerd
   # Rethinkdb
@@ -69,5 +69,3 @@ dependencies:
     version: ~0.1.1
     repository: file://../rethinkdb-single
     condition: provision.single-db
-
-

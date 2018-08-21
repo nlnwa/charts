@@ -16,9 +16,9 @@ service:
 ingress:
   enabled: false
   annotations: {}
-    # kubernetes.io/ingress.class: "linkerd"
+    # kubernetes.io/ingress.class: "nginx"
     # kubernetes.io/tls-acme: "true"
-  path: /veidemann\.api.*
+  path: /veidemann.api
   hosts:
     - chart-example.local
   tls: []
