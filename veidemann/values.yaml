@@ -13,7 +13,7 @@ provision:
   # clustered rethinkdb
   clustered-db: false
   # jaeger
-  tracing: true
+  tracing: false
   # dex
   auth: true
 
