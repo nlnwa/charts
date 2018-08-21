@@ -41,6 +41,7 @@ spec:
           args:
             - "--bind"
             - "all"
+            - "--no-update-check"
             {{- if .Values.proxy.driverTLS.enabled }}
             - "--driver-tls-key"
             - "/secrets/driver-key.pem"

@@ -52,6 +52,7 @@ spec:
             - "--bind"
             - "all"
             - "--no-http-admin"
+            - "--no-update-check"
             - "--cache-size"
             - {{ .Values.cluster.rethinkCacheSize | quote }}
           volumeMounts:

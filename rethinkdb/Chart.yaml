@@ -11,5 +11,5 @@ maintainers:
 name: rethinkdb
 sources:
 - https://hub.docker.com/r/codylundquist/helm-rethinkdb-cluster/
-version: 0.1.4
+version: 0.1.5
 appVersion: 2.3.5
