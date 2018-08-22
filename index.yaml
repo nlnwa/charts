@@ -1,0 +1,229 @@
+apiVersion: v1
+entries:
+  dex:
+  - apiVersion: v1
+    appVersion: 2.10.0
+    created: 2018-08-22T11:02:14.711130723Z
+    description: Dex federated authentication service
+    digest: 2cb7bff59af5a64cf4ac11be275bf5eee74f455f49b6d9c365b4ddab2d042ce8
+    icon: https://github.com/coreos/dex/blob/master/Documentation/logos/dex-horizontal-color.png
+    maintainers:
+    - email: aaron@roydhouse.com
+      name: Aaron Roydhouse
+    - email: nbadger@mintel.com
+      name: Nick Badger
+    name: dex
+    sources:
+    - https://github.com/coreos/dex
+    - https://github.com/mintel/dex-k8s-authenticator/tree/master/charts/dex
+    urls:
+    - https://nlnwa.github.io/charts/dex-0.2.2.tgz
+    version: 0.2.2
+  linkerd:
+  - apiVersion: v1
+    appVersion: 1.4.6
+    created: 2018-08-22T11:02:14.711588287Z
+    description: Service mesh for cloud native apps
+    digest: b1b27b67b52cb317ab18d52d29dbd738c9953b6efcde6c8bfbe0d87cbd14c7ab
+    home: https://linkerd.io/
+    icon: https://pbs.twimg.com/profile_images/690258997237014528/KNgQd9GL_400x400.png
+    maintainers:
+    - email: viglesias@google.com
+      name: Vic Iglesias
+    name: linkerd
+    sources:
+    - https://github.com/BuoyantIO/linkerd
+    urls:
+    - https://nlnwa.github.io/charts/linkerd-0.4.1.tgz
+    version: 0.4.1
+  namerd:
+  - apiVersion: v1
+    appVersion: 1.4.6
+    created: 2018-08-22T11:02:14.712056514Z
+    description: Service that manages routing for multiple linkerd instances
+    digest: e8391f7ad53c3768824f87fae7c6d036110b577ffb891dc5adade862b65ee6c4
+    home: https://linkerd.io/in-depth/namerd/
+    icon: https://pbs.twimg.com/profile_images/690258997237014528/KNgQd9GL_400x400.png
+    maintainers:
+    - email: knoxville@gmail.com
+      name: Sean Knox
+    name: namerd
+    sources:
+    - https://github.com/linkerd/linkerd
+    urls:
+    - https://nlnwa.github.io/charts/namerd-0.2.0.tgz
+    version: 0.2.0
+  rethinkdb:
+  - appVersion: 2.3.5
+    created: 2018-08-22T11:02:14.712703109Z
+    description: The open-source database for the realtime web
+    digest: ff94fac7a87385680c7778f2ab3ecf0dbd36061edd37cd1ecbb05a270cbd8bdd
+    home: https://www.rethinkdb.com
+    icon: http://i.imgur.com/bZ75N6r.jpg
+    keywords:
+    - rethinkdb
+    - database
+    - nosql
+    maintainers:
+    - email: cody.lundquist@gmail.com
+      name: meenie
+    name: rethinkdb
+    sources:
+    - https://hub.docker.com/r/codylundquist/helm-rethinkdb-cluster/
+    urls:
+    - https://nlnwa.github.io/charts/rethinkdb-0.1.7.tgz
+    version: 0.1.7
+  rethinkdb-single:
+  - apiVersion: v1
+    appVersion: 2.3.6
+    created: 2018-08-22T11:02:14.713036729Z
+    description: A Helm chart for Kubernetes
+    digest: 240584e58c54ff2506b35d0e03847e3b1ed6432738fc1eabfee0cf415ed74055
+    name: rethinkdb-single
+    urls:
+    - https://nlnwa.github.io/charts/rethinkdb-single-0.1.1.tgz
+    version: 0.1.1
+  veidemann:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: 2018-08-22T11:02:14.719792933Z
+    description: Veidemann harvester
+    digest: 1da588ca2cff5fc4bc56dd34b7fdf67770b6c9727f0ecb459f82f6940a510020
+    name: veidemann
+    urls:
+    - https://nlnwa.github.io/charts/veidemann-0.1.6.tgz
+    version: 0.1.6
+  veidemann-admin:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: 2018-08-22T11:02:14.720140194Z
+    description: A Helm chart for Kubernetes
+    digest: 8d51c180ed2026a708a2074c2c9121126852b70d6861a558e495fc528e0cc9d5
+    name: veidemann-admin
+    urls:
+    - https://nlnwa.github.io/charts/veidemann-admin-0.1.1.tgz
+    version: 0.1.1
+  veidemann-api-gateway:
+  - apiVersion: v1
+    appVersion: 0.1.0-alpha6
+    created: 2018-08-22T11:02:14.720496932Z
+    description: A Helm chart for Kubernetes
+    digest: 8b76e0a6f71c07b1393f3f98138cf967a0b58be599ed5b9d12d2725d5f38280f
+    kubeVersion: '>=1.9.0'
+    name: veidemann-api-gateway
+    sources:
+    - https://github.com/nlnwa/veidemann-ws-api-gateway
+    urls:
+    - https://nlnwa.github.io/charts/veidemann-api-gateway-0.1.1.tgz
+    version: 0.1.1
+  veidemann-cache:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: 2018-08-22T11:02:14.720854406Z
+    description: A Helm chart for Kubernetes
+    digest: a67b7dea80b571cedf18dc8713155a37fd7db548c841edc28d20b3506bf8ed9f
+    name: veidemann-cache
+    urls:
+    - https://nlnwa.github.io/charts/veidemann-cache-0.1.1.tgz
+    version: 0.1.1
+  veidemann-contentexplorer:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: 2018-08-22T11:02:14.721190675Z
+    description: A Helm chart for Kubernetes
+    digest: 516eef36ef05acc6aa02a2d0fe25858a190b5c9edfe68c1377793d9ca26c7e26
+    name: veidemann-contentexplorer
+    urls:
+    - https://nlnwa.github.io/charts/veidemann-contentexplorer-0.1.2.tgz
+    version: 0.1.2
+  veidemann-contentwriter:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: 2018-08-22T11:02:14.721517523Z
+    description: A Helm chart for Kubernetes
+    digest: 759db6bdb72b40fb8e6ec0aaed4913fab245684cd8030f5137226bac22556106
+    name: veidemann-contentwriter
+    urls:
+    - https://nlnwa.github.io/charts/veidemann-contentwriter-0.1.2.tgz
+    version: 0.1.2
+  veidemann-controller:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: 2018-08-22T11:02:14.721849297Z
+    description: A Helm chart for Kubernetes
+    digest: b2710336d0be84df1f4c33e863e9040fe7e85b5fab7e5ec75001dc560d4b7e51
+    name: veidemann-controller
+    urls:
+    - https://nlnwa.github.io/charts/veidemann-controller-0.1.1.tgz
+    version: 0.1.1
+  veidemann-dnsresolver:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: 2018-08-22T11:02:14.722433451Z
+    description: A Helm chart for Kubernetes
+    digest: 50c1f341637a6dd3b87682ea942624e97190ea34e37479fd4f2d83ac07a0f6e0
+    name: veidemann-dnsresolver
+    urls:
+    - https://nlnwa.github.io/charts/veidemann-dnsresolver-0.1.1.tgz
+    version: 0.1.1
+  veidemann-frontier:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: 2018-08-22T11:02:14.723038241Z
+    description: A Helm chart for Kubernetes
+    digest: e48b9a4f44ab138e1c6486cbb36269b6d75d0d4bc60810ec753d57d91ff49380
+    name: veidemann-frontier
+    urls:
+    - https://nlnwa.github.io/charts/veidemann-frontier-0.1.1.tgz
+    version: 0.1.1
+  veidemann-harvester:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: 2018-08-22T11:02:14.723542113Z
+    description: A Helm chart for Kubernetes
+    digest: 99c5d48059b98f7dbdb3d2330f76631d0195682221eb25eb8ba4121fd86f9a49
+    name: veidemann-harvester
+    urls:
+    - https://nlnwa.github.io/charts/veidemann-harvester-0.1.4.tgz
+    version: 0.1.4
+  veidemann-initdb:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: 2018-08-22T11:02:14.723911178Z
+    description: A Helm chart for Kubernetes
+    digest: 421c5e08e997c330f5dc9216c7f903390d4012b963849b0d2ed3e44ac4d1d938
+    name: veidemann-initdb
+    urls:
+    - https://nlnwa.github.io/charts/veidemann-initdb-0.1.1.tgz
+    version: 0.1.1
+  veidemann-robots:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: 2018-08-22T11:02:14.724464596Z
+    description: A Helm chart for Kubernetes
+    digest: ae75ceb3b6cae53c6a1b5b3f0413e7f19050760341fa1b59e246ce004bdb2f2c
+    name: veidemann-robots
+    urls:
+    - https://nlnwa.github.io/charts/veidemann-robots-0.1.1.tgz
+    version: 0.1.1
+  veidemann-warcvalidator:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: 2018-08-22T11:02:14.724958228Z
+    description: A Helm chart for Kubernetes
+    digest: 3d96a784716ce797b27109fb3bff3e7c1cab2aea23674d7ed9057a2ec09f3b00
+    name: veidemann-warcvalidator
+    urls:
+    - https://nlnwa.github.io/charts/veidemann-warcvalidator-0.1.2.tgz
+    version: 0.1.2
+  veidemann-warcvalidator-api:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: 2018-08-22T11:02:14.725582939Z
+    description: A Helm chart for Kubernetes
+    digest: 93c434c37c423b02c6c11bc96bd8b57b04ad8f2d651976fd89346ed26f5a9521
+    name: veidemann-warcvalidator-api
+    urls:
+    - https://nlnwa.github.io/charts/veidemann-warcvalidator-api-0.1.0.tgz
+    version: 0.1.0
+generated: 2018-08-22T11:02:14.710346212Z
