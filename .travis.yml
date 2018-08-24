@@ -5,51 +5,61 @@ notifications:
 
 env:
   global:
-    - HELM_VERSION="v2.8.2"
-    - CHART_REPO="https://nlnwa.github.io/charts"
+  - HELM_VERSION="v2.10.0"
+  - REPO_DIR="docs"
+  - REPO_URL="https://nlnwa.github.io/charts"
 
 # Install helm
 install:
-  - wget -q https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz -O /tmp/helm.tar.gz
-  - tar xvzf /tmp/helm.tar.gz -C /tmp --strip-components=1
-  - mkdir -p $HOME/bin
-  - export PATH=$PATH:$HOME/bin
-  - mv /tmp/helm $HOME/bin
-  - chmod +x $HOME/bin/helm
+- wget -q https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz -O /tmp/helm.tar.gz
+- tar xvzf /tmp/helm.tar.gz -C /tmp --strip-components=1
+- mkdir -p $HOME/bin
+- export PATH=$PATH:$HOME/bin
+- mv /tmp/helm $HOME/bin
+- chmod +x $HOME/bin/helm
 
 # Initialize helm
 before_script:
-  - helm init --client-only
-  - helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
+- helm init --client-only
+- helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
 
 script:
-  # Helm lint (shold use --strict but some charts is not strictly valid yet)
-  - find . -name Chart.yaml -printf "%h\n" | xargs helm lint
-  # Create helm packages for everything except the veidemann chart
-  - find . -name Chart.yaml -printf "%h\n" | xargs helm package -u
-  # Create helm repository index
-  - helm repo index . --url $CHART_REPO
+# Helm lint (shold use --strict but some charts is not strictly valid yet)
+- find repo/ -name Chart.yaml -printf "%h\n" | xargs helm lint
+
+after_success:
+# Make sure repo folder exists
+- mkdir -p $REPO_DIR
+# Package charts
+- find repo/ -name Chart.yaml -printf "%h\n" | xargs helm package -u -d $REPO_DIR
+# Create (or merge with current) helm repository index
+- helm repo index --url $REPO_URL --merge $REPO_DIR/index.yaml $REPO_DIR
 
 # Setup GIT
 before_deploy:
-  - |
-      declare -r SSH_FILE=$(mktemp -u $HOME/.ssh/XXXXX)
+- |
+  declare -r SSH_FILE=$(mktemp -u $HOME/.ssh/XXXXX)
 
-      openssl aes-256-cbc -K $encrypted_c4a5200a5eb5_key -iv $encrypted_c4a5200a5eb5_iv -in ".travis/github_deploy_key.enc" -out "$SSH_FILE" -d
+  openssl aes-256-cbc \
+  -K $encrypted_c4a5200a5eb5_key \
+  -iv $encrypted_c4a5200a5eb5_iv \
+  -in ".travis/github_deploy_key.enc" \
+  -out "$SSH_FILE" \
+  -d
 
-      chmod 600 $SSH_FILE
+  chmod 600 $SSH_FILE
 
-      printf "%s\n" \
-        "Host github.com" \
-        " IdentityFile $SSH_FILE" \
-        " LogLevel ERROR" >> $HOME/.ssh/config
+  printf "%s\n" \
+    "Host github.com" \
+    " IdentityFile $SSH_FILE" \
+    " LogLevel ERROR" >> $HOME/.ssh/config
 
-      git config user.name "$(git log -1 $TRAVIS_COMMIT --pretty="%aN")"
-      git config user.email "$(git log -1 $TRAVIS_COMMIT --pretty="%cE")"
+  git config user.name "$(git log -1 $TRAVIS_COMMIT --pretty="%aN")"
+  git config user.email "$(git log -1 $TRAVIS_COMMIT --pretty="%cE")"
 
 deploy:
-  - provider: script
-    script: bash .travis/deploy.sh
-    skip_cleanup: true # preserve assets from build step
-    on:
-      branch: master
+- provider: script
+  skip_cleanup: true # preserve assets from build step
+  script: bash .travis/deploy.sh
+  on:
+    branch: master
