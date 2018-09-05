@@ -5,9 +5,7 @@
 # Provisioning (see requirements.yaml)
 provision:
   # linkerd
-  linkerd: true
-  # namerd
-  namerd: true
+  mesh: true
   # single rethinkdb
   single-db: true
   # clustered rethinkdb
@@ -462,7 +460,6 @@ dex:
       trustedPeers:
       - veidemann-cli
       - veidemann-gui
-
 # End: dex
 
 # Begin: rethinkdb-single
@@ -472,78 +469,77 @@ rethinkdb-single:
       memory: "500Mi"
 # End: rethinkdb-single
 
-# Begin: linkerd
-linkerd:
-  resources:
-    limits:
-      cpu: 500m
-      memory: 512Mi
-    requests:
-      cpu: 0
-      memory: 512Mi
-  tls:
-    secretName: *cert-name
-  config:
-    admin:
-      ip: 0.0.0.0
-      port: 9990
-
-    usage:
-      orgId: nlnwa
-      enabled: false
-
-    routers:
-    - protocol: h2
-      label: internal-grpc
-      identifier:
-        kind: io.l5d.header.path
-        segments: 1
-      interpreter:
-        kind: io.l5d.mesh
-        experimental: true
-        dst: /$/inet/dev-namerd.default.svc.cluster.local/4321
-        root: /grpc
-      servers:
-      - port: 4140
-        ip: 0.0.0.0
-# End: linkerd
-
-# Begin: namerd
-namerd:
-  resources:
-    limits:
-      cpu: 500m
-      memory: 512Mi
-    requests:
-      cpu: 0
-      memory: 512Mi
-  kubectl:
+# Begin: mesh
+mesh:
+  linkerd:
     resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
       requests:
         cpu: 0
-        memory: 32Mi
-  # script to create initial namerd namespaces
-  createNamespace: |-
-    #!/bin/sh
-    set -e
+        memory: 512Mi
+    tls:
+      secretName: *cert-name
+    config:
+      admin:
+        ip: 0.0.0.0
+        port: 9990
 
-    if namerctl dtab get grpc > /dev/null 2>&1; then
-      echo "grpc namespace already exists"
-    else
-      echo "
-        # Use the k8s namer for resolution
-        /srv                                => /#/io.l5d.k8s/default ;
-        /grpc                               => /srv/http ;
+      usage:
+        orgId: nlnwa
+        enabled: false
 
-        # identifier: io.l5d.header.path (segments: 1)
-        /svc/veidemann.api.Frontier         => /grpc/dev-veidemann-frontier ;
-        /svc/veidemann.api.ContentWriter    => /grpc/dev-veidemann-contentwriter ;
-        /svc/veidemann.api.Controller       => /grpc/dev-veidemann-controller ;
-        /svc/veidemann.api.DnsResolver      => /grpc/dev-veidemann-dnsresolver ;
-        /svc/veidemann.api.Harvester        => /grpc/dev-veidemann-harvester ;
-        /svc/veidemann.api.RobotsEvaluator  => /grpc/dev-veidemann-robots ;
-        /svc/veidemann.api.Status           => /grpc/dev-veidemann-controller ;
-        /svc/veidemann.api.Report           => /grpc/dev-veidemann-controller ;
-      " | namerctl dtab create grpc -
-    fi
-  # End: namerd
+      routers:
+      - protocol: h2
+        label: internal-grpc
+        identifier:
+          kind: io.l5d.header.path
+          segments: 1
+        interpreter:
+          kind: io.l5d.mesh
+          experimental: true
+          dst: /$/inet/dev-namerd.default.svc.cluster.local/4321
+          root: /grpc
+        servers:
+        - port: 4140
+          ip: 0.0.0.0
+
+  namerd:
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 0
+        memory: 512Mi
+    kubectl:
+      resources:
+        requests:
+          cpu: 0
+          memory: 32Mi
+    # script to create initial namerd namespaces
+    createNamespace: |-
+      #!/bin/sh
+      set -e
+
+      if namerctl dtab get grpc > /dev/null 2>&1; then
+        echo "grpc namespace already exists"
+      else
+        echo "
+          # Use the k8s namer for resolution
+          /srv                                => /#/io.l5d.k8s/default ;
+          /grpc                               => /srv/http ;
+
+          # identifier: io.l5d.header.path (segments: 1)
+          /svc/veidemann.api.Frontier         => /grpc/dev-veidemann-frontier ;
+          /svc/veidemann.api.ContentWriter    => /grpc/dev-veidemann-contentwriter ;
+          /svc/veidemann.api.Controller       => /grpc/dev-veidemann-controller ;
+          /svc/veidemann.api.DnsResolver      => /grpc/dev-veidemann-dnsresolver ;
+          /svc/veidemann.api.Harvester        => /grpc/dev-veidemann-harvester ;
+          /svc/veidemann.api.RobotsEvaluator  => /grpc/dev-veidemann-robots ;
+          /svc/veidemann.api.Status           => /grpc/dev-veidemann-controller ;
+          /svc/veidemann.api.Report           => /grpc/dev-veidemann-controller ;
+        " | namerctl dtab create grpc -
+      fi
+# End: mesh
