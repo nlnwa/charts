@@ -24,7 +24,7 @@ spec:
           imagePullPolicy: {{ .Values.namerctl.image.pullPolicy }}
           env:
             - name: NAMERCTL_BASE_URL
-              value: "http://{{ template "namerd.fullname" . }}.default.svc.cluster.local:{{ .Values.service.apiPort }}"
+              value: "http://{{ template "namerd.fullname" . }}:{{ .Values.service.apiPort }}"
           command:
             - "/namerctl/createNs.sh"
           volumeMounts:
