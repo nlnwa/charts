@@ -474,12 +474,6 @@ rethinkdb-single:
 
 # Begin: linkerd
 linkerd:
-  ports:
-  - name: outgoing
-    containerPort: 4140
-    hostPort: 4140
-  - name: admin
-    containerPort: 9990
   resources:
     limits:
       cpu: 500m
