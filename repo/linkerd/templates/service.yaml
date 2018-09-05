@@ -14,10 +14,7 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-  {{- range $key, $value := .Values.service.ports }}
-    - name: {{ $key }}
-{{ toYaml $value | indent 6 }}
-  {{- end }}
+{{ toYaml .Values.service.ports | indent 4}}
   selector:
     app: {{ template "linkerd.name" . }}
     release: {{ .Release.Name }}

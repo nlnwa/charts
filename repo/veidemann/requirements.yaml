@@ -49,16 +49,11 @@ dependencies:
     version: ~0.2.2
     repository: file://../dex
     condition: provision.auth
-  # Linkerd
-  - name: linkerd
-    repository: file://../linkerd
-    version: ~0.4.1
-    condition: provision.linkerd
-  # Namerd
-  - name: namerd
-    version: ~0.2.0
-    repository: file://../namerd
-    condition: provision.namerd
+  # Linkerd/Namerd
+  - name: mesh
+    repository: file://../mesh
+    version: 0.1.0
+    condition: provision.mesh
   # Rethinkdb
   - name: rethinkdb
     version: ~0.1.3
