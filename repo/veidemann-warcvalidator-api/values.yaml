@@ -48,4 +48,5 @@ config:
   db:
     host: rethinkdb-proxy
     port: 28015
+    name: veidemann
     secretName: rethinkdb
