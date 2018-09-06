@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: norsknettarkiv/veidemann-warc-validator-api
-  tag: latest
+  # tag: latest
   pullPolicy: Always
 
 service:
