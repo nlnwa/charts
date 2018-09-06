@@ -8,8 +8,6 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
-  hostNetwork: {{ .Values.daemonSet.hostNetwork }}
-  dnsPolicy:  {{ .Values.daemonSet.dnsPolicy }}
   template:
     metadata:
       labels:
@@ -20,6 +18,8 @@ spec:
 {{ toYaml . | indent 8 }}
     {{- end }}
     spec:
+      hostNetwork: {{ .Values.daemonSet.hostNetwork }}
+      dnsPolicy:  {{ .Values.daemonSet.dnsPolicy }}
       volumes:
         - name: l5d-config
           configMap:
