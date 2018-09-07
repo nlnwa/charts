@@ -30,8 +30,10 @@ script:
 after_success:
 # Make sure repo folder exists
 - mkdir -p $REPO_DIR
-# Package charts
-- find repo/ -name Chart.yaml -printf "%h\n" | xargs helm package -u -d $REPO_DIR
+# Package charts (except veidemann)
+- find repo/ -name Chart.yaml -printf "%h\n" | grep -v "repo/veidemann$" | xargs helm package -u -d $REPO_DIR
+# Package veidemann
+- helm package -u -d $REPO_DIR repo/veidemann
 # Create (or merge with current) helm repository index
 - helm repo index --url $REPO_URL --merge $REPO_DIR/index.yaml $REPO_DIR
 
