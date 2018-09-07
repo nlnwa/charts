@@ -372,7 +372,7 @@ veidemann-controller:
 # Begin: veidemann-cache
 veidemann-cache:
   config:
-    dnsServers: "8.8.8.8 8.8.4.4"
+    dnsServers: "dev-veidemann-dnsresolver"
 # End: veidemann-cache
 
 # Begin: veidemann-api-gateway
@@ -479,17 +479,17 @@ mesh:
       requests:
         cpu: 0
         memory: 512Mi
-    tls:
-      secretName: *cert-name
     config:
       admin:
         ip: 0.0.0.0
         port: 9990
-
+      namers:
+      - kind: io.l5d.k8s
+        host: localhost
+        port: 8001
       usage:
         orgId: nlnwa
         enabled: false
-
       routers:
       - protocol: h2
         label: internal-grpc
@@ -499,12 +499,11 @@ mesh:
         interpreter:
           kind: io.l5d.mesh
           experimental: true
-          dst: /$/inet/dev-namerd.default.svc.cluster.local/4321
+          dst: /$/inet/dev-namerd/4321
           root: /grpc
         servers:
         - port: 4140
           ip: 0.0.0.0
-
   namerd:
     resources:
       limits:
@@ -535,7 +534,7 @@ mesh:
           /svc/veidemann.api.Frontier         => /grpc/dev-veidemann-frontier ;
           /svc/veidemann.api.ContentWriter    => /grpc/dev-veidemann-contentwriter ;
           /svc/veidemann.api.Controller       => /grpc/dev-veidemann-controller ;
-          /svc/veidemann.api.DnsResolver      => /grpc/dev-veidemann-dnsresolver ;
+          /svc/veidemann.api.DnsResolver      => /srv/grpc/dev-veidemann-dnsresolver ;
           /svc/veidemann.api.Harvester        => /grpc/dev-veidemann-harvester ;
           /svc/veidemann.api.RobotsEvaluator  => /grpc/dev-veidemann-robots ;
           /svc/veidemann.api.Status           => /grpc/dev-veidemann-controller ;

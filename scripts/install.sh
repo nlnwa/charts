@@ -5,12 +5,18 @@ set -xe
 # Enforce minikube context (not production)
 kubectl config use-context minikube
 
+# Make sure ingress is enabled
+minikube addons enable ingress
+
 # Initialize helm on client and server, wait for it to be ready
 helm init --wait
 
 # Add/update helm repo
 helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
 helm repo update
+
+# need to resolve dependencies for mesh first because requirements is not resolved recursively for subcharts
+helm dep up ../repo/mesh
 helm dep up ../repo/veidemann
 
 # Upgrade/install nlnwa/veidemann into default namespace with release name "dev"
