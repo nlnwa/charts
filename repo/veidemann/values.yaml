@@ -372,7 +372,7 @@ veidemann-controller:
 # Begin: veidemann-cache
 veidemann-cache:
   config:
-    dnsServers: "8.8.8.8 8.8.4.4"
+    dnsServers: "dev-veidemann-dnsresolver"
 # End: veidemann-cache
 
 # Begin: veidemann-api-gateway
@@ -535,7 +535,7 @@ mesh:
           /svc/veidemann.api.Frontier         => /grpc/dev-veidemann-frontier ;
           /svc/veidemann.api.ContentWriter    => /grpc/dev-veidemann-contentwriter ;
           /svc/veidemann.api.Controller       => /grpc/dev-veidemann-controller ;
-          /svc/veidemann.api.DnsResolver      => /grpc/dev-veidemann-dnsresolver ;
+          /svc/veidemann.api.DnsResolver      => /srv/grpc/dev-veidemann-dnsresolver ;
           /svc/veidemann.api.Harvester        => /grpc/dev-veidemann-harvester ;
           /svc/veidemann.api.RobotsEvaluator  => /grpc/dev-veidemann-robots ;
           /svc/veidemann.api.Status           => /grpc/dev-veidemann-controller ;
