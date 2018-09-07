@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: norsknettarkiv/veidemann-harvester
-  tag: latest
+  # tag: latest
   pullPolicy: Always
 
 service:

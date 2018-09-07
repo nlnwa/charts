@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: norsknettarkiv/veidemann-cache
-  tag: latest
+  # tag: latest
   pullPolicy: Always
 
 service:

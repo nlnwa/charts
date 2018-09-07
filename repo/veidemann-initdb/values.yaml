@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: norsknettarkiv/veidemann-db-initializer
-  tag: latest
+  # tag: latest
   pullPolicy: Always
   restartPolicy: Never
 
