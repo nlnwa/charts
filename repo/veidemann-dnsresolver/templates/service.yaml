@@ -11,10 +11,19 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
+    - port: {{ .Values.service.externalGrpcPort }}
+      targetPort: {{ .Values.service.internalGrpcPort }}
       protocol: TCP
-      name: http
+      name: grpc
+    - name: dns
+      port: {{ .Values.service.externalDnsPort }}
+      targetPort: dns
+      protocol: UDP
+    - name: dnsTcp
+      port: {{ .Values.service.externalDnsPort }}
+      targetPort: dns
+      protocol: TCP
+
   selector:
     component: {{ template "veidemann-dnsresolver.name" . }}
     release: {{ .Release.Name }}

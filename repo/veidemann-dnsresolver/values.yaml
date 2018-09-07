@@ -5,13 +5,16 @@
 replicaCount: 1
 
 image:
-  repository: norsknettarkiv/veidemann-dnsresolver
-  tag: latest
-  pullPolicy: Always
+  repository: norsknettarkiv/veidemann-dns-resolver
+  pullPolicy: IfNotPresent
+  # tag:latest
 
 service:
   type: ClusterIP
-  port: 50052
+  internalGrpcPort: 8053
+  externalGrpcPort: 8053
+  internalDnsPort: 53
+  externalDnsPort: 53
 
 resources: {}
 
