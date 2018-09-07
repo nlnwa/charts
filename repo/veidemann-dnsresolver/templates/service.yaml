@@ -15,10 +15,15 @@ spec:
       targetPort: {{ .Values.service.internalGrpcPort }}
       protocol: TCP
       name: grpc
-    - port: {{ .Values.service.externalDnsPort }}
-      targetPort: {{ .Values.service.internalDnsPort }}
+    - name: dns
+      port: {{ .Values.service.externalDnsPort }}
+      targetPort: dns
+      protocol: UDP
+    - name: dnsTcp
+      port: {{ .Values.service.externalDnsPort }}
+      targetPort: dns
       protocol: TCP
-      name: dnsTcp
+
   selector:
     component: {{ template "veidemann-dnsresolver.name" . }}
     release: {{ .Release.Name }}

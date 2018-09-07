@@ -11,8 +11,8 @@ image:
 
 service:
   type: ClusterIP
-  internalGgrpcPort: 8053
-  externalGgrpcPort: 8053
+  internalGrpcPort: 8053
+  externalGrpcPort: 8053
   internalDnsPort: 53
   externalDnsPort: 53
 
