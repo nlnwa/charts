@@ -15,6 +15,9 @@ service:
   externalGrpcPort: 8053
   internalDnsPort: 53
   externalDnsPort: 53
+  externalMetricsPort: 9153
+  internalMetricsPort: 9153
+  internalHealthPort: 8080
 
 resources: {}
 

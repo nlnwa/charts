@@ -33,6 +33,10 @@ spec:
             - name: dns-tcp
               containerPort: {{ .Values.service.internalDnsPort }}
               protocol: TCP
+            - name: http-metrics
+              containerPort: {{ .Values.service.internalMetricsPort }}
+            - name: http-health
+              containerPort: {{ .Values.service.internalHealthPort }}
           env:
             - name: NODE_NAME
               valueFrom:
