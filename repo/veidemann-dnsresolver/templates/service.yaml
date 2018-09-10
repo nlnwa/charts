@@ -19,7 +19,7 @@ spec:
       port: {{ .Values.service.externalDnsPort }}
       targetPort: dns
       protocol: UDP
-    - name: dnsTcp
+    - name: dns-tcp
       port: {{ .Values.service.externalDnsPort }}
       targetPort: dns
       protocol: TCP
