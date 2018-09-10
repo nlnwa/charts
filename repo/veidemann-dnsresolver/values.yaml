@@ -33,6 +33,18 @@ config:
     port: 28015
     name: veidemann
     secretName: rethinkdb
+  livenessProbe:
+    httpGet:
+      path: /health
+      port: http-health
+    initialDelaySeconds: 15
+    periodSeconds: 5
+  readinessProbe:
+    httpGet:
+      path: /health
+      port: http-health
+    initialDelaySeconds: 3
+    periodSeconds: 3
   jaeger:
     agent:
       host: $(NODE_NAME)

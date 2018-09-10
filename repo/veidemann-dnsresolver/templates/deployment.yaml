@@ -72,6 +72,10 @@ spec:
               value: {{ .Values.config.jaeger.sampler.type | quote }}
             - name: JAEGER_SAMPLER_PARAM
               value: {{ .Values.config.jaeger.sampler.param | quote }}
+          livenessProbe:
+{{ toYaml .Values.config.livenessProbe | indent 12 }}
+          readynessProbe:
+{{ toYaml .Values.config.readynessProbe | indent 12 }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
