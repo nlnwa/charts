@@ -17,11 +17,11 @@ spec:
       name: grpc
     - name: dns
       port: {{ .Values.service.externalDnsPort }}
-      targetPort: dns
+      targetPort: {{ .Values.service.internalDnsPort }}
       protocol: UDP
     - name: dns-tcp
       port: {{ .Values.service.externalDnsPort }}
-      targetPort: dns
+      targetPort: {{ .Values.service.internalDnsPort }}
       protocol: TCP
 
   selector:

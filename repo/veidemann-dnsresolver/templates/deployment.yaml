@@ -29,6 +29,10 @@ spec:
               containerPort: {{ .Values.service.internalGrpcPort }}
             - name: dns
               containerPort: {{ .Values.service.internalDnsPort }}
+              protocol: UDP
+            - name: dns-tcp
+              containerPort: {{ .Values.service.internalDnsPort }}
+              protocol: TCP
           env:
             - name: NODE_NAME
               valueFrom:
