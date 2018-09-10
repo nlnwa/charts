@@ -3,9 +3,9 @@ entries:
   dex:
   - apiVersion: v1
     appVersion: 2.10.0
-    created: 2018-09-10T10:39:14.641393388Z
+    created: 2018-09-10T10:44:33.72275989Z
     description: Dex federated authentication service
-    digest: b74873c1054f2a3a4cad4c72e296096c6a1fb338c02f577c7d20e99f3e60fac2
+    digest: e48f4e50493ace55c804cfe24e4edc02904a126f675851b6ba22ccf8138a47aa
     icon: https://github.com/coreos/dex/blob/master/Documentation/logos/dex-horizontal-color.png
     maintainers:
     - email: aaron@roydhouse.com
@@ -21,7 +21,7 @@ entries:
     version: 0.3.0
   - apiVersion: v1
     appVersion: 2.10.0
-    created: 2018-09-10T10:39:14.640517454Z
+    created: 2018-09-10T10:44:33.72214437Z
     description: Dex federated authentication service
     digest: ccb6cec5e40821a4c6d423745f4832348ec0f0163daa267fe0dd7ec22fc38ae1
     icon: https://github.com/coreos/dex/blob/master/Documentation/logos/dex-horizontal-color.png
@@ -40,9 +40,9 @@ entries:
   linkerd:
   - apiVersion: v1
     appVersion: 1.4.6
-    created: 2018-09-10T10:39:14.642949789Z
+    created: 2018-09-10T10:44:33.724328027Z
     description: Service mesh for cloud native apps
-    digest: 04dc611d64ec9c03b77f3121ec970de43bdfa9b3c25b8feee30ad6ad64797d94
+    digest: 4c73dfbda18535614713658c4cdd1cd5f343c71a6a934f58324fd4aed2bfed51
     home: https://linkerd.io/
     icon: https://pbs.twimg.com/profile_images/690258997237014528/KNgQd9GL_400x400.png
     maintainers:
@@ -56,7 +56,7 @@ entries:
     version: 0.4.3
   - apiVersion: v1
     appVersion: 1.4.6
-    created: 2018-09-10T10:39:14.642478455Z
+    created: 2018-09-10T10:44:33.723839075Z
     description: Service mesh for cloud native apps
     digest: dd7c5cd8276348da8cb1895005746e82fcd163e155f5828cdb6446d2f642caf1
     home: https://linkerd.io/
@@ -72,7 +72,7 @@ entries:
     version: 0.4.2
   - apiVersion: v1
     appVersion: 1.4.6
-    created: 2018-09-10T10:39:14.642005846Z
+    created: 2018-09-10T10:44:33.72325303Z
     description: Service mesh for cloud native apps
     digest: 170dd2185350ed5a8beac6ea4138e36cc90709b6d1f334b99341ba4f80f29875
     home: https://linkerd.io/
@@ -88,9 +88,9 @@ entries:
     version: 0.4.1
   mesh:
   - apiVersion: v1
-    created: 2018-09-10T10:39:14.643840699Z
+    created: 2018-09-10T10:44:33.725293417Z
     description: Service mesh using linkerd and namerd
-    digest: 87bc37aaafa6d440ef5b1e614c25c840af69f6959c009feabe3f1770578a78c6
+    digest: df442eaf787a28ede169fc8fbc85d4198c2909d74acc8a7599e3dd46713c1825
     name: mesh
     urls:
     - https://nlnwa.github.io/charts/mesh-0.1.0.tgz
@@ -98,9 +98,9 @@ entries:
   namerd:
   - apiVersion: v1
     appVersion: 1.4.6
-    created: 2018-09-10T10:39:14.644739485Z
+    created: 2018-09-10T10:44:33.726293813Z
     description: Service that manages routing for multiple linkerd instances
-    digest: 0b3d8820f2db5b728ec4884edeb1c7efd6ad05104fe7cb8705f4d848eb23562d
+    digest: de3ab7272c70aed0b3f62ead74735b5edc448dd356c0992c9b67cbfadbaa796d
     home: https://linkerd.io/in-depth/namerd/
     icon: https://pbs.twimg.com/profile_images/690258997237014528/KNgQd9GL_400x400.png
     maintainers:
@@ -114,7 +114,7 @@ entries:
     version: 0.2.1
   - apiVersion: v1
     appVersion: 1.4.6
-    created: 2018-09-10T10:39:14.644285613Z
+    created: 2018-09-10T10:44:33.725803689Z
     description: Service that manages routing for multiple linkerd instances
     digest: ab8222bfe957215baea4ca3f23e78d464e9f0679393b01cac2ebdc4b12e7f6ed
     home: https://linkerd.io/in-depth/namerd/
@@ -130,9 +130,9 @@ entries:
     version: 0.2.0
   rethinkdb:
   - appVersion: 2.3.5
-    created: 2018-09-10T10:39:14.645318911Z
+    created: 2018-09-10T10:44:33.72693452Z
     description: The open-source database for the realtime web
-    digest: b46bc8fd65d5b54b93b0b863db4bc56bbebcbe8d475c4a8631f5038fe526e28b
+    digest: 6e431c9057c0d87b378ddf488b357f03528c498575b416b715f0573d26297745
     home: https://www.rethinkdb.com
     icon: http://i.imgur.com/bZ75N6r.jpg
     keywords:
@@ -151,16 +151,16 @@ entries:
   rethinkdb-single:
   - apiVersion: v1
     appVersion: 2.3.6
-    created: 2018-09-10T10:39:14.645970571Z
+    created: 2018-09-10T10:44:33.72762406Z
     description: A Helm chart for Kubernetes
-    digest: 9fa67f0c1a953771acb428e2964b0267e0ae62bef392d4758ebc11b329e653b0
+    digest: e3db99e9608c3dd6e819a027d2f73bcfcff6051062e448cd8c0d288ba3b1171e
     name: rethinkdb-single
     urls:
     - https://nlnwa.github.io/charts/rethinkdb-single-0.1.2.tgz
     version: 0.1.2
   - apiVersion: v1
     appVersion: 2.3.6
-    created: 2018-09-10T10:39:14.645631653Z
+    created: 2018-09-10T10:44:33.727268039Z
     description: A Helm chart for Kubernetes
     digest: 1bb327e6b32eb602dd94ff00c2b4835b5920c039bdc60b76afef61867125b3ec
     name: rethinkdb-single
@@ -169,15 +169,15 @@ entries:
     version: 0.1.1
   veidemann:
   - apiVersion: v1
-    created: 2018-09-10T10:39:14.652272975Z
+    created: 2018-09-10T10:44:33.734875501Z
     description: Veidemann harvester
-    digest: 28f8f198efb15ec7c356bad51ab397db1f0ff68911a0d46a004af8a4dd449ebd
+    digest: 381daad3590fa862ef1379393d915c581f5136c0fd0e95d0a0409a576ce8f4ca
     name: veidemann
     urls:
     - https://nlnwa.github.io/charts/veidemann-0.1.10.tgz
     version: 0.1.10
   - apiVersion: v1
-    created: 2018-09-10T10:39:14.679394174Z
+    created: 2018-09-10T10:44:33.771186717Z
     description: Veidemann harvester
     digest: a3a21be854d97a8a792a117b3b44391a76bab853b4009a7530f99864487310ea
     name: veidemann
@@ -186,7 +186,7 @@ entries:
     version: 0.1.9
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-09-10T10:39:14.672820792Z
+    created: 2018-09-10T10:44:33.762527813Z
     description: Veidemann harvester
     digest: f3f9beb7a3d3b97ed863fa8c44eb7daa6e62dab25eb15c261abc34cd3276c93d
     name: veidemann
@@ -195,7 +195,7 @@ entries:
     version: 0.1.8
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-09-10T10:39:14.666594759Z
+    created: 2018-09-10T10:44:33.752042035Z
     description: Veidemann harvester
     digest: 9ce35549c81b3071ff4e2a1ce17007914dad37c0332123dd9df8ea844c267df5
     name: veidemann
@@ -204,7 +204,7 @@ entries:
     version: 0.1.7
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-09-10T10:39:14.660297452Z
+    created: 2018-09-10T10:44:33.743829351Z
     description: Veidemann harvester
     digest: 4a4b6881ca643d667ae8c83636417f461d51bf3f82d37e124d6d55d1ce11e390
     name: veidemann
@@ -214,16 +214,16 @@ entries:
   veidemann-admin:
   - apiVersion: v1
     appVersion: v0.1.0-alpha6
-    created: 2018-09-10T10:39:14.680100631Z
+    created: 2018-09-10T10:44:33.772078498Z
     description: A Helm chart for Kubernetes
-    digest: f0e20b60bfe2b31686d12ace831f30f098f5294f94fccb723440cb43e5163fd3
+    digest: 3879f7723788dc28f7ec94f6325e0a58977b7f1e5fb01f5c2ff3741a11350ad1
     name: veidemann-admin
     urls:
     - https://nlnwa.github.io/charts/veidemann-admin-0.1.2.tgz
     version: 0.1.2
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-09-10T10:39:14.679754155Z
+    created: 2018-09-10T10:44:33.771623761Z
     description: A Helm chart for Kubernetes
     digest: b2697901c984c087e93c44840211a3661675bca29536200d8eeb225ec9d470b3
     name: veidemann-admin
@@ -233,9 +233,9 @@ entries:
   veidemann-api-gateway:
   - apiVersion: v1
     appVersion: 0.1.4
-    created: 2018-09-10T10:39:14.681157499Z
+    created: 2018-09-10T10:44:33.773004665Z
     description: A Helm chart for Kubernetes
-    digest: 5fa59281582c56aea623c6e7f1dec0cb9036bd26946a70f60442e598cd881e3f
+    digest: 6f79873bdcd905faa2f347440242456de4bd8f5ed071cd620b1355ede286afac
     kubeVersion: '>=1.9.0'
     name: veidemann-api-gateway
     sources:
@@ -245,7 +245,7 @@ entries:
     version: 0.1.2
   - apiVersion: v1
     appVersion: 0.1.0-alpha6
-    created: 2018-09-10T10:39:14.680744719Z
+    created: 2018-09-10T10:44:33.772617074Z
     description: A Helm chart for Kubernetes
     digest: a3bedf45abe238c016c8516841f6280b38ba77ab82663993db383bb146d8a14b
     kubeVersion: '>=1.9.0'
@@ -258,16 +258,16 @@ entries:
   veidemann-cache:
   - apiVersion: v1
     appVersion: v0.1.0-alpha7
-    created: 2018-09-10T10:39:14.682091511Z
+    created: 2018-09-10T10:44:33.773756472Z
     description: A Helm chart for Kubernetes
-    digest: b7d4cc5f4b23d7da037229cd0c2b0cc34fc921e7c1f3b66e6a36865fde51ab20
+    digest: cbc55356f6e4df233366a59f12a23701b0e0138a7d34e3eb112ba9c01562ba1e
     name: veidemann-cache
     urls:
     - https://nlnwa.github.io/charts/veidemann-cache-0.1.2.tgz
     version: 0.1.2
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-09-10T10:39:14.681630944Z
+    created: 2018-09-10T10:44:33.773403076Z
     description: A Helm chart for Kubernetes
     digest: 6c73cdd8092ac78354c11b5ffff47bbe0e5995bb6f4d4d13e9f7a6531d13de5c
     name: veidemann-cache
@@ -277,16 +277,16 @@ entries:
   veidemann-contentexplorer:
   - apiVersion: v1
     appVersion: v0.1.0-alpha29
-    created: 2018-09-10T10:39:14.683406052Z
+    created: 2018-09-10T10:44:33.774740728Z
     description: A Helm chart for Kubernetes
-    digest: 832fa713f4de0211185bd7c8f258c4076b1fa0166f55585a7b43cf9d49360167
+    digest: f5341a7a2a60965c51075b0b6af41497e6bdc344c8232d327880a9158e76d613
     name: veidemann-contentexplorer
     urls:
     - https://nlnwa.github.io/charts/veidemann-contentexplorer-0.1.4.tgz
     version: 0.1.4
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-09-10T10:39:14.682962525Z
+    created: 2018-09-10T10:44:33.774404684Z
     description: A Helm chart for Kubernetes
     digest: 58377e54272853d336da0ac229749193062077665787b073b7f9d8bffe7f5b9c
     name: veidemann-contentexplorer
@@ -295,7 +295,7 @@ entries:
     version: 0.1.3
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-09-10T10:39:14.682504887Z
+    created: 2018-09-10T10:44:33.774081305Z
     description: A Helm chart for Kubernetes
     digest: 8d1e67b82f50e09405d0639f03c0fc67ab21a75992d4db442a1752d030b3597d
     name: veidemann-contentexplorer
@@ -305,16 +305,16 @@ entries:
   veidemann-contentwriter:
   - apiVersion: v1
     appVersion: v0.1.0-alpha29
-    created: 2018-09-10T10:39:14.684533553Z
+    created: 2018-09-10T10:44:33.775660272Z
     description: A Helm chart for Kubernetes
-    digest: c7131fa74bc67aa5c194b42ee6b6f7150faf64ee4b99c1832153249e3a6698ef
+    digest: 372e35da51155c18257229a9159da8fd6ce775207c0a01605cd56f2b19fdbc4f
     name: veidemann-contentwriter
     urls:
     - https://nlnwa.github.io/charts/veidemann-contentwriter-0.1.4.tgz
     version: 0.1.4
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-09-10T10:39:14.684230109Z
+    created: 2018-09-10T10:44:33.775350037Z
     description: A Helm chart for Kubernetes
     digest: 56dd287d8ea58d778acb99f0c920fe4cb55a7f9af525e1dca42a06ba96c959b1
     name: veidemann-contentwriter
@@ -323,7 +323,7 @@ entries:
     version: 0.1.3
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-09-10T10:39:14.683899771Z
+    created: 2018-09-10T10:44:33.775045432Z
     description: A Helm chart for Kubernetes
     digest: c1e06896e9ba430c3410eeac82238efaa2db05dade1e100efaebcbe26b78740b
     name: veidemann-contentwriter
@@ -333,16 +333,16 @@ entries:
   veidemann-controller:
   - apiVersion: v1
     appVersion: v0.1.0-alpha29
-    created: 2018-09-10T10:39:14.68547443Z
+    created: 2018-09-10T10:44:33.776625792Z
     description: A Helm chart for Kubernetes
-    digest: 1e2fe4c633d660ab7153e8e398c5cb406e6b8327905620a5ba8532453162bf0f
+    digest: e81fcb36257596fd8464d29a3145fa8ca17976d4946169dc3bfc89163a46abdb
     name: veidemann-controller
     urls:
     - https://nlnwa.github.io/charts/veidemann-controller-0.1.3.tgz
     version: 0.1.3
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-09-10T10:39:14.685157993Z
+    created: 2018-09-10T10:44:33.776308233Z
     description: A Helm chart for Kubernetes
     digest: 33dbc18dbce80d91fda4541843f74539702f5b583a1dcf1411bff6480fa528f6
     name: veidemann-controller
@@ -351,7 +351,7 @@ entries:
     version: 0.1.2
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-09-10T10:39:14.684848433Z
+    created: 2018-09-10T10:44:33.775989613Z
     description: A Helm chart for Kubernetes
     digest: 79784dba2b40df8bed9db6ada0846cca1335c2210f96db65e480e289fcfbd787
     name: veidemann-controller
@@ -361,7 +361,17 @@ entries:
   veidemann-dnsresolver:
   - apiVersion: v1
     appVersion: v0.1.1
-    created: 2018-09-10T10:39:14.686604568Z
+    created: 2018-09-10T10:44:33.778045418Z
+    description: Caching DNS resolver for veidemann wich stores lookups in webarchive
+      and writes crawl logs.
+    digest: ae10447c6f5b0fbc3d429766faf62635bd63dc197af2e92ddf24318d9803f161
+    name: veidemann-dnsresolver
+    urls:
+    - https://nlnwa.github.io/charts/veidemann-dnsresolver-0.2.2.tgz
+    version: 0.2.2
+  - apiVersion: v1
+    appVersion: v0.1.1
+    created: 2018-09-10T10:44:33.777763166Z
     description: Caching DNS resolver for veidemann wich stores lookups in webarchive
       and writes crawl logs.
     digest: 17a40cae046cf61ba908d0dd675ebbf740ed09e39fa4e6d4668fcc43f0e7d4ff
@@ -371,7 +381,7 @@ entries:
     version: 0.2.1
   - apiVersion: v1
     appVersion: v0.1.0
-    created: 2018-09-10T10:39:14.68631678Z
+    created: 2018-09-10T10:44:33.777477578Z
     description: Caching DNS resolver for veidemann wich stores lookups in webarchive
       and writes crawl logs.
     digest: eb2a4a99259c6c59039003ff2fd6da8f53dfda364eb786ef675e86c017d90ce4
@@ -381,7 +391,7 @@ entries:
     version: 0.2.0
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-09-10T10:39:14.686023902Z
+    created: 2018-09-10T10:44:33.777196317Z
     description: A Helm chart for Kubernetes
     digest: 7bdad606aba88aee20e0cc7541e3d8cce149eaba8f6267879621637cedd9786b
     name: veidemann-dnsresolver
@@ -390,7 +400,7 @@ entries:
     version: 0.1.2
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-09-10T10:39:14.68574179Z
+    created: 2018-09-10T10:44:33.776918063Z
     description: A Helm chart for Kubernetes
     digest: 7a513906c1d318e332ae483a77c2e803a8382980c465e207fc3fce2c4e722296
     name: veidemann-dnsresolver
@@ -400,16 +410,16 @@ entries:
   veidemann-frontier:
   - apiVersion: v1
     appVersion: v0.1.0-alpha29
-    created: 2018-09-10T10:39:14.687528389Z
+    created: 2018-09-10T10:44:33.778904838Z
     description: A Helm chart for Kubernetes
-    digest: 54c3688fba34f55523063406d0bbe7373932c1d2aae6f48ed3fce4d014d512cb
+    digest: 2d5639fb3f578a7203c549cf52db476ce3f2e7d4d3c6c51054348849180d3f80
     name: veidemann-frontier
     urls:
     - https://nlnwa.github.io/charts/veidemann-frontier-0.1.3.tgz
     version: 0.1.3
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-09-10T10:39:14.687234804Z
+    created: 2018-09-10T10:44:33.778612417Z
     description: A Helm chart for Kubernetes
     digest: d01204ea65a80262f1ed297fd07483f4afad9d9153e001b355041a70c0007cb3
     name: veidemann-frontier
@@ -418,7 +428,7 @@ entries:
     version: 0.1.2
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-09-10T10:39:14.686908699Z
+    created: 2018-09-10T10:44:33.778325506Z
     description: A Helm chart for Kubernetes
     digest: a7197afe153c5f43f3fba9f9a7c8b96a0dbfa465087d4506cdabc41accba61ea
     name: veidemann-frontier
@@ -428,16 +438,16 @@ entries:
   veidemann-harvester:
   - apiVersion: v1
     appVersion: v0.1.0-alpha29
-    created: 2018-09-10T10:39:14.688460049Z
+    created: 2018-09-10T10:44:33.779861392Z
     description: A Helm chart for Kubernetes
-    digest: 98c6d35e94409d9952f1720177df3523e2d2854d86399e32a6c31cb800c90de1
+    digest: 55bb9fa529a934b0d30db168e5b7aa66eecf38141f9f66a394bf108666f58495
     name: veidemann-harvester
     urls:
     - https://nlnwa.github.io/charts/veidemann-harvester-0.1.6.tgz
     version: 0.1.6
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-09-10T10:39:14.688146723Z
+    created: 2018-09-10T10:44:33.779524396Z
     description: A Helm chart for Kubernetes
     digest: 9c9ac4ebbb892179df36e6e30a77b6e3c16052c7a1c58db699505be66ee01540
     name: veidemann-harvester
@@ -446,7 +456,7 @@ entries:
     version: 0.1.5
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-09-10T10:39:14.687843115Z
+    created: 2018-09-10T10:44:33.779219602Z
     description: A Helm chart for Kubernetes
     digest: fade8823f3732622c346b8d208c93fc7b9ab661f49d8c8abf75bcce868e0cd72
     name: veidemann-harvester
@@ -456,16 +466,16 @@ entries:
   veidemann-initdb:
   - apiVersion: v1
     appVersion: v0.1.0-alpha29
-    created: 2018-09-10T10:39:14.689148179Z
+    created: 2018-09-10T10:44:33.780528649Z
     description: A Helm chart for Kubernetes
-    digest: cd0aa472d1f3d2e04674ad309ca18d6f6d8f9cf2907fec5c377c47f76478b1a8
+    digest: 7bcab504fd266758eca5babcf9b92c1f1f813818d5b4cdf52d1e0579babb82c3
     name: veidemann-initdb
     urls:
     - https://nlnwa.github.io/charts/veidemann-initdb-0.1.3.tgz
     version: 0.1.3
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-09-10T10:39:14.688908869Z
+    created: 2018-09-10T10:44:33.780291402Z
     description: A Helm chart for Kubernetes
     digest: 93c4e607e4c68de9b4392d9a093829d5df87addc785960a62fd0af95150322de
     name: veidemann-initdb
@@ -474,7 +484,7 @@ entries:
     version: 0.1.2
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-09-10T10:39:14.68868127Z
+    created: 2018-09-10T10:44:33.780086496Z
     description: A Helm chart for Kubernetes
     digest: 8fdce70cf53ca5f21274ef5aa2838cf6a41ae74d45be0cb42c3ae10c18c70ec1
     name: veidemann-initdb
@@ -484,16 +494,16 @@ entries:
   veidemann-robots:
   - apiVersion: v1
     appVersion: v0.1.0-alpha29
-    created: 2018-09-10T10:39:14.690081922Z
+    created: 2018-09-10T10:44:33.781401725Z
     description: A Helm chart for Kubernetes
-    digest: a2bc099b3514f234384924c9605caa37e4555e6947b458f2fb408e6c57f89a71
+    digest: 61a3dbe62407f8510f80d65b14c8a7b5879c27f90faeb6457d479cc3cbf8bc6f
     name: veidemann-robots
     urls:
     - https://nlnwa.github.io/charts/veidemann-robots-0.1.3.tgz
     version: 0.1.3
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-09-10T10:39:14.689767726Z
+    created: 2018-09-10T10:44:33.781101319Z
     description: A Helm chart for Kubernetes
     digest: 8be040798330cc18364cf299f50e80a477d268a750d2f2423cb53fb376b53b25
     name: veidemann-robots
@@ -502,7 +512,7 @@ entries:
     version: 0.1.2
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-09-10T10:39:14.689460954Z
+    created: 2018-09-10T10:44:33.780812615Z
     description: A Helm chart for Kubernetes
     digest: c17cc807c36fed29d526c25a6729983d7b1076d064579f9b05922e0c88b640ba
     name: veidemann-robots
@@ -512,16 +522,16 @@ entries:
   veidemann-warcvalidator:
   - apiVersion: v1
     appVersion: v0.1.0-alpha1
-    created: 2018-09-10T10:39:14.690859716Z
+    created: 2018-09-10T10:44:33.782174192Z
     description: A Helm chart for Kubernetes
-    digest: e257f12768200e83e1e3dff29289d8d954301afc1f802cd3c942f04f1861f741
+    digest: f0b8771e3d02a96713070da903c825482a9c33d23933d8636d366872b964b25b
     name: veidemann-warcvalidator
     urls:
     - https://nlnwa.github.io/charts/veidemann-warcvalidator-0.1.4.tgz
     version: 0.1.4
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-09-10T10:39:14.690601405Z
+    created: 2018-09-10T10:44:33.781920203Z
     description: A Helm chart for Kubernetes
     digest: 2ac94ddd42fe699bb97710ea7f58fc09db18d320b0fe612233adba4651a6d7a9
     name: veidemann-warcvalidator
@@ -530,7 +540,7 @@ entries:
     version: 0.1.3
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-09-10T10:39:14.690345647Z
+    created: 2018-09-10T10:44:33.781658509Z
     description: A Helm chart for Kubernetes
     digest: 82ff1b3f40252d83e029d4ed5cba8c97ffe0d10c08832f25f7a3128879185c4c
     name: veidemann-warcvalidator
@@ -540,16 +550,16 @@ entries:
   veidemann-warcvalidator-api:
   - apiVersion: v1
     appVersion: v0.1.0-alpha2
-    created: 2018-09-10T10:39:14.691779603Z
+    created: 2018-09-10T10:44:33.783163537Z
     description: A Helm chart for Kubernetes
-    digest: e023164be144e93af84465b141d71360a11a8fdffd9aebc3654fbacae22ef8c6
+    digest: 387ce18efa5c4280fab4cbccee8481867739c342f8af827f5424c86d99554e16
     name: veidemann-warcvalidator-api
     urls:
     - https://nlnwa.github.io/charts/veidemann-warcvalidator-api-0.1.2.tgz
     version: 0.1.2
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-09-10T10:39:14.691479629Z
+    created: 2018-09-10T10:44:33.782850617Z
     description: A Helm chart for Kubernetes
     digest: eb5f1cc60589a34491f9c4e392334e3962b96fc1fa25a861bad6f96c2aab0081
     name: veidemann-warcvalidator-api
@@ -558,11 +568,11 @@ entries:
     version: 0.1.1
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-09-10T10:39:14.691180045Z
+    created: 2018-09-10T10:44:33.782501238Z
     description: A Helm chart for Kubernetes
     digest: 987fedb8a5c2f03085d3d10547c96aa94a1841c598be3d8f8f7c627faea08bd3
     name: veidemann-warcvalidator-api
     urls:
     - https://nlnwa.github.io/charts/veidemann-warcvalidator-api-0.1.0.tgz
     version: 0.1.0
-generated: 2018-09-10T10:39:14.639409413Z
+generated: 2018-09-10T10:44:33.72095123Z
