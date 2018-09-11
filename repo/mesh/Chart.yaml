@@ -1,4 +1,4 @@
 apiVersion: v1
 description: Service mesh using linkerd and namerd
 name: mesh
-version: 0.1.0
+version: 0.2.0
