@@ -83,24 +83,28 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
+          {{- if .Values.cluster.livenessProbe.enabled }}
           livenessProbe:
             exec:
               command:
                 - /rethinkdb-probe
-            failureThreshold: 3
-            initialDelaySeconds: 140
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 5
+            failureThreshold: {{ .Values.cluster.livenessProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.cluster.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.cluster.livenessProbe.periodSeconds }}
+            successThreshold: {{ .Values.cluster.livenessProbe.successThreshold }}
+            timeoutSeconds: {{ .Values.cluster.livenessProbe.timeoutSeconds }}
+          {{- end }}
+          {{- if .Values.cluster.readinessProbe.enabled }}
           readinessProbe:
             exec:
               command:
                 - /rethinkdb-probe
-            failureThreshold: 3
-            initialDelaySeconds: 140
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 5
+            failureThreshold: {{ .Values.cluster.readinessProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.cluster.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.cluster.readinessProbe.periodSeconds }}
+            successThreshold: {{ .Values.cluster.readinessProbe.successThreshold }}
+            timeoutSeconds: {{ .Values.cluster.readinessProbe.timeoutSeconds }}
+          {{- end }}
           resources:
 {{ toYaml .Values.cluster.resources | indent 12 }}
 {{- if .Values.cluster.persistentVolume.enabled }}

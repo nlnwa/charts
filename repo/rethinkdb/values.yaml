@@ -39,7 +39,20 @@ cluster:
   volumeMounts: []
   # RethinkDB Cache Size in MB
   rethinkCacheSize: 100
-
+  livenessProbe:
+    enabled: true
+    failureThreshold: 3
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 5
+  readinessProbe:
+    enabled: true
+    failureThreshold: 3
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 5
 # RethinkDB Proxy Config
 proxy:
   replicas: 1
