@@ -9,6 +9,9 @@ image:
   tag: 1.4.6
   pullPolicy: IfNotPresent
 
+fullnameOverride: ""
+nameOverride: ""
+
 service:
   # Type of service to use for linkerd
   type: ClusterIP
@@ -127,4 +130,4 @@ dtab:
 # in the linkerd map above to route requests
 #
 # Allows to overrides the linkerd configuration
-config:
+config: ""

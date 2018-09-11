@@ -29,6 +29,7 @@ spec:
           secret:
             secretName: {{ .Values.tls.secretName }}
       {{- end }}
+      serviceAccountName: {{ template "linkerd.serviceAccountName" . }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
