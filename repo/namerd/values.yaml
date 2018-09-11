@@ -10,6 +10,9 @@ service:
   apiPort: &apiPort 4180
   adminPort: &adminPort 9991
 
+fullnameOverride: ""
+nameOverride: ""
+
 image:
   repository: buoyantio/namerd
   tag: 1.4.6
