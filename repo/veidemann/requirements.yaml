@@ -52,7 +52,7 @@ dependencies:
   # Linkerd/Namerd
   - name: mesh
     repository: file://../mesh
-    version: 0.2.1
+    version: ~0.2.2
     condition: provision.mesh
   # Rethinkdb
   - name: rethinkdb
