@@ -1,7 +1,7 @@
 {{- if .Values.rbac.create }}
 # grant namerd permisisons to third party resources for dtab storage
 kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ template "namerd.fullname" . }}
   labels:
@@ -20,7 +20,7 @@ rules:
 
 ---
 kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ template "namerd.fullname" . }}
   labels:
