@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "veidemann-robots.fullname" . }}
+  name: {{ template "veidemann-robotsevaluator.fullname" . }}
   labels:
     app: veidemann
-    component: {{ template "veidemann-robots.name" . }}
-    chart: {{ template "veidemann-robots.chart" . }}
+    component: {{ template "veidemann-robotsevaluator.name" . }}
+    chart: {{ template "veidemann-robotsevaluator.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      component: {{ template "veidemann-robots.name" . }}
+      component: {{ template "veidemann-robotsevaluator.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        component: {{ template "veidemann-robots.name" . }}
+        component: {{ template "veidemann-robotsevaluator.name" . }}
         release: {{ .Release.Name }}
     spec:
       volumes:
