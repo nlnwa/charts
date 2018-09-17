@@ -1,11 +1,11 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ template "veidemann-initdb.fullname" . }}
+  name: {{ template "veidemann-db-initializer.fullname" . }}
   labels:
     app: veidemann
-    component: {{ template "veidemann-initdb.name" . }}
-    chart: {{ template "veidemann-initdb.chart" . }}
+    component: {{ template "veidemann-db-initializer.name" . }}
+    chart: {{ template "veidemann-db-initializer.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   annotations:
@@ -13,7 +13,7 @@ metadata:
 spec:
   template:
     metadata:
-      name: {{ template "veidemann-initdb.fullname" . }}
+      name: {{ template "veidemann-db-initializer.fullname" . }}
     spec:
       restartPolicy: {{ .Values.image.restartPolicy | quote }}
       containers:
