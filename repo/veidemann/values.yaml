@@ -256,12 +256,12 @@ ca:
 # Subcharts #
 #############
 
-# Begin: veidemann-robots
-veidemann-robots:
+# Begin: veidemann-robotsevaluator
+veidemann-robotsevaluator:
   config:
     <<: *jaeger
     <<: *rethinkdb
-# End: veidemann-robots
+# End: veidemann-robotsevaluator
 
 # Begin: veidemann-initdb
 veidemann-initdb:
@@ -386,15 +386,15 @@ veidemann-api-gateway:
       <<: *linkerd
 # End: veidemann-api-gateway
 
-# Begin: veidemann-admin
-veidemann-admin:
+# Begin: veidemann-dashboard
+veidemann-dashboard:
   ingress:
     <<: *ingress
     annotations:
       kubernetes.io/ingress.class: "nginx"
   config:
     issuer: *issuer
-# End: veidemann-admin
+# End: veidemann-dashboard
 
 # Begin: Jaeger
 jaeger:
@@ -444,11 +444,11 @@ dex:
     #
     # If this option isn't chosen clients may be added through the gRPC API.
     staticClients:
-    - id: veidemann-gui
+    - id: veidemann-dashboard
       redirectURIs:
       - "https://veidemann.local/veidemann/activity"
       - "https://localhost:4200/activity" # Allow development with: ng serve --ssl 1 --ssl-key ... --ssl-cert ...
-      name: "Veidemann Admin GUI"
+      name: "Veidemann Admin Dashboard"
       secret: ZXhhbXBsZS1hcHAtc2VjcmV0
     - id: veidemann-cli
       public: true
@@ -459,7 +459,7 @@ dex:
       secret: VerySecret
       trustedPeers:
       - veidemann-cli
-      - veidemann-gui
+      - veidemann-dashboard
 # End: dex
 
 # Begin: rethinkdb-single
