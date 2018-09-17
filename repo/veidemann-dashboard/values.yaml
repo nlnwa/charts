@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: norsknettarkiv/veidemann-gui
+  repository: norsknettarkiv/veidemann-dashboard
   # tag: latest
   pullPolicy: Always
 

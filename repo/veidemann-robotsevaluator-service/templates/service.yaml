@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "veidemann-robots.fullname" . }}
+  name: {{ template "veidemann-robotsevaluator-service.fullname" . }}
   labels:
     app: veidemann
-    component: {{ template "veidemann-robots.name" . }}
-    chart: {{ template "veidemann-robots.chart" . }}
+    component: {{ template "veidemann-robotsevaluator-service.name" . }}
+    chart: {{ template "veidemann-robotsevaluator-service.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
@@ -16,6 +16,6 @@ spec:
       name: http
       protocol: TCP
   selector:
-    component: {{ template "veidemann-robots.name" . }}
+    component: {{ template "veidemann-robotsevaluator-service.name" . }}
     release: {{ .Release.Name }}
 
