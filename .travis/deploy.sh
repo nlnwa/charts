@@ -10,14 +10,21 @@ find repo/ -name Chart.yaml -printf "%h\n" | grep -v "repo/veidemann$" | xargs h
 # Package veidemann chart
 helm package -u -d ${PACKAGE_DIR} repo/veidemann
 
+# Checkout gh-pages
 git remote set-branches origin gh-pages
 git fetch
 git checkout gh-pages
+
+# Copy new packages to gh-pages
 cp ${PACKAGE_DIR}/* .
 
-# Create (or merge with current) helm repository index
+# Create/merge helm repository index
 helm repo index --url ${REPO_URL} --merge index.yaml .
 
-# Commit and push
-git commit -am "Travis build: $TRAVIS_BUILD_NUMBER"
+# Stage packages and index file
+git add *.tgz index.yaml
+
+git commit -m "Travis build: $TRAVIS_BUILD_NUMBER"
+
+# Push to gh-pages with ssh credentials
 git push git@github.com:${TRAVIS_REPO_SLUG}.git
