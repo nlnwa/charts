@@ -6,7 +6,6 @@ notifications:
 env:
   global:
   - HELM_VERSION="v2.10.0"
-  - REPO_DIR="docs"
   - REPO_URL="https://nlnwa.github.io/charts"
 
 # Install helm
@@ -26,16 +25,6 @@ before_script:
 script:
 # Helm lint (shold use --strict but some charts is not strictly valid yet)
 - find repo/ -name Chart.yaml -printf "%h\n" | xargs helm lint
-
-after_success:
-# Make sure repo folder exists
-- mkdir -p $REPO_DIR
-# Package charts (except veidemann)
-- find repo/ -name Chart.yaml -printf "%h\n" | grep -v "repo/veidemann$" | xargs helm package -u -d $REPO_DIR
-# Package veidemann
-- helm package -u -d $REPO_DIR repo/veidemann
-# Create (or merge with current) helm repository index
-- helm repo index --url $REPO_URL --merge $REPO_DIR/index.yaml $REPO_DIR
 
 # Setup GIT
 before_deploy:
@@ -61,7 +50,6 @@ before_deploy:
 
 deploy:
 - provider: script
-  skip_cleanup: true # preserve assets from build step
   script: bash .travis/deploy.sh
   on:
     branch: master
