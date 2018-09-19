@@ -27,9 +27,10 @@ spec:
             - name: http
               containerPort: 80
               protocol: TCP
+          envFrom:
+            - secretRef:
+                name: {{ include "webhook-receiver-proxy.fullname" . }}
           env:
-            - name: API_KEY
-              value: {{ .Values.config.apiKey | quote }}
             - name: UPSTREAM_HOST
               value: {{ .Values.config.upstream.host | quote }}
             - name: UPSTREAM_PORT

@@ -48,7 +48,7 @@ tolerations: []
 affinity: {}
 
 config:
-  apiKey: "secure"
+  keys: {}
   logLevel: info
   upstream:
     host: localhost
