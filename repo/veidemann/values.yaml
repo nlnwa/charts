@@ -257,14 +257,14 @@ ca:
 #############
 
 # Begin: veidemann-robotsevaluator
-veidemann-robotsevaluator:
+veidemann-robotsevaluator-service:
   config:
     <<: *jaeger
     <<: *rethinkdb
 # End: veidemann-robotsevaluator
 
 # Begin: veidemann-initdb
-veidemann-initdb:
+veidemann-db-initializer:
   annotations:
     "helm.sh/hook": "post-install,pre-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
