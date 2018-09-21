@@ -1,25 +1,25 @@
-#!/bin/sh
+#!/usr/bin/env sh
+
+set -e
 
 function bumpPatchVersion() {
-    # store piped input to function
-    local stdin=$(cat -)
+    local chart_yaml=$1
 
     # get incremented patch version
-    local patch_version=$(echo "${stdin}" | grep -E '^version:' | cut -d' ' -f2 | awk -F. '{print $3 + 1}')
+    local patch_version=$(grep '^version:' ${chart_yaml} | awk -F. '{print $3 + 1}')
 
     # replace patch version
-    echo "${stdin}" | sed -re "s/(^version: [0-9]\.[0-9]\.)[0-9]/\1${patch_version}/"
+    sed -ri "s/(^version: [0-9]+\.[0-9]+\.)[0-9]+/\1${patch_version}/" ${chart_yaml}
 }
-
 
 function usage() {
-    echo "Usage: cat path/to/Charts.yaml | $0"
+    echo "Usage: $0 <path/to/Chart.yaml>"
 }
 
-# exit if no arguments or stdin is tty
-if [ -t 0 ]; then
+# check correct number of arguments
+if [ "$#" -ne 1 ]; then
     usage
     exit 1
 fi
 
-cat - | bumpPatchVersion
+bumpPatchVersion $1

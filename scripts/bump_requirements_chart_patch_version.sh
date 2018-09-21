@@ -1,27 +1,29 @@
-#!/bin/sh
+#!/usr/bin/env sh
+
+set -e
 
 function bumpPatchVersion() {
-    # store piped input to funtion
-    local stdin=$(cat -)
+    local requirements_yaml=$1
+    local chart_name=$2
 
     # get line number containing version of $CHART_NAME and store it in NR
-    local nr=$(echo "${stdin}" | awk "/$1/ {f=1} f==1 && /version/ {print NR}" | head -1)
+    local nr=$(awk "/${chart_name}/ {f=1} f==1 && /version/ {print NR}" ${requirements_yaml} | head -1 | tr -d '\n')
 
     # get incremented patch version
-    local patch_version=$(echo "${stdin}" | awk "NR == ${nr}" | awk -F. '{print $3 + 1}')
+    local patch_version=$(awk "NR == \"${nr}\"" ${requirements_yaml} | awk -F. '{print $3 + 1}')
 
     # replace patch version
-    echo "${stdin}" | sed -re "${nr}s/(.*version: [0-9]\.[0-9]\.)[0-9]/\1${patch_version}/"
+    sed -ri "${nr}s/(.*version: [0-9]+\.[0-9]+\.)[0-9]+/\1${patch_version}/" ${requirements_yaml}
 }
 
 function usage() {
-    echo "Usage: cat path/to/requirements.yaml | $0 <chart name>"
+    echo "Usage: $0 <path/to/requirements.yaml> <name_of_dependency>"
 }
 
-# exit if no arguments or stdin is tty
-if [ -z $1 ] || [ -t 0 ]; then
+# check correct number of arguments
+if [ "$#" -ne 2 ]; then
     usage
     exit 1
 fi
 
-cat - | bumpPatchVersion $1
+bumpPatchVersion $1 $2
