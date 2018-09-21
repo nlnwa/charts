@@ -3,7 +3,7 @@ dependencies:
     version: 0.1.3
     repository: file://../veidemann-dashboard
   - name: veidemann-api-gateway
-    version: 0.1.3
+    version: 0.1.4
     repository: file://../veidemann-api-gateway
   - name: veidemann-cache
     version: 0.1.2
@@ -30,13 +30,13 @@ dependencies:
     version: 0.1.4
     repository: file://../veidemann-db-initializer
   - name: veidemann-robotsevaluator-service
-    version: 0.1.5
+    version: 0.1.6
     repository: file://../veidemann-robotsevaluator-service
   - name: veidemann-warcvalidator
-    version: 0.1.5
+    version: 0.1.6
     repository: file://../veidemann-warcvalidator
   - name: veidemann-warcvalidator-api
-    version: 0.1.3
+    version: 0.1.4
     repository: file://../veidemann-warcvalidator-api
 
   # Jaeger
