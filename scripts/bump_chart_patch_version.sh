@@ -2,7 +2,7 @@
 
 set -e
 
-function bumpPatchVersion() {
+bumpPatchVersion() {
     local chart_yaml=$1
 
     # get incremented patch version
@@ -12,8 +12,8 @@ function bumpPatchVersion() {
     sed -ri "s/(^version: [0-9]+\.[0-9]+\.)[0-9]+/\1${patch_version}/" ${chart_yaml}
 }
 
-function usage() {
-    echo "Usage: $0 <path/to/Chart.yaml>"
+usage() {
+    echo "Usage: $0 <path/to/Chart.yaml>" >&2
 }
 
 # check correct number of arguments

@@ -2,15 +2,15 @@
 
 set -e
 
-function setAppVersion() {
+setAppVersion() {
     local chart_yaml=$1
     local app_version=$2
 
     sed -ri "s/(appVersion: )(.*)/\1${app_version}/" ${chart_yaml}
 }
 
-function usage() {
-    echo "Usage: $0 <path/to/Chart.yaml> <appVersion>"
+usage() {
+    echo "Usage: $0 <path/to/Chart.yaml> <appVersion>" >&2
 }
 
 # check correct number of arguments
