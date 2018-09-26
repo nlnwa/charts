@@ -54,7 +54,7 @@ spec:
           resources:
 {{ toYaml .Values.resources | indent 12 }}
         - name: {{ .Chart.Name}}-exporter
-          image: "{{ .Values.exporter.image.repository}}:{{ .Values.exporter.image.tag }}"
+          image: "{{ .Values.exporter.image.repository }}:{{ .Values.exporter.image.tag }}"
           imagePullPolicy: {{ .Values.exporter.image.pullPolicy }}
           ports:
             - name: http-metrics
