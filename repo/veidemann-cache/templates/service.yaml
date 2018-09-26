@@ -15,6 +15,10 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
+    - port: {{ .Values.exporter.service.port }}
+      targetPort: http-metrics
+      protocol: TCP
+      name: http-metrics
   selector:
     component: {{ template "veidemann-cache.name" . }}
     release: {{ .Release.Name }}
