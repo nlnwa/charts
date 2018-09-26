@@ -53,6 +53,18 @@ spec:
               readOnly: true
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+        - name: {{ .Chart.Name}}-exporter
+          image: "{{ .Values.exporter.image.repository}}:{{ .Values.exporter.image.tag }}"
+          imagePullPolicy: {{ .Values.exporter.image.pullPolicy }}
+          ports:
+            - name: http-metrics
+              containerPort: 9301
+              protocol: TCP
+          args:
+            - "-listen"
+            - "0.0.0.0:9301"
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
