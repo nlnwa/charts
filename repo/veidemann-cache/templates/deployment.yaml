@@ -22,7 +22,12 @@ spec:
     spec:
       volumes:
         - name: workdir
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "veidemann-cache.fullname" .) }}
+        {{- else }}
           emptyDir: {}
+        {{- end }}
         - name: dshm
           emptyDir:
             medium: Memory
