@@ -8,7 +8,7 @@ git:
 
 env:
   global:
-  - HELM_VERSION="v2.10.0"
+  - HELM_VERSION="v2.11.0"
   - REPO_URL="https://nlnwa.github.io/charts"
 
 # Install helm
