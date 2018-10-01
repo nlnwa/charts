@@ -6,8 +6,11 @@ replicaCount: 1
 
 image:
   repository: rethinkdb
-  # tag: 2.3.6
+  tag: ""
   pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
 
 service:
   type: ClusterIP
