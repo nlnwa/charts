@@ -41,8 +41,8 @@ dependencies:
 
   # Jaeger
   - name: jaeger
-    version: ~0.7.0
-    repository: "@incubator"
+    version: 0.7.0
+    repository: file://../jaeger
     condition: provision.tracing
   # Dex
   - name: dex

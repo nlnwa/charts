@@ -4,6 +4,9 @@ image:
   tag: 0.1.0
   pullPolicy: IfNotPresent
 
+nameOverride: ""
+fullnameOverride: ""
+
 # RethinkDB Cluster Config
 cluster:
   replicas: 3
