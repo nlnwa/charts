@@ -6,8 +6,11 @@ replicaCount: 1
 
 image:
   repository: norsknettarkiv/veidemann-frontier
-  # tag: latest
+  tag: ""
   pullPolicy: Always
+
+nameOverride: ""
+fullnameOverride: ""
 
 service:
   type: ClusterIP
@@ -50,3 +53,4 @@ config:
   dnsResolver:
     host: $(NODE_NAME)
     port: 4340
+  javaOpts: ""

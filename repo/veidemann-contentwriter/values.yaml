@@ -6,8 +6,11 @@ replicaCount: 1
 
 image:
   repository: norsknettarkiv/veidemann-contentwriter
-  # tag: latest
+  tag: ""
   pullPolicy: Always
+
+nameOverride: ""
+fullnameOverride: ""
 
 service:
   type: ClusterIP

@@ -6,8 +6,11 @@ replicaCount: 1
 
 image:
   repository: norsknettarkiv/veidemann-harvester
-  # tag: latest
+  tag: ""
   pullPolicy: Always
+
+nameOverride: ""
+fullnameOverride: ""
 
 service:
   type: ClusterIP
@@ -33,7 +36,7 @@ ports:
     containerPort: 8080
     protocol: TCP
 
-resources:
+resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
@@ -64,7 +67,7 @@ config:
     name: veidemann
     secretName: rethinkdb
   maxOpenSessions: 2
-#  livenessProbe:
+  livenessProbe: {}
 #    tcpSocket:
 #      port: http
 #    initialDelaySeconds: 10
@@ -81,6 +84,7 @@ config:
     sampler:
       type: probabilistic
       param: 0.1
+  javaOpts: ""
 
 browser:
   image:
