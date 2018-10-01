@@ -76,6 +76,8 @@ spec:
               value: {{ .Values.config.jaeger.sampler.type | quote }}
             - name: JAEGER_SAMPLER_PARAM
               value: {{ .Values.config.jaeger.sampler.param | quote }}
+            - name: JAVA_OPTS
+              value: {{ .Values.config.javaOpts | quote }}
           volumeMounts:
             - mountPath: /workdir
               name: workdir

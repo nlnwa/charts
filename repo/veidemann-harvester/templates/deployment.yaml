@@ -39,8 +39,10 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- with .Values.ports }}
           ports:
-{{ toYaml .Values.ports | indent 12 }}
+{{ toYaml . | indent 12 }}
+        {{- end }}
           env:
             - name: NODE_NAME
               valueFrom:
@@ -88,10 +90,16 @@ spec:
               value: {{ .Values.config.jaeger.sampler.type | quote }}
             - name: JAEGER_SAMPLER_PARAM
               value: {{ .Values.config.jaeger.sampler.param | quote }}
+            - name: JAVA_OPTS
+              value: {{ .Values.config.javaOpts | quote }}
+        {{- with .Values.config.livenessProbe }}
           livenessProbe:
-{{ toYaml .Values.config.livenessProbe | indent 12 }}
-          readynessProbe:
-{{ toYaml .Values.config.readynessProbe | indent 12 }}
+{{ toYaml . | indent 12 }}
+        {{- end }}
+          readinessProbe:
+        {{- with .Values.config.readinessProbe }}
+{{ toYaml . | indent 12 }}
+        {{- end }}
           volumeMounts:
             - mountPath: /workdir
               name: workdir
@@ -115,8 +123,8 @@ spec:
             value: {{ .Values.browser.config.connectionTimeout | quote }}
           livenessProbe:
 {{ toYaml .Values.browser.livenessProbe | indent 12 }}
-          readynessProbe:
-{{ toYaml .Values.browser.readynessProbe | indent 12 }}
+          readinessProbe:
+{{ toYaml .Values.browser.readinessProbe | indent 12 }}
           volumeMounts:
             - mountPath: /dev/shm
               name: dshm
