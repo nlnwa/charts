@@ -15,6 +15,9 @@ provision:
   # dex
   auth: true
 
+nameOverride: ""
+fullnameOverride: ""
+
 ###########
 # Anchors #
 ###########
@@ -92,6 +95,7 @@ anchor_delivery_pvc: &persistence-delivery
 persistence:
   warcs:
     enabled: true
+    storageClass: ""
     accessMode: ReadWriteOnce
     size: 1Gi
     annotations: {}
@@ -99,6 +103,7 @@ persistence:
 
   invalidwarcs:
     enabled: true
+    storageClass: ""
     accessMode: ReadWriteOnce
     size: 1Gi
     annotations: {}
@@ -106,6 +111,7 @@ persistence:
 
   validwarcs:
     enabled: true
+    storageClass: ""
     accessMode: ReadWriteOnce
     size: 1Gi
     annotations: {}
@@ -113,6 +119,7 @@ persistence:
 
   delivery:
     enabled: true
+    storageClass: ""
     accessMode: ReadWriteOnce
     size: 1Gi
     annotations: {}

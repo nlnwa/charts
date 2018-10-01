@@ -2,4 +2,4 @@ apiVersion: v1
 appVersion: v0.5.1
 description: A Helm chart for webhook receiver proxy
 name: webhook-receiver-proxy
-version: 0.1.7
+version: 0.1.8

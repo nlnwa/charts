@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: norsknettarkiv/webhook-receiver-proxy
-  # tag: latest
+  tag: ""
   pullPolicy: IfNotPresent
 
 nameOverride: ""

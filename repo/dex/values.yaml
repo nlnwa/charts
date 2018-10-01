@@ -7,6 +7,9 @@ image:
   tag: v2.10.0
   pullPolicy: IfNotPresent
 
+nameOverride: ""
+fullnameOverride: ""
+
 service:
   type: ClusterIP
   port: 5556
