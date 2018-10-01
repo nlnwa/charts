@@ -67,7 +67,7 @@ config:
     cql: 9042
     thrift: 9160
     # If a JVM Agent is in place
-    agent: nil # 61621
+    agent: # 61621
 
 ## Liveness and Readiness probe values.
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
