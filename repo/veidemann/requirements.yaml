@@ -9,7 +9,7 @@ dependencies:
     version: 0.1.6
     repository: file://../veidemann-contentexplorer
   - name: veidemann-contentwriter
-    version: 0.1.6
+    version: 0.1.7
     repository: file://../veidemann-contentwriter
   - name: veidemann-controller
     version: 0.1.5
