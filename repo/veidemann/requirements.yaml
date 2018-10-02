@@ -18,7 +18,7 @@ dependencies:
     version: 0.1.4
     repository: file://../veidemann-dashboard
   - name: veidemann-db-initializer
-    version: 0.1.6
+    version: 0.1.7
     repository: file://../veidemann-db-initializer
   - name: veidemann-dnsresolver
     version: 0.2.4
