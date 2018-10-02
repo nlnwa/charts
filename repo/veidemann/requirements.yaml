@@ -33,7 +33,7 @@ dependencies:
     version: 0.1.8
     repository: file://../veidemann-robotsevaluator-service
   - name: veidemann-warcvalidator
-    version: 0.1.8
+    version: 0.1.9
     repository: file://../veidemann-warcvalidator
   - name: veidemann-warcvalidator-api
     version: 0.1.6
