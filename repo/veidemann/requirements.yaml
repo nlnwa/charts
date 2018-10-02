@@ -3,7 +3,7 @@ dependencies:
     version: 0.1.5
     repository: file://../veidemann-api-gateway
   - name: veidemann-cache
-    version: 0.2.1
+    version: 0.2.2
     repository: file://../veidemann-cache
   - name: veidemann-contentexplorer
     version: 0.1.6
