@@ -82,7 +82,7 @@ config:
 browser:
   image:
     repository:  browserless/chrome
-    tag: release-puppeteer-1.5.0
+    tag: release-puppeteer-1.8.0
     pullPolicy: IfNotPresent
   ports:
     - name: debug
