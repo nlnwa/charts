@@ -100,6 +100,8 @@ persistence:
     size: 1Gi
     annotations: {}
     existingClaim: false
+    # helm.sh/resource-policy, default is "keep"
+    resourcePolicy: ""
 
   invalidwarcs:
     enabled: true
@@ -108,6 +110,8 @@ persistence:
     size: 1Gi
     annotations: {}
     existingClaim: false
+    # helm.sh/resource-policy, default is "keep"
+    resourcePolicy: ""
 
   validwarcs:
     enabled: true
@@ -116,6 +120,8 @@ persistence:
     size: 1Gi
     annotations: {}
     existingClaim: false
+    # helm.sh/resource-policy, default is "keep"
+    resourcePolicy: ""
 
   delivery:
     enabled: true
@@ -124,6 +130,8 @@ persistence:
     size: 1Gi
     annotations: {}
     existingClaim: false
+    # helm.sh/resource-policy, default is "keep"
+    resourcePolicy: ""
 
 ##########################
 # ConfigMaps and Secrets #

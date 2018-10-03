@@ -17,6 +17,7 @@ spec:
   template:
     metadata:
       labels:
+        app: veidemann
         component: {{ template "veidemann-harvester.name" . }}
         release: {{ .Release.Name }}
     spec:

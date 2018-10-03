@@ -3,7 +3,8 @@ kind: Service
 metadata:
   name: {{ template "veidemann-api-gateway.fullname" . }}
   labels:
-    app: {{ template "veidemann-api-gateway.name" . }}
+    app: veidemann
+    component: {{ template "veidemann-api-gateway.name" . }}
     chart: {{ template "veidemann-api-gateway.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -15,5 +16,5 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: {{ template "veidemann-api-gateway.name" . }}
+    component: {{ template "veidemann-api-gateway.name" . }}
     release: {{ .Release.Name }}

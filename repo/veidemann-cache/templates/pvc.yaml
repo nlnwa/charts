@@ -9,9 +9,10 @@ metadata:
     chart: {{ template "veidemann-cache.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-{{- if .Values.persistence.annotations }}
   annotations:
-{{ toYaml .Values.persistenc.annotations | indent 4 }}
+    "helm.sh/resource-policy": {{ default "keep" .Values.resourcePolicy }}
+{{- if .Values.persistence.annotations }}
+{{ toYaml .Values.persistence.annotations | indent 4 }}
 {{- end }}
 spec:
   accessModes:
