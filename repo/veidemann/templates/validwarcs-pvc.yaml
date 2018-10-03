@@ -10,7 +10,10 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   annotations:
+    "helm.sh/resource-policy": {{ default "keep" $persistence.resourcePolicy }}
+{{- if $persistence.annotations }}
 {{ toYaml $persistence.annotations | indent 4 }}
+{{- end }}
 spec:
   accessModes:
     - {{ $persistence.accessMode | quote }}

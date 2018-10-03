@@ -3,7 +3,8 @@ apiVersion: v1
 metadata:
   name: {{ template "veidemann-admin.fullname" . }}
   labels:
-    app: {{ template "veidemann-admin.name" . }}
+    app: veidemann
+    component: {{ template "veidemann-admin.name" . }}
     chart: {{ template "veidemann-admin.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}

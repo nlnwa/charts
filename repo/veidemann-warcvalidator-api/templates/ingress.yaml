@@ -7,7 +7,8 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    app: {{ template "veidemann-warcvalidator-api.name" . }}
+    app: veidemann
+    component: {{ template "veidemann-warcvalidator-api.name" . }}
     chart: {{ template "veidemann-warcvalidator-api.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
