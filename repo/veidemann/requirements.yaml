@@ -38,6 +38,9 @@ dependencies:
   - name: veidemann-warcvalidator-api
     version: 0.1.7
     repository: file://../veidemann-warcvalidator-api
+  - name: veidemann-metrics
+    version: 0.1.0
+    repository: file://../veidemann-metrics
 
   # Jaeger
   - name: jaeger
