@@ -411,6 +411,12 @@ veidemann-dashboard:
     issuer: *issuer
 # End: veidemann-dashboard
 
+# Begin: veidemann-metrics
+veidemann-metrics:
+  config:
+    <<: *rethinkdb
+# End: veidemann-metrics
+
 # Begin: Jaeger
 jaeger:
   agent:

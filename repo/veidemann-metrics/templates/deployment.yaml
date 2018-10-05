@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "veidemann-metrics.fullname" . }}
+  labels:
+    app: veidemann
+    component: {{ template "veidemann-metrics.name" . }}
+    chart: {{ template "veidemann-metrics.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      component: {{ template "veidemann-metrics.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: veidemann
+        component: {{ template "veidemann-metrics.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: DB_HOST
+              value: {{ .Values.config.db.host | quote }}
+            - name: DB_PORT
+              value: {{ .Values.config.db.port | quote }}
+            - name: DB_NAME
+              value: {{ .Values.config.db.name | quote }}
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.config.db.secretName }}
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.config.db.secretName }}
+                  key: password
+          ports:
+            - name: http-metrics
+              containerPort: {{ .Values.service.internalMetricsPort }}
+              protocol: TCP
+          args:
+            - "-listen"
+            - "0.0.0.0:{{ .Values.service.internalMetricsPort }}"
+            - "-dbhostname"
+            - "$(DB_HOST)"
+            - "-dbport"
+            - "$(DB_PORT)"
+            - "-dbname"
+            - "$(DB_NAME)"
+            - "-dbuser"
+            - "$(DB_USER)"
+            - "-dbpassword"
+            - "$(DB_PASSWORD)"
+          livenessProbe:
+{{ toYaml .Values.config.livenessProbe | indent 12 }}
+          readinessProbe:
+{{ toYaml .Values.config.readinessProbe | indent 12 }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
