@@ -6,7 +6,7 @@ dependencies:
     version: 0.3.0
     repository: file://../veidemann-cache
   - name: veidemann-contentexplorer
-    version: 0.1.8
+    version: 0.1.9
     repository: file://../veidemann-contentexplorer
   - name: veidemann-contentwriter
     version: 0.1.8
