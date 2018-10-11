@@ -12,7 +12,7 @@ dependencies:
     version: 0.1.8
     repository: file://../veidemann-contentwriter
   - name: veidemann-controller
-    version: 0.1.7
+    version: 0.1.8
     repository: file://../veidemann-controller
   - name: veidemann-dashboard
     version: 0.1.5
