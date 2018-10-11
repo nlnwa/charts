@@ -30,7 +30,7 @@ dependencies:
     version: 0.2.5
     repository: file://../veidemann-harvester
   - name: veidemann-robotsevaluator-service
-    version: 0.1.9
+    version: 0.1.10
     repository: file://../veidemann-robotsevaluator-service
   - name: veidemann-warcvalidator
     version: 0.1.11
