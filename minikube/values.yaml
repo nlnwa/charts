@@ -24,13 +24,6 @@ global:
     mesh:
       host: $(NODE_NAME)
       port: 4140
-    jaeger:
-      agent:
-        host: $(NODE_NAME)
-        port: 5775
-      sampler:
-        type: probabilistic
-        param: 0.5
 
 veidemann-dashboard:
   ingress:
