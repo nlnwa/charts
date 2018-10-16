@@ -5,7 +5,7 @@ tags:
   validation: true
   dashboard: true
   idp: true
-  tracing: true
+  tracing: false
   metrics: false
 
 .ingress: &ingress
