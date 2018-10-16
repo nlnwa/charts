@@ -56,7 +56,7 @@ else use existingClaim verbatim.
 {{- if not $existingClaim -}}
     {{- printf "%s-%s" (include "veidemann-contentexplorer.fullname" .) $name -}}
 {{- else -}}
-    {{- if eq $name $existingClaim) -}}
+    {{- if eq $name $existingClaim -}}
     {{- printf "%s-%s" .Release.Name $name -}}
     {{- else -}}
     {{- $existingClaim -}}

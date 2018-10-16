@@ -210,6 +210,7 @@ config:
     password: ""
 
   jaeger:
+    create: false
     agent:
       host: ""
       port: ""
