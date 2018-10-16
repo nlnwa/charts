@@ -4,7 +4,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "veidemann.configPrefix" $root }}-{{ $name }}
+  name: {{ $root.Release.Name }}-{{ $name }}
   labels:
     app: {{ template "veidemann.name" $root }}
     chart: {{ template "veidemann.chart" $root }}

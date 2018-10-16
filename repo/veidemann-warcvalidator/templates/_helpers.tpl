@@ -48,14 +48,14 @@ If release name contains chart name it will be used as a config prefix
 Create a claim name
 */}}
 {{- define "veidemann-warcvalidator.claimName" -}}
-{{- $suffix := .name -}}
+{{- $name := .name -}}
 {{- $root := .root -}}
-{{- $existingClaim := index $root.Values.persistence $suffix "existingClaim" -}}
+{{- $existingClaim := index $root.Values.persistence $name "existingClaim" -}}
 {{- if not $existingClaim -}}
-    {{- printf "%s-%s" (include "veidemann-warcvalidator.fullname" $root) $suffix -}}
+    {{- printf "%s-%s" (include "veidemann-warcvalidator.fullname" $root) $name -}}
 {{- else -}}
-    {{- if empty (trimSuffix $suffix $existingClaim) -}}
-    {{- printf "%s-%s" (include "veidemann-warcvalidator.configPrefix" $root) $suffix -}}
+    {{- if eq $name $existingClaim -}}
+    {{- printf "%s-%s" $root.Release.Name $name -}}
     {{- else -}}
     {{- $existingClaim -}}
     {{- end -}}
