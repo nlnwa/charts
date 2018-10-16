@@ -56,7 +56,7 @@ else use existingClaim verbatim
 {{- if not $existingClaim -}}
     {{- printf "%s-%s" (include "veidemann-contentwriter.fullname" .) $name -}}
 {{- else -}}
-    {{- if eq "veidemann-" (trimSuffix $name $existingClaim) -}}
+    {{- if empty (trimSuffix $name $existingClaim) -}}
     {{- printf "%s-%s" (include "veidemann-contentwriter.configPrefix" .) $name -}}
     {{- else -}}
     {{- $existingClaim -}}

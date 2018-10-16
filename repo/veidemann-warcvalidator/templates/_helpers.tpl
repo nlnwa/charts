@@ -54,7 +54,7 @@ Create a claim name
 {{- if not $existingClaim -}}
     {{- printf "%s-%s" (include "veidemann-warcvalidator.fullname" $root) $suffix -}}
 {{- else -}}
-    {{- if eq "veidemann-" (trimSuffix $suffix $existingClaim) -}}
+    {{- if empty (trimSuffix $suffix $existingClaim) -}}
     {{- printf "%s-%s" (include "veidemann-warcvalidator.configPrefix" $root) $suffix -}}
     {{- else -}}
     {{- $existingClaim -}}

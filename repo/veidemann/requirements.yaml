@@ -5,7 +5,7 @@ dependencies:
   repository: file://../veidemann-cache
 
 - name: veidemann-contentwriter
-  version: 1.0.0
+  version: 1.0.1
   repository: file://../veidemann-contentwriter
 
 - name: veidemann-controller
@@ -33,7 +33,7 @@ dependencies:
   repository: file://../veidemann-robotsevaluator-service
 
 - name: veidemann-contentexplorer
-  version: 1.0.0
+  version: 1.0.1
   repository: file://../veidemann-contentexplorer
 
 # Dashboard
@@ -53,7 +53,7 @@ dependencies:
 
 # Validation
 - name: veidemann-warcvalidator
-  version: 1.0.0
+  version: 1.0.1
   repository: file://../veidemann-warcvalidator
   condition: veidemann-warcvalidator.enabled
   tags:
