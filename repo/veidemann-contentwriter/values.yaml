@@ -20,9 +20,26 @@ service:
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
 persistence:
-  warcs:
-    name: warcs
-    enabled: false
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 1Gi
+  ## Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  storageClass: ""
+
+  # Annotations for the Persistent Volume Claim
+  annotations: {}
+  # helm.sh/resource-policy: keep
+
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound with the name e.g `cache-data`
+  existingClaim: ""
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -43,22 +60,20 @@ tolerations: []
 affinity: {}
 
 config:
-  jaeger:
-    agent:
-      host: $(NODE_NAME)
-      port: 5775
-    sampler:
-      type: probabilistic
-      # Jaeger default is: jaeger.sampler.param: "0.001"
-      param: 0.1
-  db:
-    host: rethinkdb-proxy
-    port: 28015
-    name: veidemann
-    secretName: rethinkdb
-  filePrefix: "nna"
   warc:
+    # filePrefix defines the prefixed name warc files will be given when created
+    filePrefix: "nna"
     writer:
+      # poolSize is the size of the thread pool
       poolSize: 2
+    # size is the value used by the contentWriter to determine if new writes will be
+    # written to current file (current file less then size)
+    # or if the current file should be closed (current file less than or equal to size)
+    # and a new file created
     size: 100MiB
+    # compress warc files using gzip when they are closed (gzip)
     compress: "true"
+
+global:
+  veidemann:
+    jaeger: {}

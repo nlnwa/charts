@@ -1,3 +1,4 @@
+{{- $global := .Values.global.veidemann -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -38,45 +39,42 @@ spec:
               containerPort: {{ .Values.service.internalMetricsPort }}
             - name: http-health
               containerPort: {{ .Values.service.internalHealthPort }}
+          envFrom:
+            - configMapRef:
+                name: {{ template "veidemann-dnsresolver.configPrefix" . }}-rethinkdb-env
+                optional: false
+            - secretRef:
+                name: {{ template "veidemann-dnsresolver.configPrefix" . }}-rethinkdb-env
+                optional: false
           env:
             - name: NODE_NAME
               valueFrom:
                 fieldRef:
                   fieldPath: status.hostIP
             - name: CONTENT_WRITER_HOST
-              value: {{ .Values.config.contentWriter.host | quote }}
+            {{- if or .Values.config.contentWriter.host $global.mesh.host }}
+              value: {{ default .Values.config.contentWriter.host $global.mesh.host | quote }}
+            {{- else }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "veidemann-dnsresolver.configPrefix" . }}
+                  key: contentWriter.host
+            {{- end }}
             - name: CONTENT_WRITER_PORT
-              value: {{ .Values.config.contentWriter.port | quote }}
+            {{- if or .Values.config.contentWriter.port $global.mesh.port }}
+              value: {{ default .Values.config.contentWriter.port $global.mesh.port | quote }}
+            {{- else }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "veidemann-dnsresolver.configPrefix" . }}
+                  key: contentWriter.port
+            {{- end }}
             - name: DNS_SERVER
               value: {{ .Values.config.dnsServer | quote }}
-            - name: DB_HOST
-              value: {{ .Values.config.db.host | quote }}
-            - name: DB_PORT
-              value: {{ .Values.config.db.port | quote }}
-            - name: DB_NAME
-              value: {{ .Values.config.db.name | quote }}
-            - name: DB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.config.db.secretName }}
-                  key: username
-            - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.config.db.secretName }}
-                  key: password
-            - name: JAEGER_AGENT_HOST
-              value: {{ .Values.config.jaeger.agent.host | quote }}
-            - name: JAEGER_AGENT_PORT
-              value: {{ .Values.config.jaeger.agent.port | quote }}
-            - name: JAEGER_SAMPLER_TYPE
-              value: {{ .Values.config.jaeger.sampler.type | quote }}
-            - name: JAEGER_SAMPLER_PARAM
-              value: {{ .Values.config.jaeger.sampler.param | quote }}
           livenessProbe:
-{{ toYaml .Values.config.livenessProbe | indent 12 }}
+{{ toYaml .Values.livenessProbe | indent 12 }}
           readinessProbe:
-{{ toYaml .Values.config.readinessProbe | indent 12 }}
+{{ toYaml .Values.readinessProbe | indent 12 }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}

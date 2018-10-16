@@ -4,11 +4,6 @@
 
 replicaCount: 1
 
-image:
-  repository: norsknettarkiv/veidemann-harvester
-  tag: ""
-  pullPolicy: Always
-
 nameOverride: ""
 fullnameOverride: ""
 
@@ -24,60 +19,63 @@ service:
       targetPort: debug
       protocol: TCP
 
-ports:
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+proxy:
+  image:
+    repository: norsknettarkiv/veidemann-harvester
+    tag: ""
+    pullPolicy: Always
+
+  ports:
   - name: http-alt
     containerPort: 8080
     protocol: TCP
 
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #  cpu: 100m
-  #  memory: 128Mi
-  # requests:
-  #  cpu: 100m
-  #  memory: 128Mi
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #  cpu: 100m
+    #  memory: 128Mi
+    # requests:
+    #  cpu: 100m
+    #  memory: 128Mi
 
-config:
-  browserWSEndpoint: ws://localhost:3000/?--proxy-server=localhost:8080
-  frontier:
-    host: $(NODE_NAME)
-    port: 4340
-  contentWriter:
-    host: $(NODE_NAME)
-    port: 4340
-  dnsResolver:
-    host: $(NODE_NAME)
-    port: 4340
-  cache:
-    host: veidemann-cache
-  db:
-    host: rethinkdb-proxy
-    port: 28015
-    name: veidemann
-    secretName: rethinkdb
-  maxOpenSessions: 2
   livenessProbe: {}
-#    tcpSocket:
-#      port: http
-#    initialDelaySeconds: 10
-#    periodSeconds: 10
+  #    tcpSocket:
+  #      port: http
+  #    initialDelaySeconds: 10
+  #    periodSeconds: 10
   readinessProbe: {}
-#    tcpSocket:
-#      port: http
-#    initialDelaySeconds: 10
-#    periodSeconds: 10
-  jaeger:
-    agent:
-      host: $(NODE_NAME)
-      port: 5775
-    sampler:
-      type: probabilistic
-      param: 0.1
-  javaOpts: ""
+  #    tcpSocket:
+  #      port: http
+  #    initialDelaySeconds: 10
+  #    periodSeconds: 10
+
+  config:
+    browserWSEndpoint: ws://localhost:3000/?--proxy-server=localhost:8080
+    maxOpenSessions: 2
+    javaOpts: ""
+    frontier:
+      host: ""
+      port: ""
+    contentWriter:
+      host: ""
+      port: ""
+    dnsResolver:
+      host: ""
+      port: ""
+    cache:
+      host: ""
+      port: ""
+
 
 browser:
   image:
@@ -88,23 +86,28 @@ browser:
     - name: debug
       containerPort: 3000
   resources: {}
+
   livenessProbe:
     httpGet:
       path: /json/version
       port: debug
     initialDelaySeconds: 5
     periodSeconds: 5
+
   readinessProbe:
     httpGet:
       path: /json/version
       port: debug
     initialDelaySeconds: 5
     periodSeconds: 5
+
   config:
     connectionTimeout: "60000"
 
-nodeSelector: {}
 
-tolerations: []
-
-affinity: {}
+global:
+  veidemann:
+    mesh:
+      host: ""
+      port: ""
+    jaeger: {}

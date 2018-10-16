@@ -1,3 +1,4 @@
+{{- $global := .Values.global.veidemann -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -26,7 +27,7 @@ spec:
           emptyDir: {}
         - name: log4j-config
           configMap:
-            name: {{ .Release.Name }}-veidemann
+            name: {{ template "veidemann-frontier.configPrefix" . }}
             items:
               - key: log4j2.xml
                 path: log4j2.xml
@@ -35,57 +36,84 @@ spec:
           image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
-              containerPort: 7700
+            - name: grpc
+              containerPort: {{ .Values.service.port }}
               protocol: TCP
-          resources:
-{{ toYaml .Values.resources | indent 12 }}
+          envFrom:
+            - configMapRef:
+                name: {{ template "veidemann-frontier.configPrefix" . }}-rethinkdb-env
+                optional: false
+            - secretRef:
+                name: {{ template "veidemann-frontier.configPrefix" . }}-rethinkdb-env
+                optional: false
+          {{- if not .Values.global.veidemann.jaeger }}
+            - configMapRef:
+                name: {{ template "veidemann-frontier.configPrefix" . }}-jaeger-env
+                optional: true
+          {{- end }}
           env:
             - name: NODE_NAME
               valueFrom:
                 fieldRef:
-                  fieldPath: status.hostIP
-            - name: DB_HOST
-              value: {{ .Values.config.db.host | quote }}
-            - name: DB_PORT
-              value: {{ .Values.config.db.port | quote }}
-            - name: DB_NAME
-              value: {{ .Values.config.db.name | quote }}
-            - name: DB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.config.db.secretName }}
-                  key: username
-            - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.config.db.secretName }}
-                  key: password
+                  fieldPath: spec.nodeName
+            - name: API_PORT
+              value: {{ .Values.service.port | quote }}
             - name: ROBOTS_EVALUATOR_HOST
-              value: {{ .Values.config.robotsEvaluator.host | quote }}
+            {{- if or .Values.config.robotsEvaluator.host $global.mesh.host }}
+              value: {{ default .Values.config.robotsEvaluator.host $global.mesh.host | quote }}
+            {{- else }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "veidemann-frontier.configPrefix" . }}
+                  key: robotsEvaluator.host
+            {{- end }}
             - name: ROBOTS_EVALUATOR_PORT
-              value: {{ .Values.config.robotsEvaluator.port | quote }}
+            {{- if or .Values.config.robotsEvaluator.port $global.mesh.port }}
+              value: {{ default .Values.config.robotsEvaluator.port $global.mesh.port | quote }}
+            {{- else }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "veidemann-frontier.configPrefix" . }}
+                  key: robotsEvaluator.port
+            {{- end }}
             - name: DNS_RESOLVER_HOST
-              value: {{ .Values.config.dnsResolver.host | quote }}
+            {{- if or .Values.config.dnsResolver.host $global.mesh.host }}
+              value: {{ default .Values.config.dnsResolver.host $global.mesh.host | quote }}
+            {{- else }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "veidemann-frontier.configPrefix" . }}
+                  key: dnsResolver.host
+            {{- end }}
             - name: DNS_RESOLVER_PORT
-              value: {{ .Values.config.dnsResolver.port | quote }}
-            - name: JAEGER_AGENT_HOST
-              value: {{ .Values.config.jaeger.agent.host | quote }}
-            - name: JAEGER_AGENT_PORT
-              value: {{ .Values.config.jaeger.agent.port | quote }}
-            - name: JAEGER_SAMPLER_TYPE
-              value: {{ .Values.config.jaeger.sampler.type | quote }}
-            - name: JAEGER_SAMPLER_PARAM
-              value: {{ .Values.config.jaeger.sampler.param | quote }}
+            {{- if or .Values.config.dnsResolver.port $global.mesh.port }}
+              value: {{ default .Values.config.dnsResolver.port $global.mesh.port | quote }}
+            {{- else }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "veidemann-frontier.configPrefix" . }}
+                  key: dnsResolver.port
+            {{- end }}
             - name: JAVA_OPTS
-              value: {{ .Values.config.javaOpts | quote }}
+              value: {{ default .Values.config.javaOpts | quote }}
+          {{- with .Values.global.veidemann.jaeger }}
+            - name: JAEGER_AGENT_HOST
+              value: {{ .agent.host | quote }}
+            - name: JAEGER_AGENT_PORT
+              value: {{ .agent.port | quote }}
+            - name: JAEGER_SAMPLER_TYPE
+              value: {{ .sampler.type | quote }}
+            - name: JAEGER_SAMPLER_PARAM
+              value: {{ .sampler.param | quote }}
+          {{- end }}
           volumeMounts:
             - mountPath: /workdir
               name: workdir
             - name: log4j-config
               mountPath: /veidemann/config/log4j2.xml
               subPath: log4j2.xml
-          resources: {}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

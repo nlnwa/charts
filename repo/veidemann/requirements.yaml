@@ -1,69 +1,107 @@
 dependencies:
-  - name: veidemann-api-gateway
-    version: 0.1.6
-    repository: file://../veidemann-api-gateway
-  - name: veidemann-cache
-    version: 0.3.0
-    repository: file://../veidemann-cache
-  - name: veidemann-contentexplorer
-    version: 0.1.9
-    repository: file://../veidemann-contentexplorer
-  - name: veidemann-contentwriter
-    version: 0.1.9
-    repository: file://../veidemann-contentwriter
-  - name: veidemann-controller
-    version: 0.1.8
-    repository: file://../veidemann-controller
-  - name: veidemann-dashboard
-    version: 0.1.5
-    repository: file://../veidemann-dashboard
-  - name: veidemann-db-initializer
-    version: 0.1.8
-    repository: file://../veidemann-db-initializer
-  - name: veidemann-dnsresolver
-    version: 0.2.5
-    repository: file://../veidemann-dnsresolver
-  - name: veidemann-frontier
-    version: 0.2.3
-    repository: file://../veidemann-frontier
-  - name: veidemann-harvester
-    version: 0.2.6
-    repository: file://../veidemann-harvester
-  - name: veidemann-robotsevaluator-service
-    version: 0.1.10
-    repository: file://../veidemann-robotsevaluator-service
-  - name: veidemann-warcvalidator
-    version: 0.1.11
-    repository: file://../veidemann-warcvalidator
-  - name: veidemann-warcvalidator-api
-    version: 0.1.7
-    repository: file://../veidemann-warcvalidator-api
-  - name: veidemann-metrics
-    version: 0.1.0
-    repository: file://../veidemann-metrics
+# Core
+- name: veidemann-cache
+  version: 1.0.0
+  repository: file://../veidemann-cache
 
-  # Jaeger
-  - name: jaeger
-    version: 0.7.0
-    repository: file://../jaeger
-    condition: provision.tracing
-  # Dex
-  - name: dex
-    version: 0.3.1
-    repository: file://../dex
-    condition: provision.auth
-  # Linkerd/Namerd
-  - name: mesh
-    repository: file://../mesh
-    version: 0.2.3
-    condition: provision.mesh
-  # Rethinkdb
-  - name: rethinkdb
-    version: 0.2.0
-    repository: file://../rethinkdb
-    condition: provision.clustered-db
-  # Rethinkdb single
-  - name: rethinkdb-single
-    version: 0.1.2
-    repository: file://../rethinkdb-single
-    condition: provision.single-db
+- name: veidemann-contentwriter
+  version: 1.0.0
+  repository: file://../veidemann-contentwriter
+
+- name: veidemann-controller
+  version: 1.0.0
+  repository: file://../veidemann-controller
+
+- name: veidemann-db-initializer
+  version: 1.0.0
+  repository: file://../veidemann-db-initializer
+
+- name: veidemann-dnsresolver
+  version: 1.0.0
+  repository: file://../veidemann-dnsresolver
+
+- name: veidemann-frontier
+  version: 1.0.0
+  repository: file://../veidemann-frontier
+
+- name: veidemann-harvester
+  version: 1.0.0
+  repository: file://../veidemann-harvester
+
+- name: veidemann-robotsevaluator-service
+  version: 1.0.0
+  repository: file://../veidemann-robotsevaluator-service
+
+- name: veidemann-contentexplorer
+  version: 1.0.0
+  repository: file://../veidemann-contentexplorer
+
+# Dashboard
+- name: veidemann-dashboard
+  version: 1.0.0
+  repository: file://../veidemann-dashboard
+  condition: veidemann-dashboard.enabled
+  tags:
+  - dashboard
+
+- name: veidemann-api-gateway
+  version: 1.0.0
+  repository: file://../veidemann-api-gateway
+  condition: veidemann-api-gateway.enabled
+  tags:
+  - dashboard
+
+# Validation
+- name: veidemann-warcvalidator
+  version: 1.0.0
+  repository: file://../veidemann-warcvalidator
+  condition: veidemann-warcvalidator.enabled
+  tags:
+  - validation
+
+- name: veidemann-warcvalidator-api
+  version: 1.0.0
+  repository: file://../veidemann-warcvalidator-api
+  condition: veidemann-warcvalidator-api.enabled
+  tags:
+  - validation
+
+# Metrics
+- name: veidemann-metrics
+  version: 1.0.0
+  repository: file://../veidemann-metrics
+  condition: veidemann-metrics.enabled
+  tags:
+  - metrics
+
+# Tracing
+- name: jaeger
+  version: 0.7.0
+  repository: "@incubator"
+  condition: jaeger.enabled
+  tags:
+  - tracing
+
+# Identity provider
+- name: dex
+  version: 0.5.0
+  repository: "@stable"
+  condition: dex.enabled
+  tags:
+  - idp
+
+# Service mesh
+- name: mesh
+  repository: file://../mesh
+  version: 0.2.4
+  condition: mesh.enabled
+  tags:
+  - mesh
+
+# Database
+- name: rethinkdb
+  version: 0.2.1
+  repository: file://../rethinkdb
+  condition: rethinkdb.enabled
+  tags:
+  - database

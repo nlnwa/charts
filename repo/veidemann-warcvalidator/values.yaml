@@ -15,17 +15,91 @@ fullnameOverride: ""
 persistence:
   warcs:
     enabled: false
-    name: warcs
+    accessMode: ReadWriteOnce
+    size: 1Gi
+    ## Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+
+    # Annotations for the Persistent Volume Claim
+    annotations: {}
+    # helm.sh/resource-policy: keep
+
+    ## A manually managed Persistent Volume and Claim
+    ## Requires persistence.enabled: true
+    ## If defined, PVC must be created manually before volume will be bound with the name e.g `cache-data`
+    existingClaim: ""
+
   invalidwarcs:
     enabled: false
-    name: invalidwarcs
+    accessMode: ReadWriteOnce
+    size: 1Gi
+    ## Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+
+    # Annotations for the Persistent Volume Claim
+    annotations: {}
+    # helm.sh/resource-policy: keep
+
+    ## A manually managed Persistent Volume and Claim
+    ## Requires persistence.enabled: true
+    ## If defined, PVC must be created manually before volume will be bound with the name e.g `cache-data`
+    existingClaim: ""
+
   validwarcs:
     enabled: false
-    name: validwarcs
+    accessMode: ReadWriteOnce
+    size: 1Gi
+    ## Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+
+    # Annotations for the Persistent Volume Claim
+    annotations: {}
+    # helm.sh/resource-policy: keep
+
+    ## A manually managed Persistent Volume and Claim
+    ## Requires persistence.enabled: true
+    ## If defined, PVC must be created manually before volume will be bound with the name e.g `cache-data`
+    existingClaim: ""
+
   delivery:
     enabled: false
-    name: delivery
+    accessMode: ReadWriteOnce
+    size: 1Gi
+    ## Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
 
+    # Annotations for the Persistent Volume Claim
+    annotations: {}
+    # helm.sh/resource-policy: keep
+
+    ## A manually managed Persistent Volume and Claim
+    ## Requires persistence.enabled: true
+    ## If defined, PVC must be created manually before volume will be bound with the name e.g `cache-data`
+    existingClaim: ""
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -46,9 +120,5 @@ tolerations: []
 affinity: {}
 
 config:
+  # sleepTime is the time to sleep after each run of the validation loop
   sleepTime: 5
-  db:
-    host: rethinkdb-proxy
-    port: 28015
-    name: veidemann
-    secretName: rethinkdb

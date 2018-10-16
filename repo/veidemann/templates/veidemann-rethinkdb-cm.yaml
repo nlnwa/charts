@@ -1,0 +1,13 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ template "veidemann.configPrefix" . }}-rethinkdb-env
+  labels:
+    app: {{ template "veidemann.name" . }}
+    chart: {{ template "veidemann.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  DB_HOST: {{ default (include "veidemann.rethinkdb.host" .) .Values.config.rethinkdb.host | quote }}
+  DB_PORT: {{ default .Values.default.rethinkdb.port .Values.config.rethinkdb.port | quote }}
+  DB_NAME: {{ default .Values.default.rethinkdb.name .Values.config.rethinkdb.name | quote }}

@@ -1,3 +1,4 @@
+{{- $global := .Values.global.veidemann -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -24,71 +25,87 @@ spec:
       volumes:
         - name: log4j-config
           configMap:
-            name: {{ .Release.Name }}-veidemann
+            name: {{ template "veidemann-controller.configPrefix" . }}
             items:
               - key: log4j2.xml
                 path: log4j2.xml
-      {{- if .Values.config.tls }}
+      {{- if .Values.trustedCA.enabled }}
         - name: ca
           secret:
-            secretName: {{ .Values.config.tlsSecretName }}
+            secretName: {{ default (include "veidemann-controller.fullname" .) .Values.trustedCA.secretName }}
             items:
               - key: tls.crt
                 path: tls.crt
       {{- end }}
-    {{- if .Values.config.hostAliases }}
+    {{- if .Values.hostAliases }}
       hostAliases:
-{{ toYaml .Values.config.hostAliases | indent 8 }}
+{{ toYaml .Values.hostAliases | indent 8 }}
     {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
-              containerPort: 50051
+            - name: grpc
+              containerPort: {{ .Values.service.port }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+          envFrom:
+            - configMapRef:
+                name: {{ template "veidemann-controller.configPrefix" . }}-rethinkdb-env
+                optional: false
+            - secretRef:
+                name: {{ template "veidemann-controller.configPrefix" . }}-rethinkdb-env
+                optional: false
+          {{- if not .Values.global.veidemann.jaeger }}
+            - configMapRef:
+                name: {{ template "veidemann-controller.configPrefix" . }}-jaeger-env
+                optional: true
+          {{- end }}
           env:
             - name: NODE_NAME
               valueFrom:
                 fieldRef:
                   fieldPath: status.hostIP
-            - name: DB_HOST
-              value: {{ .Values.config.db.host | quote }}
-            - name: DB_PORT
-              value: {{ .Values.config.db.port | quote }}
-            - name: DB_NAME
-              value: {{ .Values.config.db.name | quote }}
-            - name: DB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.config.db.secretName }}
-                  key: username
-            - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.config.db.secretName }}
-                  key: password
+            - name: API_PORT
+              value: {{ .Values.service.port | quote }}
             - name: FRONTIER_HOST
-              value: {{ .Values.config.frontier.host | quote }}
+            {{- if or .Values.config.frontier.host $global.mesh.host }}
+              value: {{ default .Values.config.frontier.host $global.mesh.host | quote }}
+            {{- else }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "veidemann-controller.configPrefix" . }}
+                  key: frontier.host
+            {{- end }}
             - name: FRONTIER_PORT
-              value: {{ .Values.config.frontier.port | quote }}
+            {{- if or .Values.config.frontier.port $global.mesh.port }}
+              value: {{ default .Values.config.frontier.port $global.mesh.port | quote }}
+            {{- else }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "veidemann-controller.configPrefix" . }}
+                  key: frontier.port
+            {{- end }}
             - name: OPENID_CONNECT_ISSUER
+            {{- if .Values.config.issuer }}
               value: {{ .Values.config.issuer | quote }}
+            {{- end }}
+          {{- with .Values.global.veidemann.jaeger }}
             - name: JAEGER_AGENT_HOST
-              value: {{ .Values.config.jaeger.agent.host | quote }}
+              value: {{ .agent.host | quote }}
             - name: JAEGER_AGENT_PORT
-              value: {{ .Values.config.jaeger.agent.port | quote }}
+              value: {{ .agent.port | quote }}
             - name: JAEGER_SAMPLER_TYPE
-              value: {{ .Values.config.jaeger.sampler.type | quote }}
+              value: {{ .sampler.type | quote }}
             - name: JAEGER_SAMPLER_PARAM
-              value: {{ .Values.config.jaeger.sampler.param | quote }}
+              value: {{ .sampler.param | quote }}
+          {{- end }}
           volumeMounts:
             - name: log4j-config
               mountPath: /veidemann/config/log4j2.xml
               subPath: log4j2.xml
-          {{- if .Values.config.tls }}
+          {{- if .Values.trustedCA.enabled }}
             - name: ca
               mountPath: /veidemann/trustedca/tls.crt
               subPath: tls.crt

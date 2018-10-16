@@ -4,17 +4,11 @@
 
 replicaCount: 1
 
-image:
-  repository: norsknettarkiv/veidemann-cache
-  tag: ""
-  pullPolicy: Always
-
 nameOverride: ""
 fullnameOverride: ""
 
 service:
   type: ClusterIP
-  port: 3128
 
 persistence:
   enabled: false
@@ -27,20 +21,33 @@ persistence:
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
   ##
-  # storageClass: "-"
+  storageClass: ""
 
   # Annotations for the Persistent Volume Claim
   annotations: {}
+  # helm.sh/resource-policy: keep
 
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
   ## If defined, PVC must be created manually before volume will be bound with the name e.g `cache-data`
   existingClaim: ""
 
-  # "helm.sh/resource-policy", default is "keep"
-  resourcePolicy: ""
+nodeSelector: {}
 
-resources: {}
+tolerations: []
+
+affinity: {}
+
+cache:
+  image:
+    repository: norsknettarkiv/veidemann-cache
+    tag: ""
+    pullPolicy: Always
+
+  service:
+    port: 3128
+
+  resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
@@ -52,16 +59,11 @@ resources: {}
   #  cpu: 100m
   #  memory: 128Mi
 
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
-
-config:
   dnsServers: "8.8.8.8 8.8.4.4"
 
 exporter:
+  enabled: false
+
   image:
     repository: boynux/squid-exporter
     tag: v1.1
@@ -71,13 +73,13 @@ exporter:
     port: 9301
 
   resources: {}
-    # We usually recommend not to specify default resources and to leave this as a conscious
-    # choice for the user. This also increases chances charts run on environments with little
-    # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #  cpu: 100m
-    #  memory: 128Mi
-    # requests:
-    #  cpu: 100m
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
   #  memory: 128Mi

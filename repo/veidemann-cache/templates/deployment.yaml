@@ -37,15 +37,15 @@ spec:
             secretName: {{ template "veidemann-cache.fullname" . }}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.cache.image.repository }}:{{ default .Chart.AppVersion .Values.cache.image.tag }}"
+          imagePullPolicy: {{ .Values.cache.image.pullPolicy }}
           ports:
             - name: http
               containerPort: 3128
               protocol: TCP
           env:
             - name: DNS_SERVERS
-              value: {{ .Values.config.dnsServers | quote }}
+              value: {{ include "veidemann-cache.dnsServers" . | quote }}
           volumeMounts:
             - name: workdir
               mountPath: /var/cache/squid
@@ -53,7 +53,8 @@ spec:
               mountPath: "/ca-certificates"
               readOnly: true
           resources:
-{{ toYaml .Values.resources | indent 12 }}
+{{ toYaml .Values.cache.resources | indent 12 }}
+      {{- if .Values.exporter.enabled }}
         - name: {{ .Chart.Name}}-exporter
           image: "{{ .Values.exporter.image.repository }}:{{ .Values.exporter.image.tag }}"
           imagePullPolicy: {{ .Values.exporter.image.pullPolicy }}
@@ -65,7 +66,8 @@ spec:
             - "-listen"
             - "0.0.0.0:9301"
           resources:
-{{ toYaml .Values.resources | indent 12 }}
+{{ toYaml .Values.exporter.resources | indent 12 }}
+      {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

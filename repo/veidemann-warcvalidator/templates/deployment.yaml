@@ -22,34 +22,22 @@ spec:
         release: {{ .Release.Name }}
     spec:
       volumes:
-        - name: warcs
-        {{- if .Values.persistence.warcs.enabled }}
+        {{- $root := . -}}
+        {{- range $name, $persistence := .Values.persistence }}
+        - name: {{ $name }}
+        {{- if $persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.warcs.name }}
+            claimName: {{ template "veidemann-warcvalidator.claimName" (dict "name" $name "root" $root) }}
         {{- else }}
           emptyDir: {}
         {{- end }}
-        - name: validwarcs
-        {{- if .Values.persistence.validwarcs.enabled }}
-          persistentVolumeClaim:
-            claimName: {{ .Values.persistence.validwarcs.name }}
-        {{- else }}
-          emptyDir: {}
         {{- end }}
-        - name: invalidwarcs
-        {{- if .Values.persistence.invalidwarcs.enabled }}
-          persistentVolumeClaim:
-            claimName: {{ .Values.persistence.invalidwarcs.name }}
-        {{- else }}
-          emptyDir: {}
-        {{- end }}
-        - name: delivery
-        {{- if .Values.persistence.delivery.enabled }}
-          persistentVolumeClaim:
-            claimName: {{ .Values.persistence.delivery.name }}
-        {{- else }}
-          emptyDir: {}
-        {{- end }}
+        - name: log4j-config
+          configMap:
+          name: {{ template "veidemann-warcvalidator.configPrefix" . }}
+          items:
+            - key: log4j2.xml
+              path: log4j2.xml
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
@@ -66,22 +54,13 @@ spec:
           env:
             - name: SLEEP_TIME
               value: {{ .Values.config.sleepTime | quote }}
-            - name: DB_HOST
-              value: {{ .Values.config.db.host | quote }}
-            - name: DB_PORT
-              value: {{ .Values.config.db.port | quote }}
-            - name: DB_NAME
-              value: {{ .Values.config.db.name | quote }}
-            - name: DB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.config.db.secretName }}
-                  key: username
-            - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.config.db.secretName }}
-                  key: password
+          envFrom:
+            - configMapRef:
+                name: {{ template "veidemann-warcvalidator.configPrefix" . }}-rethinkdb-env
+                optional: false
+            - secretRef:
+                name: {{ template "veidemann-warcvalidator.configPrefix" . }}-rethinkdb-env
+                optional: false
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}

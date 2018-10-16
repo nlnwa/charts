@@ -14,7 +14,7 @@ fullnameOverride: ""
 
 service:
   type: ClusterIP
-  port: 50053
+  port: 7053
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -36,17 +36,9 @@ affinity: {}
 
 config:
   proxy:
-    host: veidemann-harvester
-    port: 8080
-  db:
-    host: rethinkdb-proxy
-    port: 28015
-    name: veidemann
-    secretName: rethinkdb
-  jaeger:
-    agent:
-      host: $(NODE_NAME)
-      port: 5775
-    sampler:
-      type: "probabilistic"
-      param: 0.1
+    host: ""
+    port: ""
+
+global:
+  veidemann:
+    jaeger: {}

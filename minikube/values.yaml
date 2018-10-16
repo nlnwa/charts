@@ -1,0 +1,198 @@
+# Default values for veidemann helm chart minikube install
+tags:
+  database: true
+  mesh: true
+  validation: true
+  dashboard: true
+  idp: true
+  tracing: true
+  metrics: false
+
+.ingress: &ingress
+  enabled: true
+  hosts:
+  - veidemann.local
+  tls:
+  - secretName: dev-veidemann-ingress-tls-cert
+    hosts:
+    - veidemann.local
+
+.issuer: &issuer "https://veidemann.local/dex"
+
+global:
+  veidemann:
+    mesh:
+      host: $(NODE_NAME)
+      port: 4140
+    jaeger:
+      agent:
+        host: $(NODE_NAME)
+        port: 5775
+      sampler:
+        type: probabilistic
+        param: 0.5
+
+veidemann-dashboard:
+  ingress:
+    <<: *ingress
+  config:
+    issuer: *issuer
+
+veidemann-api-gateway:
+  ingress:
+    <<: *ingress
+    annotations:
+      kubernetes.io/ingress.class: "nginx"
+
+veidemann-warcvalidator-api:
+  ingress:
+    <<: *ingress
+    annotations:
+      kubernetes.io/ingress.class: "nginx"
+
+veidemann-contentexplorer:
+  ingress:
+    <<: *ingress
+    annotations:
+      kubernetes.io/ingress.class: "nginx"
+
+veidemann-controller:
+  ingress:
+    <<: *ingress
+    annotations:
+      kubernetes.io/ingress.class: "nginx"
+      nginx.ingress.kubernetes.io/grpc-backend: "true"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  config:
+    issuer: *issuer
+
+rethinkdb:
+  cluster:
+    rethinkCacheSize: "auto"
+    resources:
+      requests:
+        memory: "500Mi"
+      limits:
+        memory: "5Gi"
+
+jaeger:
+  agent:
+    dnsPolicy: ClusterFirstWithHostNet
+    useHostNetwork: true
+
+dex:
+  ingress:
+    <<: *ingress
+    annotations:
+      kubernetes.io/ingress.class: "nginx"
+  certs:
+    web:
+      altNames:
+        - veidemann.local
+    grpc:
+      altNames:
+        - veidemann.local
+
+  config:
+    issuer: "https://veidemann.local/dex"
+    web:
+      allowedOrigins:
+      - https://veidemann.local
+      - https://localhost:4200
+    enablePasswordDB: true
+    staticPasswords:
+    - email: "admin@example.com"
+      # bcrypt hash of the string "password"
+      hash: "$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W"
+      username: "admin"
+      userID: "08a8684b-db88-4b73-90a9-3cd1661f5466"
+    staticClients:
+    - id: veidemann-dashboard
+      redirectURIs:
+      - "https://veidemann.local/veidemann/activity"
+      - "https://localhost:4200/activity" # Allow development with: ng serve --ssl 1 --ssl-key ... --ssl-cert ...
+      name: "Veidemann Admin Dashboard"
+      secret: ZXhhbXBsZS1hcHAtc2VjcmV0
+    - id: veidemann-cli
+      public: true
+      name: "Veidemann CLI"
+      secret: cli-app-secret
+    - id: veidemann-api
+      name: "Veidemann API"
+      secret: VerySecret
+      trustedPeers:
+      - veidemann-cli
+      - veidemann-dashboard
+
+mesh:
+  linkerd:
+    ingress:
+      <<: *ingress
+      path: /
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 0
+        memory: 512Mi
+    config:
+      admin:
+        ip: 0.0.0.0
+        port: 9990
+      namers:
+      - kind: io.l5d.k8s
+        host: localhost
+        port: 8001
+      usage:
+        orgId: nlnwa
+        enabled: false
+      routers:
+      - protocol: h2
+        label: internal-grpc
+        identifier:
+          kind: io.l5d.header.path
+          segments: 1
+        interpreter:
+          kind: io.l5d.mesh
+          experimental: true
+          dst: /$/inet/dev-namerd/4321
+          root: /grpc
+        servers:
+        - port: 4140
+          ip: 0.0.0.0
+  namerd:
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 0
+        memory: 512Mi
+    kubectl:
+      resources:
+        requests:
+          cpu: 0
+          memory: 32Mi
+    createNamespace: |
+      #!/bin/sh
+      set -e
+
+      if namerctl dtab get grpc > /dev/null 2>&1; then
+        echo "grpc namespace already exists"
+      else
+        echo "
+          # Use the k8s namer for resolution
+          /srv                                => /#/io.l5d.k8s/veidemann ;
+          /grpc                               => /srv/grpc ;
+
+          # identifier: io.l5d.header.path (segments: 1)
+          /svc/veidemann.api.Frontier         => /grpc/dev-veidemann-frontier ;
+          /svc/veidemann.api.ContentWriter    => /grpc/dev-veidemann-contentwriter ;
+          /svc/veidemann.api.Controller       => /grpc/dev-veidemann-controller ;
+          /svc/veidemann.api.DnsResolver      => /grpc/dev-veidemann-dnsresolver ;
+          /svc/veidemann.api.RobotsEvaluator  => /grpc/dev-veidemann-robotsevaluator-service ;
+          /svc/veidemann.api.Status           => /grpc/dev-veidemann-controller ;
+          /svc/veidemann.api.Report           => /grpc/dev-veidemann-controller ;
+        " | namerctl dtab create grpc -
+      fi

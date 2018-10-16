@@ -1,0 +1,25 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ template "veidemann.configPrefix" . }}
+  labels:
+    app: {{ template "veidemann.name" . }}
+    chart: {{ template "veidemann.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  controller.host: {{ default (include "veidemann.controller.host" .) .Values.config.controller.host | quote }}
+  controller.port: {{ default .Values.default.controller.port .Values.config.controller.port | quote }}
+  frontier.host: {{ default (include "veidemann.frontier.host" .) .Values.config.frontier.host | quote }}
+  frontier.port: {{ default .Values.default.frontier.port .Values.config.frontier.port | quote }}
+  harvester.host: {{ default (include "veidemann.harvester.host" .) .Values.config.harvester.host | quote }}
+  harvester.port: {{ default .Values.default.harvester.port .Values.config.harvester.port | quote }}
+  contentWriter.host: {{ default (include "veidemann.contentWriter.host" .) .Values.config.contentWriter.host | quote }}
+  contentWriter.port: {{ default .Values.default.contentWriter.port .Values.config.contentWriter.port | quote }}
+  robotsEvaluator.host: {{ default (include "veidemann.robotsEvaluator.host" .) .Values.config.robotsEvaluator.host | quote }}
+  robotsEvaluator.port: {{ default .Values.default.robotsEvaluator.port .Values.config.robotsEvaluator.port | quote }}
+  dnsResolver.host: {{ default (include "veidemann.dnsResolver.host" .) .Values.config.dnsResolver.host | quote }}
+  dnsResolver.port: {{ default .Values.default.dnsResolver.port .Values.config.dnsResolver.port | quote }}
+  cache.host: {{ default (include "veidemann.cache.host" .) .Values.config.cache.host | quote }}
+  cache.port: {{ default .Values.default.cache.port .Values.config.cache.port | quote }}
+  log4j2.xml: {{ toYaml (default .Values.default.log4j2.xml .Values.config.log4j2.xml) | indent 2 }}

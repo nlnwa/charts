@@ -25,23 +25,13 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          env:
-            - name: DB_HOST
-              value: {{ .Values.config.db.host | quote }}
-            - name: DB_PORT
-              value: {{ .Values.config.db.port | quote }}
-            - name: DB_NAME
-              value: {{ .Values.config.db.name | quote }}
-            - name: DB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.config.db.secretName }}
-                  key: username
-            - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.config.db.secretName }}
-                  key: password
+          envFrom:
+            - configMapRef:
+                name: {{ template "veidemann-metrics.configPrefix" . }}-rethinkdb-env
+                optional: false
+            - secretRef:
+                name: {{ template "veidemann-metrics.configPrefix" . }}-rethinkdb-env
+                optional: false
           ports:
             - name: http-metrics
               containerPort: {{ .Values.service.internalMetricsPort }}
@@ -59,10 +49,14 @@ spec:
             - "$(DB_USER)"
             - "-dbpassword"
             - "$(DB_PASSWORD)"
+        {{- with .Values.livenessProbe }}
           livenessProbe:
-{{ toYaml .Values.config.livenessProbe | indent 12 }}
+{{ toYaml . | indent 12 }}
+        {{- end }}
+        {{- with .Values.readinessProbe }}
           readinessProbe:
-{{ toYaml .Values.config.readinessProbe | indent 12 }}
+{{ toYaml . | indent 12 }}
+        {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
