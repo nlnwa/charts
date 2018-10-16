@@ -1,11 +1,11 @@
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: {{ template "veidemann-admin.fullname" . }}
+  name: {{ template "veidemann-dashboard.fullname" . }}
   labels:
     app: veidemann
-    component: {{ template "veidemann-admin.name" . }}
-    chart: {{ template "veidemann-admin.chart" . }}
+    component: {{ template "veidemann-dashboard.name" . }}
+    chart: {{ template "veidemann-dashboard.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:

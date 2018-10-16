@@ -1,30 +1,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "veidemann-admin.fullname" . }}
+  name: {{ template "veidemann-dashboard.fullname" . }}
   labels:
     app: veidemann
-    component: {{ template "veidemann-admin.name" . }}
-    chart: {{ template "veidemann-admin.chart" . }}
+    component: {{ template "veidemann-dashboard.name" . }}
+    chart: {{ template "veidemann-dashboard.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      component: {{ template "veidemann-admin.name" . }}
+      component: {{ template "veidemann-dashboard.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
         app: veidemann
-        component: {{ template "veidemann-admin.name" . }}
+        component: {{ template "veidemann-dashboard.name" . }}
         release: {{ .Release.Name }}
     spec:
       volumes:
-        - name: config-volume
+        - name: config
           configMap:
-            name: {{ template "veidemann-admin.fullname" . }}
+            name: {{ template "veidemann-dashboard.fullname" . }}
             items:
               - key: environment.json
                 path: environment.json
@@ -42,7 +42,7 @@ spec:
                 fieldRef:
                   fieldPath: status.hostIP
           volumeMounts:
-          - name: config-volume
+          - name: config
             mountPath: /usr/share/nginx/html/veidemann/assets/config/
           resources:
 {{ toYaml .Values.resources | indent 12 }}

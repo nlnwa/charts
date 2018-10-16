@@ -1,0 +1,29 @@
+{{- $root := . -}}
+{{- range $name, $persistence := .Values.persistence }}
+{{- if $persistence.enabled }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "veidemann.configPrefix" $root }}-{{ $name }}
+  labels:
+    app: {{ template "veidemann.name" $root }}
+    chart: {{ template "veidemann.chart" $root }}
+    release: {{ $root.Release.Name }}
+    heritage: {{ $root.Release.Service }}
+  annotations:
+{{ toYaml $persistence.annotations | indent 4 }}
+spec:
+  accessModes:
+    - {{ $persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ $persistence.size | quote }}
+{{- if $persistence.storageClass }}
+{{- if (eq "-" $persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ $persistence.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

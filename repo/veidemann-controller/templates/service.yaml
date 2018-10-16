@@ -12,8 +12,8 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: http
-      name: http
+      name: grpc
+      targetPort: grpc
   selector:
     component: {{ template "veidemann-controller.name" . }}
     release: {{ .Release.Name }}

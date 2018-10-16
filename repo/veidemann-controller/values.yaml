@@ -14,32 +14,32 @@ fullnameOverride: ""
 
 service:
   type: ClusterIP
-  port: 50051
+  port: 7700
 
 ingress:
   enabled: false
   annotations: {}
-    # kubernetes.io/ingress.class: "nginx"
-    # kubernetes.io/tls-acme: "true"
+  # kubernetes.io/ingress.class: "nginx"
+  # kubernetes.io/tls-acme: "true"
   path: /veidemann.api
   hosts:
-    - chart-example.local
+  - chart-example.local
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
 
 resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #  cpu: 100m
-  #  memory: 128Mi
-  # requests:
-  #  cpu: 100m
-  #  memory: 128Mi
+# We usually recommend not to specify default resources and to leave this as a conscious
+# choice for the user. This also increases chances charts run on environments with little
+# resources, such as Minikube. If you do want to specify resources, uncomment the following
+# lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+# limits:
+#  cpu: 100m
+#  memory: 128Mi
+# requests:
+#  cpu: 100m
+#  memory: 128Mi
 
 nodeSelector: {}
 
@@ -47,23 +47,33 @@ tolerations: []
 
 affinity: {}
 
+hostAliases: []
+
+trustedCA:
+  # create a secret or net
+  create: false
+  # if enabled deployment will mount volume with tls.crt
+  enabled: false
+  # secretName will be used as secretRef in deployment if trustedCA is enabled
+  # defaults to value of fullname template if empty (falsy)
+  secretName: ""
+  # key is a PEM encoded tls key
+  key: ""
+  # crt is a PEM encoded tls certificate
+  crt: ""
+
+# global overrides config values
+global:
+  veidemann:
+    jaeger: {}
+    mesh:
+      host: ""
+      port: ""
+
+# config overrides common configmap values
 config:
-  tls: false
-  tlsSecretName: ""
-  hostAliases: []
   issuer: ""
-  db:
-    host: rethinkdb-proxy
-    port: 28015
-    name: veidemann
-    secretName: rethinkdb
-  jaeger:
-    agent:
-      host: $(NODE_NAME)
-      port: 5775
-    sampler:
-      type: probabilistic
-      param: 0.1
+
   frontier:
-    host: $(NODE_NAME)
-    port: 4340
+    host: ""
+    port: ""

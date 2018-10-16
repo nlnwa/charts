@@ -25,15 +25,15 @@ spec:
         - emptyDir: {}
           name: workdir
         - name: warcs
-        {{- if .Values.persistence.warcs.enabled }}
+        {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.warcs.name }}
+            claimName: {{ template "veidemann-contentwriter.claimName" . }}
         {{- else }}
           emptyDir: {}
         {{- end }}
         - name: log4j-config
           configMap:
-            name: {{ .Release.Name }}-veidemann
+            name: {{ template "veidemann-contentwriter.configPrefix" . }}
             items:
             - key: log4j2.xml
               path: log4j2.xml
@@ -42,8 +42,8 @@ spec:
           image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
-              containerPort: 8082
+            - name: grpc
+              containerPort: {{ .Values.service.port }}
           volumeMounts:
             - mountPath: /workdir
               name: workdir
@@ -52,49 +52,47 @@ spec:
             - name: log4j-config
               mountPath: /veidemann/config/log4j2.xml
               subPath: log4j2.xml
+          envFrom:
+            - configMapRef:
+                name: {{ template "veidemann-contentwriter.configPrefix" . }}-rethinkdb-env
+                optional: false
+            - secretRef:
+                name: {{ template "veidemann-contentwriter.configPrefix" . }}-rethinkdb-env
+                optional: false
+          {{- if not .Values.global.veidemann.jaeger }}
+            - configMapRef:
+                name: {{ template "veidemann-contentwriter.configPrefix" . }}-jaeger-env
+                optional: true
+          {{- end }}
           env:
             - name: NODE_NAME
               valueFrom:
                 fieldRef:
                   fieldPath: status.hostIP
-            - name: API_PORT
-              value: "8082"
             - name: HOST_NAME
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
+            - name: API_PORT
+              value: {{ .Values.service.port | quote }}
             - name: FILE_PREFIX
-              value: {{ .Values.config.filePrefix | quote }}
+              value: {{ .Values.config.warc.filePrefix | quote }}
             - name: WARC_WRITER_POOL_SIZE
               value: {{ .Values.config.warc.writer.poolSize | quote }}
             - name: WARC_SIZE
               value: {{ .Values.config.warc.size | quote }}
             - name: WARC_COMPRESS
               value: {{ .Values.config.warc.compress | quote }}
-            - name: DB_HOST
-              value: {{ .Values.config.db.host | quote }}
-            - name: DB_PORT
-              value: {{ .Values.config.db.port | quote }}
-            - name: DB_NAME
-              value: {{ .Values.config.db.name | quote }}
-            - name: DB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.config.db.secretName }}
-                  key: username
-            - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.config.db.secretName }}
-                  key: password
+          {{- with .Values.global.veidemann.jaeger }}
             - name: JAEGER_AGENT_HOST
-              value: {{ .Values.config.jaeger.agent.host | quote }}
+              value: {{ .agent.host | quote }}
             - name: JAEGER_AGENT_PORT
-              value: {{ .Values.config.jaeger.agent.port | quote }}
+              value: {{ .agent.port | quote }}
             - name: JAEGER_SAMPLER_TYPE
-              value: {{ .Values.config.jaeger.sampler.type | quote }}
+              value: {{ .sampler.type | quote }}
             - name: JAEGER_SAMPLER_PARAM
-              value: {{ .Values.config.jaeger.sampler.param | quote }}          
+              value: {{ .sampler.param | quote }}
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}

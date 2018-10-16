@@ -1,0 +1,16 @@
+{{- if or .Values.tags.tracing .Values.config.jaeger.create }}
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ template "veidemann.configPrefix" . }}-jaeger-env
+  labels:
+    app: {{ template "veidemann.name" . }}
+    chart: {{ template "veidemann.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  JAEGER_AGENT_HOST: {{ default (include "veidemann.jaeger.agent.host" .) .Values.config.jaeger.agent.host | quote }}
+  JAEGER_AGENT_PORT: {{ default .Values.default.jaeger.agent.port .Values.config.jaeger.agent.port | quote }}
+  JAEGER_SAMPLER_TYPE: {{ default .Values.default.jaeger.sampler.type .Values.config.jaeger.sampler.type | quote }}
+  JAEGER_SAMPLER_PARAM: {{ default .Values.default.jaeger.sampler.param .Values.config.jaeger.sampler.param | quote }}
+{{- end }}

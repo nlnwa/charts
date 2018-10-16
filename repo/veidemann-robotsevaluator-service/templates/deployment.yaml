@@ -24,7 +24,7 @@ spec:
       volumes:
         - name: log4j-config
           configMap:
-            name: {{ .Release.Name }}-veidemann
+            name: {{ template "veidemann-robotsevaluator-service.configPrefix" . }}
             items:
             - key: log4j2.xml
               path: log4j2.xml
@@ -33,46 +33,60 @@ spec:
           image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
-              containerPort: 50053
+            - name: grpc
+              containerPort: {{ .Values.service.port }}
               protocol: TCP
           volumeMounts:
             - name: log4j-config
               mountPath: /veidemann/config/log4j2.xml
               subPath: log4j2.xml
+          envFrom:
+            - configMapRef:
+                name: {{ template "veidemann-robotsevaluator-service.configPrefix" . }}-rethinkdb-env
+                optional: false
+            - secretRef:
+                name: {{ template "veidemann-robotsevaluator-service.configPrefix" . }}-rethinkdb-env
+                optional: false
+          {{- if not .Values.global.veidemann.jaeger }}
+            - configMapRef:
+                name: {{ template "veidemann-robotsevaluator-service.configPrefix" . }}-jaeger-env
+                optional: true
+          {{- end }}
           env:
             - name: NODE_NAME
               valueFrom:
                 fieldRef:
                   fieldPath: status.hostIP
-            - name: DB_HOST
-              value: {{ .Values.config.db.host | quote }}
-            - name: DB_PORT
-              value: {{ .Values.config.db.port | quote }}
-            - name: DB_NAME
-              value: {{ .Values.config.db.name | quote }}
-            - name: DB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.config.db.secretName }}
-                  key: username
-            - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.config.db.secretName }}
-                  key: password
+            - name: API_PORT
+              value: {{ .Values.service.port | quote }}
             - name: PROXY_HOST
-              value: "{{ .Release.Name }}-{{ .Values.config.proxy.host }}"
+            {{- if .Values.config.proxy.host }}
+              value: {{ .Values.config.proxy.host | quote }}
+            {{- else }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "veidemann-robotsevaluator-service.configPrefix" . }}
+                  key: harvester.host
+            {{- end }}
             - name: PROXY_PORT
+            {{- if .Values.config.proxy.host }}
               value: {{ .Values.config.proxy.port | quote }}
+            {{- else }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "veidemann-robotsevaluator-service.configPrefix" . }}
+                  key: harvester.port
+            {{- end }}
+          {{- with .Values.global.veidemann.jaeger }}
             - name: JAEGER_AGENT_HOST
-              value: {{ .Values.config.jaeger.agent.host | quote }}
+              value: {{ .agent.host | quote }}
             - name: JAEGER_AGENT_PORT
-              value: {{ .Values.config.jaeger.agent.port | quote }}
+              value: {{ .agent.port | quote }}
             - name: JAEGER_SAMPLER_TYPE
-              value: {{ .Values.config.jaeger.sampler.type | quote }}
+              value: {{ .sampler.type | quote }}
             - name: JAEGER_SAMPLER_PARAM
-              value: {{ .Values.config.jaeger.sampler.param | quote }}
+              value: {{ .sampler.param | quote }}
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}

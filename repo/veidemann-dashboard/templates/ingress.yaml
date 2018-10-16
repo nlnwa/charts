@@ -1,5 +1,5 @@
 {{- if .Values.ingress.enabled -}}
-{{- $fullName := include "veidemann-admin.fullname" . -}}
+{{- $fullName := include "veidemann-dashboard.fullname" . -}}
 {{- $servicePort := .Values.service.port -}}
 {{- $ingressPath := .Values.ingress.path -}}
 apiVersion: extensions/v1beta1
@@ -8,8 +8,8 @@ metadata:
   name: {{ $fullName }}
   labels:
     app: veidemann
-    component: {{ template "veidemann-admin.name" . }}
-    chart: {{ template "veidemann-admin.chart" . }}
+    component: {{ template "veidemann-dashboard.name" . }}
+    chart: {{ template "veidemann-dashboard.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 {{- with .Values.ingress.annotations }}

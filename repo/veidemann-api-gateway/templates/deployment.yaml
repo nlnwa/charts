@@ -1,3 +1,4 @@
+{{- $global := .Values.global.veidemann -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -26,18 +27,34 @@ spec:
           image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
-              containerPort: {{ .Values.service.port }}
-              protocol: TCP
+          - name: http
+            containerPort: {{ .Values.service.port }}
+            protocol: TCP
           env:
           - name: NODE_NAME
             valueFrom:
               fieldRef:
                 fieldPath: status.hostIP
           - name: CONTROLLER_HOST
-            value: {{ .Values.config.controller.host | quote }}
+          {{- if or .Values.config.controller.host $global.mesh.host }}
+            value: {{ default .Values.config.controller.host $global.mesh.host | quote }}
+          {{- else }}
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "veidemann-api-gateway.configPrefix" . }}
+                key: controller.host
+                optional: false
+          {{- end }}
           - name: CONTROLLER_PORT
-            value: {{ .Values.config.controller.port | quote }}
+          {{- if or .Values.config.controller.port $global.mesh.port }}
+            value: {{ default .Values.config.controller.port $global.mesh.port | quote }}
+          {{- else }}
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "veidemann-api-gateway.configPrefix" . }}
+                key: controller.host
+                optional: false
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}

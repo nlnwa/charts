@@ -30,3 +30,16 @@ Create chart name and version as used by the chart label.
 {{- define "veidemann.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Create a config prefix used as prefix when naming resources like configmaps, secrets and pvcs.
+If release name contains chart name it will be used as a config prefix.
+*/}}
+{{- define "veidemann.configPrefix" -}}
+{{- $name := "veidemann" -}}
+{{- if contains $name .Release.Name -}}
+{{- .Release.Name -}}
+{{- else -}}
+{{- printf "%s-%s" .Release.Name $name -}}
+{{- end -}}
+{{- end -}}

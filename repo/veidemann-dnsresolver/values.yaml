@@ -30,32 +30,30 @@ tolerations: []
 
 affinity: {}
 
+livenessProbe:
+  httpGet:
+    path: /health
+    port: http-health
+  initialDelaySeconds: 15
+  periodSeconds: 15
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: http-health
+  initialDelaySeconds: 15
+  periodSeconds: 15
+
+# global overrides config
+global:
+  veidemann:
+    mesh:
+      host: ""
+      port: ""
+
 config:
-  db:
-    host: rethinkdb-proxy
-    port: 28015
-    name: veidemann
-    secretName: rethinkdb
-  livenessProbe:
-    httpGet:
-      path: /health
-      port: http-health
-    initialDelaySeconds: 15
-    periodSeconds: 5
-  readinessProbe:
-    httpGet:
-      path: /health
-      port: http-health
-    initialDelaySeconds: 3
-    periodSeconds: 3
-  jaeger:
-    agent:
-      host: $(NODE_NAME)
-      port: 5775
-    sampler:
-      type: probabilistic
-      param: 0.1
   contentWriter:
-    host: $(NODE_NAME)
-    port: 4340
+    host: ""
+    port: ""
+
   dnsServer: "8.8.8.8"

@@ -54,7 +54,15 @@ tolerations: []
 
 affinity: {}
 
+# global overrides config
+global:
+  veidemann:
+    mesh:
+      host: ""
+      port: ""
+
+# config overrides configmap
 config:
   controller:
-    host: $(NODE_NAME)
-    port: 4340
+    host: ""
+    port: ""

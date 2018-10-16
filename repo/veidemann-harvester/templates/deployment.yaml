@@ -1,3 +1,4 @@
+{{- $global := .Values.global.veidemann -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -26,7 +27,7 @@ spec:
           emptyDir: {}
         - name: log4j-config
           configMap:
-            name: {{ .Release.Name }}-veidemann
+            name: {{ template "veidemann-harvester.configPrefix" . }}
             items:
             - key: log4j2.xml
               path: log4j2.xml
@@ -38,67 +39,123 @@ spec:
             secretName: {{ .Release.Name }}-veidemann-cache
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-        {{- with .Values.ports }}
+          image: "{{ .Values.proxy.image.repository }}:{{ default .Chart.AppVersion .Values.proxy.image.tag }}"
+          imagePullPolicy: {{ .Values.proxy.image.pullPolicy }}
+        {{- with .Values.proxy.ports }}
           ports:
 {{ toYaml . | indent 12 }}
         {{- end }}
+          envFrom:
+            - configMapRef:
+                name: {{ template "veidemann-harvester.configPrefix" . }}-rethinkdb-env
+                optional: false
+            - secretRef:
+                name: {{ template "veidemann-harvester.configPrefix" . }}-rethinkdb-env
+                optional: false
+          {{- if not .Values.global.veidemann.jaeger }}
+            - configMapRef:
+                name: {{ template "veidemann-harvester.configPrefix" . }}-jaeger-env
+                optional: true
+          {{- end }}
           env:
             - name: NODE_NAME
               valueFrom:
                 fieldRef:
                   fieldPath: status.hostIP
             - name: BROWSER_WS_ENDPOINT
-              value: {{ .Values.config.browserWSEndpoint | quote }}
-            - name: DB_HOST
-              value: {{ .Values.config.db.host | quote }}
-            - name: DB_PORT
-              value: {{ .Values.config.db.port | quote }}
-            - name: DB_NAME
-              value: {{ .Values.config.db.name | quote }}
-            - name: DB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.config.db.secretName }}
-                  key: username
-            - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.config.db.secretName }}
-                  key: password
-            - name: FRONTIER_HOST
-              value: {{ .Values.config.frontier.host | quote }}
-            - name: FRONTIER_PORT
-              value: {{ .Values.config.frontier.port | quote }}
-            - name: CONTENT_WRITER_HOST
-              value: {{ .Values.config.contentWriter.host | quote }}
-            - name: CONTENT_WRITER_PORT
-              value: {{ .Values.config.contentWriter.port | quote }}
-            - name: DNS_RESOLVER_HOST
-              value: {{ .Values.config.dnsResolver.host | quote }}
-            - name: DNS_RESOLVER_PORT
-              value: {{ .Values.config.dnsResolver.port | quote }}
-            - name: CACHE_HOST
-              value: "{{ .Release.Name }}-{{ .Values.config.cache.host }}"
+              value: {{ .Values.proxy.config.browserWSEndpoint | quote }}
             - name: MAX_OPEN_SESSIONS
-              value: {{ .Values.config.maxOpenSessions | quote }}
-            - name: JAEGER_AGENT_HOST
-              value: {{ .Values.config.jaeger.agent.host | quote }}
-            - name: JAEGER_AGENT_PORT
-              value: {{ .Values.config.jaeger.agent.port | quote }}
-            - name: JAEGER_SAMPLER_TYPE
-              value: {{ .Values.config.jaeger.sampler.type | quote }}
-            - name: JAEGER_SAMPLER_PARAM
-              value: {{ .Values.config.jaeger.sampler.param | quote }}
+              value: {{ .Values.proxy.config.maxOpenSessions | quote }}
+            - name: FRONTIER_HOST
+            {{- if or .Values.proxy.config.frontier.host $global.mesh.host }}
+              value: {{ default .Values.proxy.config.frontier.host $global.mesh.host | quote }}
+            {{- else }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "veidemann-harvester.configPrefix" . }}
+                  key: frontier.host
+            {{- end }}
+            - name: FRONTIER_PORT
+            {{- if or .Values.proxy.config.frontier.port $global.mesh.port}}
+              value: {{ default .Values.proxy.config.frontier.port $global.mesh.port| quote }}
+            {{- else }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "veidemann-harvester.configPrefix" . }}
+                  key: frontier.port
+            {{- end }}
+            - name: CONTENT_WRITER_HOST
+            {{- if or .Values.proxy.config.contentWriter.host $global.mesh.host }}
+              value: {{ default .Values.proxy.config.contentWriter.host $global.mesh.host | quote }}
+            {{- else }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "veidemann-harvester.configPrefix" . }}
+                  key: contentWriter.host
+            {{- end }}
+            - name: CONTENT_WRITER_PORT
+            {{- if or .Values.proxy.config.contentWriter.port $global.mesh.port}}
+              value: {{ default .Values.proxy.config.contentWriter.port $global.mesh.port| quote }}
+            {{- else }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "veidemann-harvester.configPrefix" . }}
+                  key: contentWriter.port
+            {{- end }}
+            - name: DNS_RESOLVER_HOST
+            {{- if or .Values.proxy.config.dnsResolver.host $global.mesh.host }}
+              value: {{ default .Values.proxy.config.dnsResolver.host $global.mesh.host | quote }}
+            {{- else }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "veidemann-harvester.configPrefix" . }}
+                  key: dnsResolver.host
+            {{- end }}
+            - name: DNS_RESOLVER_PORT
+            {{- if or .Values.proxy.config.dnsResolver.port $global.mesh.port}}
+              value: {{ default .Values.proxy.config.dnsResolver.port $global.mesh.port| quote }}
+            {{- else }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "veidemann-harvester.configPrefix" . }}
+                  key: dnsResolver.port
+            {{- end }}
+            - name: CACHE_HOST
+            {{- if .Values.proxy.config.cache.host }}
+              value: {{ .Values.proxy.config.cache.host | quote }}
+            {{- else }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "veidemann-harvester.configPrefix" . }}
+                  key: cache.host
+            {{- end }}
+            - name: CACHE_PORT
+            {{- if .Values.proxy.config.cache.port }}
+              value: {{ .Values.proxy.config.cache.port | quote }}
+            {{- else }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "veidemann-harvester.configPrefix" . }}
+                  key: cache.port
+            {{- end }}
             - name: JAVA_OPTS
-              value: {{ .Values.config.javaOpts | quote }}
-        {{- with .Values.config.livenessProbe }}
+              value: {{ .Values.proxy.config.javaOpts | quote }}
+          {{- with .Values.global.veidemann.jaeger }}
+            - name: JAEGER_AGENT_HOST
+              value: {{ .agent.host | quote }}
+            - name: JAEGER_AGENT_PORT
+              value: {{ .agent.port | quote }}
+            - name: JAEGER_SAMPLER_TYPE
+              value: {{ .sampler.type | quote }}
+            - name: JAEGER_SAMPLER_PARAM
+              value: {{ .sampler.param | quote }}
+          {{- end }}
+        {{- with .Values.proxy.livenessProbe }}
           livenessProbe:
 {{ toYaml . | indent 12 }}
         {{- end }}
           readinessProbe:
-        {{- with .Values.config.readinessProbe }}
+        {{- with .Values.proxy.readinessProbe }}
 {{ toYaml . | indent 12 }}
         {{- end }}
           volumeMounts:
@@ -111,7 +168,7 @@ spec:
               mountPath: "/ca-certificates"
               readOnly: true
           resources:
-{{ toYaml .Values.resources | indent 12 }}
+{{ toYaml .Values.proxy.resources | indent 12 }}
 
         # Browser container
         - name: {{ .Chart.Name }}-browser
