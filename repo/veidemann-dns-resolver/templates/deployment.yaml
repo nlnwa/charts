@@ -2,24 +2,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "veidemann-dnsresolver.fullname" . }}
+  name: {{ template "veidemann-dns-resolver.fullname" . }}
   labels:
     app: veidemann
-    component: {{ template "veidemann-dnsresolver.name" . }}
-    chart: {{ template "veidemann-dnsresolver.chart" . }}
+    component: {{ template "veidemann-dns-resolver.name" . }}
+    chart: {{ template "veidemann-dns-resolver.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      component: {{ template "veidemann-dnsresolver.name" . }}
+      component: {{ template "veidemann-dns-resolver.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
         app: veidemann
-        component: {{ template "veidemann-dnsresolver.name" . }}
+        component: {{ template "veidemann-dns-resolver.name" . }}
         release: {{ .Release.Name }}
     spec:
       containers:
@@ -41,10 +41,10 @@ spec:
               containerPort: {{ .Values.service.internalHealthPort }}
           envFrom:
             - configMapRef:
-                name: {{ template "veidemann-dnsresolver.configPrefix" . }}-rethinkdb-env
+                name: {{ template "veidemann-dns-resolver.configPrefix" . }}-rethinkdb-env
                 optional: false
             - secretRef:
-                name: {{ template "veidemann-dnsresolver.configPrefix" . }}-rethinkdb-env
+                name: {{ template "veidemann-dns-resolver.configPrefix" . }}-rethinkdb-env
                 optional: false
           env:
             - name: NODE_NAME
@@ -57,7 +57,7 @@ spec:
             {{- else }}
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "veidemann-dnsresolver.configPrefix" . }}
+                  name: {{ template "veidemann-dns-resolver.configPrefix" . }}
                   key: contentWriter.host
             {{- end }}
             - name: CONTENT_WRITER_PORT
@@ -66,7 +66,7 @@ spec:
             {{- else }}
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "veidemann-dnsresolver.configPrefix" . }}
+                  name: {{ template "veidemann-dns-resolver.configPrefix" . }}
                   key: contentWriter.port
             {{- end }}
             - name: DNS_SERVER

@@ -126,7 +126,7 @@ default:
     port: "8082"
 
   dnsResolver:
-    host: "veidemann-dnsresolver"
+    host: "veidemann-dns-resolver"
     port: "8053"
 
   robotsEvaluator:
@@ -244,7 +244,7 @@ veidemann-warcvalidator:
 
 veidemann-cache:
   cache:
-    dnsServers: "veidemann-dnsresolver"
+    dnsServers: "veidemann-dns-resolver"
 
 rethinkdb:
   cluster:

@@ -46,7 +46,7 @@ If release name contains chart name it will be used as a config prefix
 
 {{- define "veidemann-cache.dnsServers" -}}
 {{- $dnsServers := .Values.cache.dnsServers -}}
-{{- if eq "veidemann-dnsresolver" $dnsServers -}}
+{{- if eq "veidemann-dns-resolver" $dnsServers -}}
 {{- printf "%s-%s" .Release.Name $dnsServers -}}
 {{- else -}}
 {{- $dnsServers -}}
