@@ -68,7 +68,7 @@ dependencies:
 
 # Metrics
 - name: veidemann-metrics
-  version: 1.0.0
+  version: 1.0.1
   repository: file://../veidemann-metrics
   condition: veidemann-metrics.enabled
   tags:
