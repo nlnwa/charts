@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "veidemann-dashboard-documentation.fullname" . }}
+  labels:
+    app: veidemann
+    component: {{ template "veidemann-dashboard-documentation.name" . }}
+    chart: {{ template "veidemann-dashboard-documentation.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: {{ include "veidemann-dashboard-documentation.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

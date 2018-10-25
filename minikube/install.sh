@@ -5,9 +5,6 @@ set -e
 # Enforce minikube context (not production)
 kubectl config use-context minikube
 
-# Make sure ingress is enabled
-minikube addons enable ingress
-
 # Initialize helm on client and server, wait for it to be ready
 helm init --wait
 
@@ -24,7 +21,7 @@ helm dep up ../repo/veidemann
 # of the name of the generated certs
 # See (https://kubernetes.io/docs/concepts/services-networking/add-entries-to-pod-etc-hosts-with-host-aliases/)
 
-helm upgrade dev ../repo/veidemann --install --namespace veidemann \
+helm upgrade dev ../repo/veidemann --namespace veidemann --install \
 --values values.yaml \
 --set tls.create=true \
 --set-file tls.key=certs/tls.key \

@@ -51,6 +51,13 @@ dependencies:
   tags:
   - dashboard
 
+- name: veidemann-dashboard-documentation
+  version: 1.0.0
+  repository: file://../veidemann-dashboard-documentation
+  condition: veidemann-dashboard-documentation.enabled
+  tags:
+  - dashboard
+
 # Validation
 - name: veidemann-warcvalidator
   version: 1.0.1
