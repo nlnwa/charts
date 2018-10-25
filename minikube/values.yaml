@@ -32,9 +32,6 @@ veidemann-dashboard:
     issuer: *issuer
 
 veidemann-dashboard-documentation:
-  image:
-    tag: "latest"
-    pullPolicy: "Always"
   ingress:
     <<: *ingress
     annotations:
