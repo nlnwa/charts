@@ -18,6 +18,10 @@ service:
       port: 3000
       targetPort: debug
       protocol: TCP
+    http-metrics:
+      port: 9301
+      targetPort: http-metrics
+      protocol: TCP
 
 nodeSelector: {}
 
@@ -34,6 +38,9 @@ proxy:
   ports:
   - name: http-alt
     containerPort: 8080
+    protocol: TCP
+  - name: http-metrics
+    containerPort: 9301
     protocol: TCP
 
   resources: {}
