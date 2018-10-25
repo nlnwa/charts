@@ -8,6 +8,7 @@ metadata:
     chart: {{ template "veidemann-harvester.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    k8s-app: veidemann
 spec:
   type: {{ .Values.service.type }}
   ports:
