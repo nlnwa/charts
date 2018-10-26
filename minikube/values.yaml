@@ -31,6 +31,13 @@ veidemann-dashboard:
   config:
     issuer: *issuer
 
+veidemann-dashboard-documentation:
+  ingress:
+    <<: *ingress
+    annotations:
+      kubernetes.io/ingress.class: "nginx"
+  baseUrl: https://veidemann.local/veidemann/docs
+
 veidemann-api-gateway:
   ingress:
     <<: *ingress
@@ -183,7 +190,7 @@ mesh:
           /svc/veidemann.api.Frontier         => /grpc/dev-veidemann-frontier ;
           /svc/veidemann.api.ContentWriter    => /grpc/dev-veidemann-contentwriter ;
           /svc/veidemann.api.Controller       => /grpc/dev-veidemann-controller ;
-          /svc/veidemann.api.DnsResolver      => /grpc/dev-veidemann-dnsresolver ;
+          /svc/veidemann.api.DnsResolver      => /grpc/dev-veidemann-dns-resolver ;
           /svc/veidemann.api.RobotsEvaluator  => /grpc/dev-veidemann-robotsevaluator-service ;
           /svc/veidemann.api.Status           => /grpc/dev-veidemann-controller ;
           /svc/veidemann.api.Report           => /grpc/dev-veidemann-controller ;
