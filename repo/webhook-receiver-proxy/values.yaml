@@ -48,6 +48,9 @@ tolerations: []
 affinity: {}
 
 config:
+  # example keys:
+  #   DOCKER_HUB_API_KEY: <api key>
+  #   GITHUB_API_KEY: <api key>
   keys: {}
   logLevel: info
   upstream:
