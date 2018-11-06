@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+RELEASE=local
+
 set -e
 
 # Enforce minikube context (not production)
@@ -21,15 +23,15 @@ helm dep up ../repo/veidemann
 # of the name of the generated certs
 # See (https://kubernetes.io/docs/concepts/services-networking/add-entries-to-pod-etc-hosts-with-host-aliases/)
 
-helm upgrade dev ../repo/veidemann --namespace veidemann --install \
+helm upgrade ${RELEASE} ../repo/veidemann --install \
 --values values.yaml \
 --set tls.create=true \
---set-file tls.key=certs/tls.key \
---set-file tls.crt=certs/tls.crt \
+--set-file tls.key=certs/veidemann.local/key.pem \
+--set-file tls.crt=certs/veidemann.local/cert.pem \
 --set veidemann-controller.trustedCA.create=true \
 --set veidemann-controller.trustedCA.enabled=true \
---set-file veidemann-controller.trustedCA.key=certs/ca.key \
---set-file veidemann-controller.trustedCA.crt=certs/ca.crt \
+--set-file veidemann-controller.trustedCA.key=certs/minica-key.pem \
+--set-file veidemann-controller.trustedCA.crt=certs/minica.pem \
 --set veidemann-controller.hostAliases[0].ip=$(minikube ip) \
 --set veidemann-controller.hostAliases[0].hostnames[0]=veidemann.local \
 $@
