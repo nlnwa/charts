@@ -52,7 +52,7 @@ dependencies:
   - dashboard
 
 - name: veidemann-dashboard-documentation
-  version: 1.0.1
+  version: 1.0.2
   repository: file://../veidemann-dashboard-documentation
   condition: veidemann-dashboard-documentation.enabled
   tags:
