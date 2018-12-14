@@ -7,6 +7,9 @@ set -e
 # Enforce minikube context (not production)
 kubectl config use-context minikube
 
+rm -f ../veidemann/charts/*
+rm -f ../mesh/charts/*
+
 # Initialize helm on client and server, wait for it to be ready
 helm init --wait
 

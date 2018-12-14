@@ -77,3 +77,9 @@ config:
   frontier:
     host: ""
     port: ""
+
+envoy:
+  image:
+    repository: envoyproxy/envoy-alpine
+    tag: v1.8.0
+    pullPolicy: IfNotPresent
