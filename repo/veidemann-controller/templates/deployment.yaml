@@ -29,6 +29,9 @@ spec:
             items:
               - key: log4j2.xml
                 path: log4j2.xml
+        - name: envoy-config
+          configMap:
+            name: {{ template "veidemann-controller.fullname" . }}-envoy
       {{- if .Values.trustedCA.enabled }}
         - name: ca
           secret:
@@ -110,6 +113,37 @@ spec:
               mountPath: /veidemann/trustedca/tls.crt
               subPath: tls.crt
           {{- end }}
+        - name: {{ .Chart.Name }}-envoy
+          image: "{{ .Values.envoy.image.repository }}:{{ default .Chart.AppVersion .Values.envoy.image.tag }}"
+          imagePullPolicy: {{ .Values.envoy.image.pullPolicy }}
+          ports:
+            - name: admin
+              containerPort: 9901
+              protocol: TCP
+            - name: grpc-web
+              containerPort: 10000
+              protocol: TCP
+          command:
+            - /usr/bin/dumb-init
+            - --
+          args:
+            - /usr/local/bin/envoy
+            - -l
+            - $loglevel
+            - -c
+            - /config/envoy.yaml
+          livenessProbe:
+            tcpSocket:
+              port: admin
+            initialDelaySeconds: 30
+          readinessProbe:
+            tcpSocket:
+              port: admin
+            initialDelaySeconds: 30
+          terminationGracePeriodSeconds: 30
+          volumeMounts:
+            - name: envoy-config
+              mountPath: /config
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
