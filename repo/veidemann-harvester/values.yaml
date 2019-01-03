@@ -33,7 +33,7 @@ proxy:
   image:
     repository: norsknettarkiv/veidemann-harvester
     tag: ""
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
 
   ports:
   - name: http-alt

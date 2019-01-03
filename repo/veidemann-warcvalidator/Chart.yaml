@@ -2,4 +2,4 @@ apiVersion: v1
 appVersion: v0.1.0-alpha6
 description: A Helm chart for Kubernetes
 name: veidemann-warcvalidator
-version: 1.0.1
+version: 1.0.2

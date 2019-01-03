@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   repository: norsknettarkiv/veidemann-warcvalidator
   tag: ""
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 nameOverride: ""
 fullnameOverride: ""

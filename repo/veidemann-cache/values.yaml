@@ -42,7 +42,7 @@ cache:
   image:
     repository: norsknettarkiv/veidemann-cache
     tag: ""
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
 
   service:
     port: 3128

@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   repository: norsknettarkiv/veidemann-db-initializer
   tag: ""
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   restartPolicy: Never
 
 nameOverride: ""

@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   repository: norsknettarkiv/veidemann-contentexplorer
   tag: ""
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 nameOverride: ""
 fullnameOverride: ""

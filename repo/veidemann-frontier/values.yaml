@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   repository: norsknettarkiv/veidemann-frontier
   tag: ""
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 nameOverride: ""
 fullnameOverride: ""
