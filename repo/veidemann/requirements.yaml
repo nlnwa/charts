@@ -33,7 +33,7 @@ dependencies:
   repository: file://../veidemann-robotsevaluator-service
 
 - name: veidemann-contentexplorer
-  version: 1.0.11
+  version: 1.0.12
   repository: file://../veidemann-contentexplorer
 
 # Dashboard
