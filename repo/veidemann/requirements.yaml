@@ -107,7 +107,7 @@ dependencies:
 
 # Database
 - name: rethinkdb
-  version: 0.2.2
+  version: 0.2.3
   repository: file://../rethinkdb
   condition: rethinkdb.enabled
   tags:
