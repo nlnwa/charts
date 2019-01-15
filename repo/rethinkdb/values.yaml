@@ -10,7 +10,7 @@ fullnameOverride: ""
 # RethinkDB Cluster Config
 cluster:
   replicas: 3
-  resources:
+  resources: {}
     # limits:
     #   cpu: 500m
     #   memory: 16Gi
@@ -43,19 +43,24 @@ cluster:
   # RethinkDB Cache Size in MB
   rethinkCacheSize: 100
   livenessProbe:
-    enabled: true
+    exec:
+      command:
+        - /rethinkdb-probe
     failureThreshold: 3
-    initialDelaySeconds: 10
+    initialDelaySeconds: 15
     periodSeconds: 10
     successThreshold: 1
     timeoutSeconds: 5
   readinessProbe:
-    enabled: true
+    exec:
+      command:
+        - /rethinkdb-probe
     failureThreshold: 3
     initialDelaySeconds: 10
     periodSeconds: 10
     successThreshold: 1
     timeoutSeconds: 5
+
 # RethinkDB Proxy Config
 proxy:
   replicas: 1
