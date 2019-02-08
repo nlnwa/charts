@@ -29,7 +29,7 @@ dependencies:
   repository: file://../veidemann-harvester
 
 - name: veidemann-robotsevaluator-service
-  version: 1.0.16
+  version: 1.0.17
   repository: file://../veidemann-robotsevaluator-service
 
 - name: veidemann-contentexplorer
