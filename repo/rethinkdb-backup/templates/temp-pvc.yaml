@@ -1,0 +1,28 @@
+{{- if and .Values.persistence.temp.enabled (not .Values.persistence.temp.existingClaim) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ include "rethinkdb-backup.fullname" . }}
+{{- with .Values.persistence.temp.annotations  }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+  labels:
+    app.kubernetes.io/name: {{ include "rethinkdb-backup.name" . }}
+    helm.sh/chart: {{ include "rethinkdb-backup.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.temp.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.temp.size | quote }}
+{{- if .Values.persistence.temp.storageClass }}
+{{- if (eq "-" .Values.persistence.temp.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.temp.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end }}
