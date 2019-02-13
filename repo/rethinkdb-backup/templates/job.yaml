@@ -1,5 +1,5 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: batch/v1
+kind: Job
 metadata:
   name: {{ include "rethinkdb-backup.fullname" . }}
   labels:
@@ -8,16 +8,14 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.replicaCount }}
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: {{ include "rethinkdb-backup.name" . }}
-      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
+      name: {{ include "rethinkdb-backup.fullname" . }}
       labels:
         app.kubernetes.io/name: {{ include "rethinkdb-backup.name" . }}
+        helm.sh/chart: {{ include "rethinkdb-backup.chart" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -26,8 +24,8 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /data
-            {{- if .Values.persistence.subPath }}
-              subPath: {{ .Values.persistence.subPath }}
+            {{- if .Values.persistence.data.subPath }}
+              subPath: {{ .Values.persistence.data.subPath }}
             {{- end }}
             - name: temp
               mountPath: /temp
