@@ -23,16 +23,17 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
-            - name: http
-              containerPort: 80
-              protocol: TCP
           volumeMounts:
             - name: data
               mountPath: /data
-              {{- if .Values.persistence.subPath }}
+            {{- if .Values.persistence.subPath }}
               subPath: {{ .Values.persistence.subPath }}
-              {{- end }}
+            {{- end }}
+            - name: temp
+              mountPath: /temp
+            - name: secret
+              mountPath: /secret
+              readOnly: true
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
         - name: "{{ .Chart.Name }}-proxy"
@@ -82,7 +83,7 @@ spec:
     {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
-      {{- end }}
+    {{- end }}
     {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
@@ -92,10 +93,23 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       volumes:
-      - name: backup
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim | default (include "rethinkdb-backup.fullname" .) }}
-      {{- else }}
-        emptyDir: {}
-      {{- end -}}
+        - name: secret
+          secret:
+            secretName: {{ include "rethinkdb-backup.fullname" . }}
+            items:
+              - key: rethinkdb-password
+                path: rethinkdb-password
+        - name: data
+        {{- if .Values.persistence.data.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.data.existingClaim | default (include "rethinkdb-backup.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+        - name: temp
+        {{- if .Values.persistence.temp.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.temp.existingClaim | default (include "rethinkdb-backup.fullname" .) }}-temp
+        {{- else }}
+          emptyDir: {}
+        {{- end -}}
