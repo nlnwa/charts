@@ -87,7 +87,7 @@ proxy:
 browser:
   image:
     repository:  browserless/chrome
-    tag: release-puppeteer-1.8.0
+    tag: 1.2.0-puppeteer-1.10.0
     pullPolicy: IfNotPresent
   ports:
     - name: debug
