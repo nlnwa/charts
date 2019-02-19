@@ -34,15 +34,18 @@ spec:
         {{- end }}
         - name: log4j-config
           configMap:
-          name: {{ template "veidemann-warcvalidator.configPrefix" . }}
-          items:
-            - key: log4j2.xml
-              path: log4j2.xml
+            name: {{ template "veidemann-warcvalidator.configPrefix" . }}
+            items:
+              - key: log4j2.xml
+                path: log4j2.xml
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
+            - name: log4j-config
+              mountPath: /veidemann/config/log4j2.xml
+              subPath: log4j2.xml
             - mountPath: /validwarcs
               name: validwarcs
             - mountPath: /warcs

@@ -60,7 +60,7 @@ dependencies:
 
 # Validation
 - name: veidemann-warcvalidator
-  version: 1.0.3
+  version: 1.1.0
   repository: file://../veidemann-warcvalidator
   condition: veidemann-warcvalidator.enabled
   tags:
