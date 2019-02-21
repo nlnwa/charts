@@ -75,14 +75,8 @@ spec:
                   fieldPath: metadata.name
             - name: API_PORT
               value: {{ .Values.service.port | quote }}
-            - name: FILE_PREFIX
-              value: {{ .Values.config.warc.filePrefix | quote }}
             - name: WARC_WRITER_POOL_SIZE
-              value: {{ .Values.config.warc.writer.poolSize | quote }}
-            - name: WARC_SIZE
-              value: {{ .Values.config.warc.size | quote }}
-            - name: WARC_COMPRESS
-              value: {{ .Values.config.warc.compress | quote }}
+              value: {{ .Values.config.warcWriterPoolSize | quote }}
           {{- with .Values.global.veidemann.jaeger }}
             - name: JAEGER_AGENT_HOST
               value: {{ .agent.host | quote }}
