@@ -60,19 +60,7 @@ tolerations: []
 affinity: {}
 
 config:
-  warc:
-    # filePrefix defines the prefixed name warc files will be given when created
-    filePrefix: "nna"
-    writer:
-      # poolSize is the size of the thread pool
-      poolSize: 2
-    # size is the value used by the contentWriter to determine if new writes will be
-    # written to current file (current file less then size)
-    # or if the current file should be closed (current file less than or equal to size)
-    # and a new file created
-    size: 100MiB
-    # compress warc files using gzip when they are closed (gzip)
-    compress: "true"
+  warcWriterPoolSize: 2
 
 global:
   veidemann:
