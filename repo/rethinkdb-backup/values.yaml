@@ -30,6 +30,17 @@ tolerations: []
 
 affinity: {}
 
+failedJobsHistoryLimit: 3
+
+successfulJobsHistoryLimit: 3
+
+suspend: true
+
+cronExpression: "0 0 * * *"
+
+filePrefix: "rethinkdb_dump_veidemann"
+export: "veidemann"
+
 ## Persist backup data to a persistent volume
 persistence:
   data:
