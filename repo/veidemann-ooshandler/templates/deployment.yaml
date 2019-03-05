@@ -34,15 +34,13 @@ spec:
               protocol: TCP
           volumeMounts:
             - name: data
-              mountPath: /data
-            {{- if .Values.persistence.data.subPath }}
-              subPath: {{ .Values.persistence.data.subPath }}
-            {{- end }}
+              mountPath: /data/oos
+              subPath: oos
           args:
             - "-metrics-address"
             - "0.0.0.0:{{ .Values.service.internalMetricsPort }}"
             - "-data-dir"
-            - "/data"
+            - "/data/oos"
         {{- with .Values.livenessProbe }}
           livenessProbe:
 {{ toYaml . | indent 12 }}
@@ -65,3 +63,11 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+      volumes:
+        - name: data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "veidemann-ooshandler.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
