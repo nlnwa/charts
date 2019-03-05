@@ -109,7 +109,7 @@ browser:
     periodSeconds: 5
 
   config:
-    connectionTimeout: "60000"
+    connectionTimeout: "600000"
 
 
 global:
