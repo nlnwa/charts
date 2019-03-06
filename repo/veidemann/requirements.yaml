@@ -25,7 +25,7 @@ dependencies:
   repository: file://../veidemann-frontier
 
 - name: veidemann-harvester
-  version: 1.1.20
+  version: 1.1.21
   repository: file://../veidemann-harvester
 
 - name: veidemann-robotsevaluator-service
