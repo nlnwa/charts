@@ -137,7 +137,7 @@ default:
     host: "veidemann-cache"
     port: "3128"
 
-  ooshandler:
+  oosHandler:
     host: "veidemann-ooshandler"
     port: "50052"
 
@@ -206,7 +206,7 @@ config:
     host: ""
     port: ""
 
-  ooshandler:
+  oosHandler:
     host: ""
     port: ""
 

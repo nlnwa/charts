@@ -22,6 +22,6 @@ data:
   dnsResolver.port: {{ default .Values.default.dnsResolver.port .Values.config.dnsResolver.port | quote }}
   cache.host: {{ default (include "veidemann.cache.host" .) .Values.config.cache.host | quote }}
   cache.port: {{ default .Values.default.cache.port .Values.config.cache.port | quote }}
-  ooshandler.host: {{ default (include "veidemann.ooshandler.host" .) .Values.config.ooshandler.host | quote }}
-  ooshandler.port: {{ default .Values.default.ooshandler.port .Values.config.ooshandler.port | quote }}
+  oosHandler.host: {{ default (include "veidemann.oosHandler.host" .) .Values.config.oosHandler.host | quote }}
+  oosHandler.port: {{ default .Values.default.oosHandler.port .Values.config.oosHandler.port | quote }}
   log4j2.xml: {{ toYaml (default .Values.default.log4j2.xml .Values.config.log4j2.xml) | indent 2 }}
