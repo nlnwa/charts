@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "veidemann-ooshandler.fullname" . }}
+  labels:
+    app: veidemann
+    component: {{ template "veidemann-ooshandler.name" . }}
+    chart: {{ template "veidemann-ooshandler.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      component: {{ template "veidemann-ooshandler.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: veidemann
+        component: {{ template "veidemann-ooshandler.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http-ooshandler
+              containerPort: {{ .Values.service.internalOosHandlerPort }}
+              protocol: TCP
+            - name: http-metrics
+              containerPort: {{ .Values.service.internalMetricsPort }}
+              protocol: TCP
+          volumeMounts:
+            - name: data
+              mountPath: /data/oos
+              subPath: oos
+          args:
+            - "-metrics-address"
+            - "0.0.0.0:{{ .Values.service.internalMetricsPort }}"
+            - "-data-dir"
+            - "/data/oos"
+        {{- with .Values.livenessProbe }}
+          livenessProbe:
+{{ toYaml . | indent 12 }}
+        {{- end }}
+        {{- with .Values.readinessProbe }}
+          readinessProbe:
+{{ toYaml . | indent 12 }}
+        {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+        - name: data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "veidemann-ooshandler.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}

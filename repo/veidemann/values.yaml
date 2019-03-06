@@ -137,6 +137,10 @@ default:
     host: "veidemann-cache"
     port: "3128"
 
+  ooshandler:
+    host: "veidemann-ooshandler"
+    port: "50052"
+
   rethinkdb:
     host: "rethinkdb-proxy"
     port: "28015"
@@ -199,6 +203,10 @@ config:
     port: ""
 
   cache:
+    host: ""
+    port: ""
+
+  ooshandler:
     host: ""
     port: ""
 

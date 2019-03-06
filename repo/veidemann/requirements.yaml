@@ -21,11 +21,11 @@ dependencies:
   repository: file://../veidemann-dns-resolver
 
 - name: veidemann-frontier
-  version: 1.0.23
+  version: 1.1.0
   repository: file://../veidemann-frontier
 
 - name: veidemann-harvester
-  version: 1.1.19
+  version: 1.1.20
   repository: file://../veidemann-harvester
 
 - name: veidemann-robotsevaluator-service
@@ -35,6 +35,10 @@ dependencies:
 - name: veidemann-contentexplorer
   version: 1.0.20
   repository: file://../veidemann-contentexplorer
+
+- name: veidemann-ooshandler
+  version: 0.1.0
+  repository: file://../veidemann-ooshandler
 
 # Dashboard
 - name: veidemann-dashboard
