@@ -5,5 +5,6 @@
 {{- define "veidemann.harvester.host" -}}       {{ printf "%s-%s" .Release.Name .Values.default.harvester.host | trunc 63 | trimSuffix "-" }}{{- end -}}
 {{- define "veidemann.contentWriter.host" -}}   {{ printf "%s-%s" .Release.Name .Values.default.contentWriter.host | trunc 63 | trimSuffix "-" }}{{- end -}}
 {{- define "veidemann.robotsEvaluator.host" -}} {{ printf "%s-%s" .Release.Name .Values.default.robotsEvaluator.host | trunc 63 | trimSuffix "-" }}{{- end -}}
+{{- define "veidemann.ooshandler.host" -}}      {{ printf "%s-%s" .Release.Name .Values.default.ooshandler.host | trunc 63 | trimSuffix "-" }}{{- end -}}
 {{- define "veidemann.rethinkdb.host" -}}       {{ printf "%s-%s" .Release.Name .Values.default.rethinkdb.host | trunc 63 | trimSuffix "-" }}{{- end -}}
 {{- define "veidemann.jaeger.agent.host" -}}    {{ printf "%s-%s" .Release.Name .Values.default.jaeger.agent.host | trunc 63 | trimSuffix "-" }}{{- end -}}
