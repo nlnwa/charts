@@ -94,6 +94,24 @@ spec:
                   name: {{ template "veidemann-frontier.configPrefix" . }}
                   key: dnsResolver.port
             {{- end }}
+            - name: OOS_HANDLER_HOST
+            {{- if or .Values.config.oosHandler.host $global.mesh.host }}
+              value: {{ default .Values.config.oosHandler.host $global.mesh.host | quote }}
+            {{- else }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "veidemann-frontier.configPrefix" . }}
+                  key: oosHandler.host
+            {{- end }}
+            - name: OOS_HANDLER_PORT
+            {{- if or .Values.config.oosHandler.port $global.mesh.port }}
+              value: {{ default .Values.config.oosHandler.port $global.mesh.port | quote }}
+            {{- else }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "veidemann-frontier.configPrefix" . }}
+                  key: oosHandler.port
+            {{- end }}
             - name: JAVA_OPTS
               value: {{ default .Values.config.javaOpts | quote }}
           {{- with .Values.global.veidemann.jaeger }}
