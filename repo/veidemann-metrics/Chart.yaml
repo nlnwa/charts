@@ -2,4 +2,4 @@ apiVersion: v1
 appVersion: 0.1.4
 description: Prometheus metrics exporter for Veidemann
 name: veidemann-metrics
-version: 1.0.4
+version: 1.0.5
