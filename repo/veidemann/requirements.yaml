@@ -104,7 +104,7 @@ dependencies:
 # Service mesh
 - name: mesh
   repository: file://../mesh
-  version: 0.2.4
+  version: 0.2.5
   condition: mesh.enabled
   tags:
   - mesh

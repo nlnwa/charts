@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: buoyantio/linkerd
-  tag: 1.4.6
+  tag: 1.6.2.1
   pullPolicy: IfNotPresent
 
 fullnameOverride: ""

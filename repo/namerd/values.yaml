@@ -15,7 +15,7 @@ nameOverride: ""
 
 image:
   repository: buoyantio/namerd
-  tag: 1.4.6
+  tag: 1.6.2.1
   pullPolicy: IfNotPresent
 
 resources: {}
