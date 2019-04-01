@@ -105,8 +105,8 @@ dex:
     staticClients:
     - id: veidemann-dashboard
       redirectURIs:
-      - "https://veidemann.local/veidemann/activity"
-      - "https://localhost:4200/activity" # Allow development with: ng serve --ssl 1 --ssl-key ... --ssl-cert ...
+      - "https://veidemann.local/veidemann"
+      - "https://localhost:4200/veidemann"
       name: "Veidemann Admin Dashboard"
       secret: ZXhhbXBsZS1hcHAtc2VjcmV0
     - id: veidemann-cli
