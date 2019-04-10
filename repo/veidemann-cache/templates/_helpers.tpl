@@ -52,3 +52,11 @@ If release name contains chart name it will be used as a config prefix
 {{- $dnsServers -}}
 {{- end -}}
 {{- end -}}
+
+{{- define "veidemann-cache.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "veidemann-cache.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}

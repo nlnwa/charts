@@ -21,6 +21,7 @@ spec:
         component: "{{ template "veidemann-cache.name" . }}-balancer"
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ template "veidemann-cache.serviceAccountName" . }}
       volumes:
         - name: dshm
           emptyDir:

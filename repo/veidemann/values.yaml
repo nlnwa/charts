@@ -134,7 +134,7 @@ default:
     port: "7053"
 
   cache:
-    host: "veidemann-cache"
+    host: "veidemann-cache-balancer"
     port: "3128"
 
   oosHandler:
