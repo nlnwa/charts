@@ -2,4 +2,4 @@ apiVersion: v1
 appVersion: 0.1.6
 description: Veidemann Out of Scope Handler
 name: veidemann-ooshandler
-version: 0.1.4
+version: 0.2.0

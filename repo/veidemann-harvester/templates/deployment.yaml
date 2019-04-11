@@ -1,4 +1,3 @@
-{{- $global := .Values.global.veidemann -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -9,6 +8,10 @@ metadata:
     chart: {{ template "veidemann-harvester.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- with .Values.annotations }}
+  annotations:
+{{ toYaml . | nindent 4 }}
+{{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -21,6 +24,10 @@ spec:
         app: veidemann
         component: {{ template "veidemann-harvester.name" . }}
         release: {{ .Release.Name }}
+    {{- with .Values.podAnnotations }}
+      annotations:
+{{ toYaml . | nindent 8 }}
+    {{- end }}
     spec:
       volumes:
         - name: workdir
@@ -46,29 +53,27 @@ spec:
 {{ toYaml . | indent 12 }}
         {{- end }}
           envFrom:
-            - configMapRef:
-                name: {{ template "veidemann-harvester.configPrefix" . }}-rethinkdb-env
-                optional: false
             - secretRef:
                 name: {{ template "veidemann-harvester.configPrefix" . }}-rethinkdb-env
                 optional: false
-          {{- if not .Values.global.veidemann.jaeger }}
-            - configMapRef:
-                name: {{ template "veidemann-harvester.configPrefix" . }}-jaeger-env
-                optional: true
-          {{- end }}
           env:
             - name: NODE_NAME
               valueFrom:
                 fieldRef:
                   fieldPath: status.hostIP
+            - name: DB_HOST
+              value: {{ default .Values.global.veidemann.rethinkdb.host .Values.proxy.config.rethinkdb.host | quote }}
+            - name: DB_PORT
+              value: {{ default .Values.global.veidemann.rethinkdb.port .Values.proxy.config.rethinkdb.port | quote }}
+            - name: DB_NAME
+              value: {{ default .Values.global.veidemann.rethinkdb.name .Values.proxy.config.rethinkdb.name | quote }}
             - name: BROWSER_WS_ENDPOINT
               value: {{ .Values.proxy.config.browserWSEndpoint | quote }}
             - name: MAX_OPEN_SESSIONS
               value: {{ .Values.proxy.config.maxOpenSessions | quote }}
             - name: FRONTIER_HOST
-            {{- if or .Values.proxy.config.frontier.host $global.mesh.host }}
-              value: {{ default .Values.proxy.config.frontier.host $global.mesh.host | quote }}
+            {{- if .Values.proxy.config.frontier.host }}
+              value: {{ .Values.proxy.config.frontier.host | quote }}
             {{- else }}
               valueFrom:
                 configMapKeyRef:
@@ -76,8 +81,8 @@ spec:
                   key: frontier.host
             {{- end }}
             - name: FRONTIER_PORT
-            {{- if or .Values.proxy.config.frontier.port $global.mesh.port}}
-              value: {{ default .Values.proxy.config.frontier.port $global.mesh.port| quote }}
+            {{- if .Values.proxy.config.frontier.port }}
+              value: {{ .Values.proxy.config.frontier.port | quote }}
             {{- else }}
               valueFrom:
                 configMapKeyRef:
@@ -85,8 +90,8 @@ spec:
                   key: frontier.port
             {{- end }}
             - name: CONTENT_WRITER_HOST
-            {{- if or .Values.proxy.config.contentWriter.host $global.mesh.host }}
-              value: {{ default .Values.proxy.config.contentWriter.host $global.mesh.host | quote }}
+            {{- if .Values.proxy.config.contentWriter.host }}
+              value: {{ default .Values.proxy.config.contentWriter.host | quote }}
             {{- else }}
               valueFrom:
                 configMapKeyRef:
@@ -94,8 +99,8 @@ spec:
                   key: contentWriter.host
             {{- end }}
             - name: CONTENT_WRITER_PORT
-            {{- if or .Values.proxy.config.contentWriter.port $global.mesh.port}}
-              value: {{ default .Values.proxy.config.contentWriter.port $global.mesh.port| quote }}
+            {{- if .Values.proxy.config.contentWriter.port }}
+              value: {{ .Values.proxy.config.contentWriter.port | quote }}
             {{- else }}
               valueFrom:
                 configMapKeyRef:
@@ -103,8 +108,8 @@ spec:
                   key: contentWriter.port
             {{- end }}
             - name: DNS_RESOLVER_HOST
-            {{- if or .Values.proxy.config.dnsResolver.host $global.mesh.host }}
-              value: {{ default .Values.proxy.config.dnsResolver.host $global.mesh.host | quote }}
+            {{- if .Values.proxy.config.dnsResolver.host }}
+              value: {{ .Values.proxy.config.dnsResolver.host | quote }}
             {{- else }}
               valueFrom:
                 configMapKeyRef:
@@ -112,8 +117,8 @@ spec:
                   key: dnsResolver.host
             {{- end }}
             - name: DNS_RESOLVER_PORT
-            {{- if or .Values.proxy.config.dnsResolver.port $global.mesh.port}}
-              value: {{ default .Values.proxy.config.dnsResolver.port $global.mesh.port| quote }}
+            {{- if .Values.proxy.config.dnsResolver.port }}
+              value: {{ .Values.proxy.config.dnsResolver.port | quote }}
             {{- else }}
               valueFrom:
                 configMapKeyRef:
@@ -140,16 +145,20 @@ spec:
             {{- end }}
             - name: JAVA_OPTS
               value: {{ .Values.proxy.config.javaOpts | quote }}
-          {{- with .Values.global.veidemann.jaeger }}
+            - name: JAEGER_SERVICE_NAME
+              value: {{ include "veidemann-harvester.fullname" . | quote }}
             - name: JAEGER_AGENT_HOST
-              value: {{ .agent.host | quote }}
+              value: {{ default .Values.global.veidemann.jaeger.agent.host .Values.proxy.config.jaeger.agent.host | quote }}
             - name: JAEGER_AGENT_PORT
-              value: {{ .agent.port | quote }}
+              value: {{ default .Values.global.veidemann.jaeger.agent.port .Values.proxy.config.jaeger.agent.port | quote }}
+            {{- if or .Values.global.veidemann.jaeger.sampler.type .Values.proxy.config.jaeger.sampler.type }}
             - name: JAEGER_SAMPLER_TYPE
-              value: {{ .sampler.type | quote }}
+              value: {{ default .Values.global.veidemann.jaeger.sampler.type .Values.proxy.config.jaeger.sampler.type | quote }}
+            {{- end }}
+            {{- if or .Values.global.veidemann.jaeger.sampler.param .Values.proxy.config.jaeger.sampler.param }}
             - name: JAEGER_SAMPLER_PARAM
-              value: {{ .sampler.param | quote }}
-          {{- end }}
+              value: {{ default .Values.global.veidemann.jaeger.sampler.param .Values.proxy.config.jaeger.sampler.param | quote }}
+            {{- end }}
         {{- with .Values.proxy.livenessProbe }}
           livenessProbe:
 {{ toYaml . | indent 12 }}

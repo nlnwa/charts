@@ -45,15 +45,36 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
           envFrom:
-            - configMapRef:
-                name: {{ template "veidemann-contentexplorer.configPrefix" . }}-rethinkdb-env
-                optional: false
             - secretRef:
                 name: {{ template "veidemann-contentexplorer.configPrefix" . }}-rethinkdb-env
                 optional: false
           env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: DB_HOST
+              value: {{ default .Values.global.veidemann.rethinkdb.host .Values.config.rethinkdb.host | quote }}
+            - name: DB_PORT
+              value: {{ default .Values.global.veidemann.rethinkdb.port .Values.config.rethinkdb.port | quote }}
+            - name: DB_NAME
+              value: {{ default .Values.global.veidemann.rethinkdb.name .Values.config.rethinkdb.name | quote }}
             - name: API_PORT
               value: {{ .Values.service.port | quote }}
+            - name: JAEGER_SERVICE_NAME
+              value: {{ include "veidemann-contentexplorer.fullname" . | quote }}
+            - name: JAEGER_AGENT_HOST
+              value: {{ default .Values.global.veidemann.jaeger.agent.host .Values.config.jaeger.agent.host | quote }}
+            - name: JAEGER_AGENT_PORT
+              value: {{ default .Values.global.veidemann.jaeger.agent.port .Values.config.jaeger.agent.port | quote }}
+            {{- if or .Values.global.veidemann.jaeger.sampler.type .Values.config.jaeger.sampler.type }}
+            - name: JAEGER_SAMPLER_TYPE
+              value: {{ default .Values.global.veidemann.jaeger.sampler.type .Values.config.jaeger.sampler.type | quote }}
+            {{- end }}
+            {{- if or .Values.global.veidemann.jaeger.sampler.param .Values.config.jaeger.sampler.param }}
+            - name: JAEGER_SAMPLER_PARAM
+              value: {{ default .Values.global.veidemann.jaeger.sampler.param .Values.config.jaeger.sampler.param | quote }}
+            {{- end }}
           volumeMounts:
             - mountPath: /workdir
               name: workdir

@@ -8,6 +8,10 @@ metadata:
     chart: {{ template "veidemann-contentwriter.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- with .Values.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -20,6 +24,10 @@ spec:
         app: veidemann
         component: {{ template "veidemann-contentwriter.name" . }}
         release: {{ .Release.Name }}
+    {{- with .Values.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
     spec:
       volumes:
         - emptyDir: {}
@@ -53,22 +61,20 @@ spec:
               mountPath: /veidemann/config/log4j2.xml
               subPath: log4j2.xml
           envFrom:
-            - configMapRef:
-                name: {{ template "veidemann-contentwriter.configPrefix" . }}-rethinkdb-env
-                optional: false
             - secretRef:
                 name: {{ template "veidemann-contentwriter.configPrefix" . }}-rethinkdb-env
                 optional: false
-          {{- if not .Values.global.veidemann.jaeger }}
-            - configMapRef:
-                name: {{ template "veidemann-contentwriter.configPrefix" . }}-jaeger-env
-                optional: true
-          {{- end }}
           env:
             - name: NODE_NAME
               valueFrom:
                 fieldRef:
                   fieldPath: status.hostIP
+            - name: DB_HOST
+              value: {{ default .Values.global.veidemann.rethinkdb.host .Values.config.rethinkdb.host | quote }}
+            - name: DB_PORT
+              value: {{ default .Values.global.veidemann.rethinkdb.port .Values.config.rethinkdb.port | quote }}
+            - name: DB_NAME
+              value: {{ default .Values.global.veidemann.rethinkdb.name .Values.config.rethinkdb.name | quote }}
             - name: HOST_NAME
               valueFrom:
                 fieldRef:
@@ -77,16 +83,20 @@ spec:
               value: {{ .Values.service.port | quote }}
             - name: WARC_WRITER_POOL_SIZE
               value: {{ .Values.config.warcWriterPoolSize | quote }}
-          {{- with .Values.global.veidemann.jaeger }}
+            - name: JAEGER_SERVICE_NAME
+              value: {{ include "veidemann-contentwriter.fullname" . | quote }}
             - name: JAEGER_AGENT_HOST
-              value: {{ .agent.host | quote }}
+              value: {{ default .Values.global.veidemann.jaeger.agent.host .Values.config.jaeger.agent.host | quote }}
             - name: JAEGER_AGENT_PORT
-              value: {{ .agent.port | quote }}
+              value: {{ default .Values.global.veidemann.jaeger.agent.port .Values.config.jaeger.agent.port | quote }}
+            {{- if or .Values.global.veidemann.jaeger.sampler.type .Values.config.jaeger.sampler.type }}
             - name: JAEGER_SAMPLER_TYPE
-              value: {{ .sampler.type | quote }}
+              value: {{ default .Values.global.veidemann.jaeger.sampler.type .Values.config.jaeger.sampler.type | quote }}
+            {{- end }}
+            {{- if or .Values.global.veidemann.jaeger.sampler.param .Values.config.jaeger.sampler.param }}
             - name: JAEGER_SAMPLER_PARAM
-              value: {{ .sampler.param | quote }}
-          {{- end }}
+              value: {{ default .Values.global.veidemann.jaeger.sampler.param .Values.config.jaeger.sampler.param | quote }}
+            {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}

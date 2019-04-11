@@ -68,3 +68,31 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+config:
+  rethinkdb:
+    host: ""
+    port: ""
+    name: ""
+  jaeger:
+    agent:
+      host: ""
+      port: ""
+    sampler:
+      type: ""
+      param: ""
+
+
+global:
+  veidemann:
+    rethinkdb:
+      host: ""
+      port: ""
+      name: ""
+    jaeger:
+      agent:
+        host: ""
+        port: ""
+      sampler:
+        type: ""
+        param: ""

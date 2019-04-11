@@ -47,6 +47,8 @@ tolerations: []
 
 affinity: {}
 
+podAnnotations: {}
+
 config:
   # issuer is an open id connect issuer url
   issuer: ""

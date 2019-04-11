@@ -15,7 +15,7 @@ spec:
       name: grpc
       targetPort: grpc
     - port: 10000
-      name: grpc-web
+      name: http-grpc-web
       targetPort: grpc-web
       protocol: TCP
   selector:

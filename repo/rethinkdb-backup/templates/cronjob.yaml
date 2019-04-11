@@ -22,7 +22,6 @@ spec:
             app.kubernetes.io/instance: {{ .Release.Name }}
         spec:
           restartPolicy: OnFailure
-          serviceAccountName: {{ include "rethinkdb-backup.serviceAccountName" . }}
           containers:
             - name: {{ .Chart.Name }}
               image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
@@ -33,7 +32,17 @@ spec:
                 - {{ .Values.export | quote }}
                 - "--password-file"
                 - "/secret/rethinkdb-password"
+                - "--connect"
+                - "$(DB_HOST):$(DB_PORT)"
               env:
+                - name: NODE_NAME
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: status.hostIP
+                - name: DB_HOST
+                  value: {{ default .Values.global.veidemann.rethinkdb.host .Values.config.rethinkdb.host | quote }}
+                - name: DB_PORT
+                  value: {{ default .Values.global.veidemann.rethinkdb.port .Values.config.rethinkdb.port | quote }}
                 - name: FILE_PREFIX
                   value: {{ .Values.filePrefix | quote }}
               volumeMounts:
@@ -49,46 +58,6 @@ spec:
                   readOnly: true
               resources:
 {{- toYaml .Values.resources | nindent 16 }}
-            - name: "{{ .Chart.Name }}-proxy"
-              image: "{{ .Values.proxy.image.repository }}:{{ .Values.proxy.image.tag }}"
-              imagePullPolicy: {{ .Values.proxy.image.pullPolicy }}
-              ports:
-                - name: cluster
-                  containerPort: {{ .Values.proxy.ports.cluster }}
-                - name: driver
-                  containerPort: {{ .Values.proxy.ports.driver }}
-                - name: admin
-                  containerPort: {{ .Values.proxy.ports.admin }}
-              args:
-                - "--bind-cluster"
-                - "$(POD_IP)"
-                - "--no-http-admin"
-                - "--no-update-check"
-              env:
-                - name: PROXY
-                  value: "true"
-                - name: RETHINK_CLUSTER_SERVICE
-                  value: {{ .Values.proxy.clusterService | quote }}
-                - name: RETHINKDB_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: {{ include "rethinkdb-backup.fullname" . }}
-                      key: rethinkdb-password
-                - name: POD_IP
-                  valueFrom:
-                    fieldRef:
-                      apiVersion: v1
-                      fieldPath: status.podIP
-                - name: POD_NAMESPACE
-                  valueFrom:
-                    fieldRef:
-                      fieldPath: metadata.namespace
-                - name: POD_NAME
-                  valueFrom:
-                    fieldRef:
-                      fieldPath: metadata.name
-              resources:
-{{- toYaml .Values.proxy.resources | nindent 16 }}
         {{- with .Values.nodeSelector }}
           nodeSelector:
 {{- toYaml . | nindent 12 }}
@@ -104,9 +73,13 @@ spec:
           volumes:
             - name: secret
               secret:
+              {{- if .Values.standalone }}
                 secretName: {{ include "rethinkdb-backup.fullname" . }}
+              {{- else }}
+                secretName: {{ template "rethinkdb-backup.configPrefix" . }}-rethinkdb-env
+              {{- end }}
                 items:
-                  - key: rethinkdb-password
+                  - key: DB_PASSWORD
                     path: rethinkdb-password
             - name: data
             {{- if .Values.persistence.data.enabled }}

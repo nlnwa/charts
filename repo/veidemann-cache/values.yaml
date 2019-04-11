@@ -37,6 +37,8 @@ nodeSelector: {}
 
 tolerations: []
 
+podAnnotations: {}
+
 affinity: {}
 
 cache:
