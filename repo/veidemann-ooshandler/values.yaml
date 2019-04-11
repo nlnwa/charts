@@ -37,6 +37,10 @@ tolerations: []
 
 affinity: {}
 
+annotations: {}
+
+podAnnotations: {}
+
 livenessProbe: {}
 
 readinessProbe: {}

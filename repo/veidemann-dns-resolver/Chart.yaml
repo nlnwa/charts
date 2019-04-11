@@ -2,4 +2,4 @@ apiVersion: v1
 appVersion: 0.2.5
 description: Caching DNS resolver for veidemann wich stores lookups in webarchive and writes crawl logs.
 name: veidemann-dns-resolver
-version: 1.0.9
+version: 1.1.0

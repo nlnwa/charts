@@ -4,9 +4,9 @@
 
 tags:
   database: true
-  mesh: false
-  tracing: false
+  database-backup: false
   idp: false
+  tracing: false
   metrics: false
   validation: false
   dashboard: false
@@ -91,22 +91,6 @@ tls:
   key: ""
   crt: ""
 
-# the use of global is needed because of a kubernetes
-# bug that does not resolve environment variables (e.g. "$(NODE_NAME)")
-# when value is inserted into pod via configMapRef
-global:
-  veidemann: {}
-  # mesh: {}
-  #   host: ""
-  #   port: ""
-  # jaeger:
-  #   agent:
-  #     host: "jaeger-agent"
-  #     port: "5775"
-  #   sampler:
-  #     type: "probabilistic"
-  #     param: "0.1"
-
 # default config values as used by configmap/secrets
 default:
   controller:
@@ -142,19 +126,8 @@ default:
     port: "50052"
 
   rethinkdb:
-    host: "rethinkdb-proxy"
-    port: "28015"
-    name: "veidemann"
     user: "admin"
     password: "rethinkdb"
-
-  jaeger:
-    agent:
-      host: "jaeger-agent"
-      port: "5775"
-    sampler:
-      type: "probabilistic"
-      param: "0.5"
 
   log4j2:
     xml: |
@@ -175,6 +148,21 @@ default:
               </Root>
           </Loggers>
       </Configuration>
+
+global:
+  veidemann:
+    rethinkdb:
+      host: $(NODE_NAME)
+      port: 28015
+      name: "veidemann"
+
+    jaeger:
+      agent:
+        host: "localhost"
+        port: "6831"
+      sampler:
+        type: "const"
+        param: "1"
 
 # config values overrides default values
 config:
@@ -211,20 +199,8 @@ config:
     port: ""
 
   rethinkdb:
-    host: ""
-    port: ""
-    name: ""
     user: ""
     password: ""
-
-  jaeger:
-    create: false
-    agent:
-      host: ""
-      port: ""
-    sampler:
-      type: ""
-      param: ""
 
   log4j2:
     xml: ""
@@ -272,19 +248,3 @@ dex:
     oauth2:
       skipApprovalScreen: true
       responseTypes: ["code", "token", "id_token"]
-
-jaeger:
-  cassandra:
-    config:
-      cluster_size: 1
-      max_heap_size: 512M
-      heap_new_size: 256M
-    persistence:
-      enabled: false
-    resources:
-      requests:
-        memory: 1Gi
-        cpu: 200m
-      limits:
-        memory: 2Gi
-        cpu: 400m

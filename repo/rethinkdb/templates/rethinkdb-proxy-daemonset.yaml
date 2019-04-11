@@ -1,6 +1,6 @@
-{{- if eq .Values.proxy.kind "Deployment" }}
-apiVersion: apps/v1beta2
-kind: Deployment
+{{- if eq .Values.proxy.kind "DaemonSet" }}
+apiVersion: apps/v1
+kind: DaemonSet
 metadata:
   name: "{{ template "rethinkdb.fullname" . }}-proxy"
   labels:
@@ -9,7 +9,6 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
 spec:
-  replicas: {{ .Values.proxy.replicas }}
   minReadySeconds: {{ .Values.proxy.minReadySeconds }}
   updateStrategy:
 {{ toYaml .Values.proxy.updateStrategy | indent 4 }}
@@ -32,7 +31,7 @@ spec:
     spec:
       dnsPolicy: {{ .Values.proxy.dnsPolicy }}
 {{- if .Values.proxy.priorityClassName }}
-      priorityClassName: {{ .Values.proxy.priorityClassName | quote }}
+      priorityClassName: "{{ .Values.proxy.priorityClassName }}"
 {{- end }}
       serviceAccountName: {{ template "rethinkdb.serviceAccountName" . }}
       containers:

@@ -54,12 +54,7 @@ tolerations: []
 
 affinity: {}
 
-# global overrides config
-global:
-  veidemann:
-    mesh:
-      host: ""
-      port: ""
+podAnnotations: {}
 
 # config overrides configmap
 config:

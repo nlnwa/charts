@@ -34,12 +34,9 @@ tolerations: []
 
 affinity: {}
 
-global:
-  veidemann:
-    mesh:
-      host: ""
-      port: ""
-    jaeger: {}
+annotations: {}
+
+podAnnotations: {}
 
 config:
   robotsEvaluator:
@@ -51,4 +48,29 @@ config:
   oosHandler:
     host: ""
     port: ""
+  rethinkdb:
+    host: ""
+    port: ""
+    name: ""
   javaOpts: ""
+  jaeger:
+    agent:
+      host: ""
+      port: ""
+    sampler:
+      type: ""
+      param: ""
+
+global:
+  veidemann:
+    rethinkdb:
+      host: ""
+      port: ""
+      name: ""
+    jaeger:
+      agent:
+        host: ""
+        port: ""
+      sampler:
+        type: ""
+        param: ""

@@ -17,6 +17,7 @@ cluster:
     # requests:
     #   cpu: 500m
     #   memory: 8Gi
+  priorityClassName: ""
   podAnnotations: {}
   affinity: {}
   tolerations: []
@@ -63,6 +64,8 @@ cluster:
 
 # RethinkDB Proxy Config
 proxy:
+  # one of "Deployment" or "DaemonSet"
+  kind: Deployment
   replicas: 1
   resources: {}
     # limits:
@@ -71,7 +74,19 @@ proxy:
     # requests:
     #   cpu: 100m
     #   memory: 512Mi
+  minReadySeconds: 5
+  updateStrategy: {}
+  # rollingUpdate:
+  #   maxUnavailable: 1
+  # type: RollingUpdate
+  hostNetwork: false
+  dnsPolicy: ClusterFirst
+  affinity: {}
+  nodeSelector: {}
+  tolerations: []
+  priorityClassName: ""
   podAnnotations: {}
+
   service:
     annotations: {}
     type: ClusterIP

@@ -1,0 +1,61 @@
+apiVersion: jaegertracing.io/v1
+kind: Jaeger
+metadata:
+  name: {{ include "jaeger.fullname" . }}
+spec:
+  strategy: {{ .Values.strategy }}
+
+{{- if and (eq .Values.strategy "allInOne") .Values.allInOne }}
+  allInOne:
+{{ toYaml .Values.allInOne | nindent 4 }}
+{{- end }}
+
+{{- with .Values.ingress }}
+  ingress:
+{{ toYaml . | nindent 4 }}
+{{- end }}
+
+{{- with .Values.sampling }}
+  sampling:
+{{ toYaml . | nindent 4 }}
+{{- end }}
+
+{{- with .Values.storage }}
+  storage:
+{{ toYaml . | nindent 4 }}
+{{- end }}
+
+{{- with .Values.annotations }}
+  annotations:
+{{ toYaml . | nindent 4 }}
+{{- end }}
+
+{{- with .Values.ui }}
+  ui:
+{{ toYaml . | nindent 4 }}
+{{- end }}
+
+{{- with .Values.volumes }}
+volumes:
+{{ toYaml . | nindent 4 }}
+{{- end }}
+
+{{- with .Values.volumeMounts }}
+volumeMounts:
+{{ toYaml . | nindent 4 }}
+{{- end }}
+
+{{- with .Values.resources }}
+resources:
+{{ toYaml . | nindent 4 }}
+{{- end }}
+
+{{- with .Values.tolerations }}
+tolerations:
+{{ toYaml . | nindent 4 }}
+{{- end }}
+
+{{- with .Values.affinity }}
+affinity:
+{{ toYaml . | nindent 4 }}
+{{- end }}

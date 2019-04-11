@@ -1,0 +1,60 @@
+# Default values for jaeger
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# see https://github.com/jaegertracing/jaeger-operator/tree/master/deploy/examples
+
+nameOverride: ""
+fullnameOverride: ""
+
+# production or allInOne
+strategy: allInOne
+
+allInOne: {}
+#  image: jaegertracing/all-in-one:1.11
+#  options:
+#    log-level: debug
+#    query:
+#      base-path: /jaeger
+
+ingress: {}
+#  enabled: false
+
+sampling: {}
+#  options:
+#    default_strategy:
+#      type: probabilistic
+#      param: 0.1
+
+storage: {}
+#  type: memory
+#  options:
+#    memory:
+#      max-traces: 10000
+
+agent: {}
+#  strategy: DaemonSet
+
+ui: {}
+#  options:
+#    dependencies:
+#      menuEnabled: false
+#    tracking:
+#      gaID: UA-000000-2
+#    menu:
+#      - label: "About Jaeger"
+#        items:
+#          - label: "Documentation"
+#            url: "https://www.jaegertracing.io/docs/latest"
+
+volumes: []
+
+volumeMounts: []
+
+resources: {}
+
+tolerations: []
+
+affinity: {}
+
+annotations: {}

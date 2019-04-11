@@ -1,4 +1,3 @@
-{{- $global := .Values.global.veidemann -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -9,6 +8,10 @@ metadata:
     chart: {{ template "veidemann-dns-resolver.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- with .Values.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -21,6 +24,10 @@ spec:
         app: veidemann
         component: {{ template "veidemann-dns-resolver.name" . }}
         release: {{ .Release.Name }}
+    {{- with .Values.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -40,9 +47,6 @@ spec:
             - name: http-health
               containerPort: {{ .Values.service.internalHealthPort }}
           envFrom:
-            - configMapRef:
-                name: {{ template "veidemann-dns-resolver.configPrefix" . }}-rethinkdb-env
-                optional: false
             - secretRef:
                 name: {{ template "veidemann-dns-resolver.configPrefix" . }}-rethinkdb-env
                 optional: false
@@ -51,9 +55,15 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.hostIP
+            - name: DB_HOST
+              value: {{ default .Values.global.veidemann.rethinkdb.host .Values.config.rethinkdb.host | quote }}
+            - name: DB_PORT
+              value: {{ default .Values.global.veidemann.rethinkdb.port .Values.config.rethinkdb.port | quote }}
+            - name: DB_NAME
+              value: {{ default .Values.global.veidemann.rethinkdb.name .Values.config.rethinkdb.name | quote }}
             - name: CONTENT_WRITER_HOST
-            {{- if or .Values.config.contentWriter.host $global.mesh.host }}
-              value: {{ default .Values.config.contentWriter.host $global.mesh.host | quote }}
+            {{- if .Values.config.contentWriter.host }}
+              value: {{ .Values.config.contentWriter.host | quote }}
             {{- else }}
               valueFrom:
                 configMapKeyRef:
@@ -61,8 +71,8 @@ spec:
                   key: contentWriter.host
             {{- end }}
             - name: CONTENT_WRITER_PORT
-            {{- if or .Values.config.contentWriter.port $global.mesh.port }}
-              value: {{ default .Values.config.contentWriter.port $global.mesh.port | quote }}
+            {{- if .Values.config.contentWriter.port }}
+              value: {{ .Values.config.contentWriter.port | quote }}
             {{- else }}
               valueFrom:
                 configMapKeyRef:

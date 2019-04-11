@@ -20,6 +20,10 @@ spec:
         app: veidemann
         component: {{ template "veidemann-dashboard.name" . }}
         release: {{ .Release.Name }}
+    {{- with .Values.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
     spec:
       volumes:
         - name: config

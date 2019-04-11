@@ -1,12 +1,9 @@
 # Default values for veidemann helm chart minikube install
 tags:
   database: true
-  mesh: false
-  validation: true
   dashboard: true
   idp: true
-  tracing: false
-  metrics: false
+  tracing: true
 
 .hostname: &hostname veidemann.local
 
@@ -21,9 +18,41 @@ tags:
 
 .issuer: &issuer "https://veidemann.local/dex"
 
+.latest_image: &latest-image
+  image:
+    tag: latest
+    pullPolicy: Always
+
+veidemann-cache:
+  podAnnotations:
+    linkerd.io/inject: "enabled"
+
+veidemann-robotsevaluator-service:
+  podAnnotations:
+    linkerd.io/inject: "enabled"
+    config.linkerd.io/skip-outbound-ports: "14250"
+  annotations:
+    sidecar.jaegertracing.io/inject: "true"
+
+veidemann-dns-resolver:
+  podAnnotations:
+    linkerd.io/inject: "enabled"
+
+veidemann-ooshandler:
+  podAnnotations:
+    linkerd.io/inject: "enabled"
+
+veidemann-db-initializer:
+  annotations:
+    "helm.sh/hook": "post-install,pre-upgrade"
+    "helm.sh/hook-delete-policy": "before-hook-creation"
+
 veidemann-dashboard:
+  <<: *latest-image
   ingress:
     <<: *ingress
+    annotations:
+      kubernetes.io/ingress.class: "nginx"
   config:
     issuer: *issuer
 
@@ -52,7 +81,15 @@ veidemann-contentexplorer:
     annotations:
       kubernetes.io/ingress.class: "nginx"
 
+veidemann-contentwriter:
+  podAnnotations:
+    linkerd.io/inject: "enabled"
+    config.linkerd.io/skip-outbound-ports: "14250"
+  annotations:
+    sidecar.jaegertracing.io/inject: "true"
+
 veidemann-controller:
+  <<: *latest-image
   ingress:
     <<: *ingress
     annotations:
@@ -61,8 +98,35 @@ veidemann-controller:
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
   config:
     issuer: *issuer
+  podAnnotations:
+    linkerd.io/inject: "enabled"
+    config.linkerd.io/skip-outbound-ports: "14250"
+    config.linkerd.io/skip-inbound-ports: "7700"
+  annotations:
+    sidecar.jaegertracing.io/inject: "true"
+
+veidemann-harvester:
+  proxy:
+    <<: *latest-image
+  podAnnotations:
+    linkerd.io/inject: "enabled"
+    config.linkerd.io/skip-outbound-ports: "3128,14250"
+  annotations:
+    sidecar.jaegertracing.io/inject: "true"
+
+veidemann-frontier:
+  <<: *latest-image
+  podAnnotations:
+    linkerd.io/inject: "enabled"
+    config.linkerd.io/skip-outbound-ports: "14250"
+  annotations:
+    sidecar.jaegertracing.io/inject: "true"
 
 rethinkdb:
+  proxy:
+    kind: DaemonSet
+    dnsPolicy: ClusterFirstWithHostNet
+    hostNetwork: true
   cluster:
     rethinkCacheSize: "auto"
     resources:
@@ -72,9 +136,11 @@ rethinkdb:
         memory: "5Gi"
 
 jaeger:
-  agent:
-    dnsPolicy: ClusterFirstWithHostNet
-    useHostNetwork: true
+  storage:
+    type: memory
+    options:
+      memory:
+        max-traces: 1000
 
 dex:
   ingress:

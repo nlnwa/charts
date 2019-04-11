@@ -47,10 +47,14 @@ tolerations: []
 
 affinity: {}
 
+annotations: {}
+
+podAnnotations: {}
+
 hostAliases: []
 
 trustedCA:
-  # create a secret or net
+  # create a secret or not
   create: false
   # if enabled deployment will mount volume with tls.crt
   enabled: false
@@ -62,24 +66,43 @@ trustedCA:
   # crt is a PEM encoded tls certificate
   crt: ""
 
-# global overrides config values
-global:
-  veidemann:
-    jaeger: {}
-    mesh:
-      host: ""
-      port: ""
-
-# config overrides common configmap values
-config:
-  issuer: ""
-
-  frontier:
-    host: ""
-    port: ""
-
 envoy:
   image:
     repository: envoyproxy/envoy-alpine
     tag: v1.8.0
     pullPolicy: IfNotPresent
+
+# config overrides common configmap values
+config:
+  issuer: ""
+
+  rethinkdb:
+    host: ""
+    port: ""
+    name: ""
+
+  frontier:
+    host: ""
+    port: ""
+
+  jaeger:
+    agent:
+      host: ""
+      port: ""
+    sampler:
+      type: ""
+      param: ""
+
+global:
+  veidemann:
+    rethinkdb:
+      host: ""
+      port: ""
+      name: ""
+    jaeger:
+      agent:
+        host: ""
+        port: ""
+      sampler:
+        type: ""
+        param: ""

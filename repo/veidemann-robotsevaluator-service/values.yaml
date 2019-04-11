@@ -34,11 +34,36 @@ tolerations: []
 
 affinity: {}
 
+annotations: {}
+
+podAnnotations: {}
+
 config:
   proxy:
     host: ""
     port: ""
+  rethinkdb:
+    host: ""
+    port: ""
+    name: ""
+  jaeger:
+    agent:
+      host: ""
+      port: ""
+    sampler:
+      type: ""
+      param: ""
 
 global:
   veidemann:
-    jaeger: {}
+    rethinkdb:
+      host: ""
+      port: ""
+      name: ""
+    jaeger:
+      agent:
+        host: ""
+        port: ""
+      sampler:
+        type: ""
+        param: ""

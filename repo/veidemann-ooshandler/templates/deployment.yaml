@@ -8,6 +8,10 @@ metadata:
     chart: {{ template "veidemann-ooshandler.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- with .Values.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -20,6 +24,10 @@ spec:
         app: veidemann
         component: {{ template "veidemann-ooshandler.name" . }}
         release: {{ .Release.Name }}
+    {{- with .Values.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
     spec:
       containers:
         - name: {{ .Chart.Name }}

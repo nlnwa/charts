@@ -20,6 +20,10 @@ spec:
         app: veidemann
         component: {{ template "veidemann-cache.name" . }}
         release: {{ .Release.Name }}
+    {{- with .Values.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
     spec:
       volumes:
         - name: workdir

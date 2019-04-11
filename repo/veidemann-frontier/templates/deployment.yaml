@@ -1,4 +1,3 @@
-{{- $global := .Values.global.veidemann -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -9,6 +8,10 @@ metadata:
     chart: {{ template "veidemann-frontier.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- with .Values.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -21,6 +24,10 @@ spec:
         app: veidemann
         component: {{ template "veidemann-frontier.name" . }}
         release: {{ .Release.Name }}
+    {{- with .Values.podAnnotations }}
+      annotations:
+{{ toYaml . | nindent 8 }}
+    {{- end }}
     spec:
       volumes:
         - name: workdir
@@ -40,27 +47,25 @@ spec:
               containerPort: {{ .Values.service.port }}
               protocol: TCP
           envFrom:
-            - configMapRef:
-                name: {{ template "veidemann-frontier.configPrefix" . }}-rethinkdb-env
-                optional: false
             - secretRef:
                 name: {{ template "veidemann-frontier.configPrefix" . }}-rethinkdb-env
                 optional: false
-          {{- if not .Values.global.veidemann.jaeger }}
-            - configMapRef:
-                name: {{ template "veidemann-frontier.configPrefix" . }}-jaeger-env
-                optional: true
-          {{- end }}
           env:
             - name: NODE_NAME
               valueFrom:
                 fieldRef:
-                  fieldPath: spec.nodeName
+                  fieldPath: status.hostIP
+            - name: DB_HOST
+              value: {{ default .Values.global.veidemann.rethinkdb.host .Values.config.rethinkdb.host | quote }}
+            - name: DB_PORT
+              value: {{ default .Values.global.veidemann.rethinkdb.port .Values.config.rethinkdb.port | quote }}
+            - name: DB_NAME
+              value: {{ default .Values.global.veidemann.rethinkdb.name .Values.config.rethinkdb.name | quote }}
             - name: API_PORT
               value: {{ .Values.service.port | quote }}
             - name: ROBOTS_EVALUATOR_HOST
-            {{- if or .Values.config.robotsEvaluator.host $global.mesh.host }}
-              value: {{ default .Values.config.robotsEvaluator.host $global.mesh.host | quote }}
+            {{- if .Values.config.robotsEvaluator.host }}
+              value: {{ .Values.config.robotsEvaluator.host | quote }}
             {{- else }}
               valueFrom:
                 configMapKeyRef:
@@ -68,8 +73,8 @@ spec:
                   key: robotsEvaluator.host
             {{- end }}
             - name: ROBOTS_EVALUATOR_PORT
-            {{- if or .Values.config.robotsEvaluator.port $global.mesh.port }}
-              value: {{ default .Values.config.robotsEvaluator.port $global.mesh.port | quote }}
+            {{- if .Values.config.robotsEvaluator.port }}
+              value: {{ .Values.config.robotsEvaluator.port | quote }}
             {{- else }}
               valueFrom:
                 configMapKeyRef:
@@ -77,8 +82,8 @@ spec:
                   key: robotsEvaluator.port
             {{- end }}
             - name: DNS_RESOLVER_HOST
-            {{- if or .Values.config.dnsResolver.host $global.mesh.host }}
-              value: {{ default .Values.config.dnsResolver.host $global.mesh.host | quote }}
+            {{- if .Values.config.dnsResolver.host }}
+              value: {{ .Values.config.dnsResolver.host | quote }}
             {{- else }}
               valueFrom:
                 configMapKeyRef:
@@ -86,8 +91,8 @@ spec:
                   key: dnsResolver.host
             {{- end }}
             - name: DNS_RESOLVER_PORT
-            {{- if or .Values.config.dnsResolver.port $global.mesh.port }}
-              value: {{ default .Values.config.dnsResolver.port $global.mesh.port | quote }}
+            {{- if .Values.config.dnsResolver.port }}
+              value: {{ .Values.config.dnsResolver.port | quote }}
             {{- else }}
               valueFrom:
                 configMapKeyRef:
@@ -95,8 +100,8 @@ spec:
                   key: dnsResolver.port
             {{- end }}
             - name: OOS_HANDLER_HOST
-            {{- if or .Values.config.oosHandler.host $global.mesh.host }}
-              value: {{ default .Values.config.oosHandler.host $global.mesh.host | quote }}
+            {{- if .Values.config.oosHandler.host }}
+              value: {{ .Values.config.oosHandler.host | quote }}
             {{- else }}
               valueFrom:
                 configMapKeyRef:
@@ -104,8 +109,8 @@ spec:
                   key: oosHandler.host
             {{- end }}
             - name: OOS_HANDLER_PORT
-            {{- if or .Values.config.oosHandler.port $global.mesh.port }}
-              value: {{ default .Values.config.oosHandler.port $global.mesh.port | quote }}
+            {{- if .Values.config.oosHandler.port }}
+              value: {{ .Values.config.oosHandler.port | quote }}
             {{- else }}
               valueFrom:
                 configMapKeyRef:
@@ -114,16 +119,20 @@ spec:
             {{- end }}
             - name: JAVA_OPTS
               value: {{ default .Values.config.javaOpts | quote }}
-          {{- with .Values.global.veidemann.jaeger }}
+            - name: JAEGER_SERVICE_NAME
+              value: {{ include "veidemann-frontier.fullname" . | quote }}
             - name: JAEGER_AGENT_HOST
-              value: {{ .agent.host | quote }}
+              value: {{ default .Values.global.veidemann.jaeger.agent.host .Values.config.jaeger.agent.host | quote }}
             - name: JAEGER_AGENT_PORT
-              value: {{ .agent.port | quote }}
+              value: {{ default .Values.global.veidemann.jaeger.agent.port .Values.config.jaeger.agent.port | quote }}
+            {{- if or .Values.global.veidemann.jaeger.sampler.type .Values.config.jaeger.sampler.type }}
             - name: JAEGER_SAMPLER_TYPE
-              value: {{ .sampler.type | quote }}
+              value: {{ default .Values.global.veidemann.jaeger.sampler.type .Values.config.jaeger.sampler.type | quote }}
+            {{- end }}
+            {{- if or .Values.global.veidemann.jaeger.sampler.param .Values.config.jaeger.sampler.param }}
             - name: JAEGER_SAMPLER_PARAM
-              value: {{ .sampler.param | quote }}
-          {{- end }}
+              value: {{ default .Values.global.veidemann.jaeger.sampler.param .Values.config.jaeger.sampler.param | quote }}
+            {{- end }}
           volumeMounts:
             - mountPath: /workdir
               name: workdir

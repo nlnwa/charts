@@ -29,6 +29,10 @@ tolerations: []
 
 affinity: {}
 
+annotations: {}
+
+podAnnotations: {}
+
 proxy:
   image:
     repository: norsknettarkiv/veidemann-harvester
@@ -68,7 +72,7 @@ proxy:
 
   config:
     browserWSEndpoint: ws://localhost:3000/?--proxy-server=localhost:8080
-    maxOpenSessions: 2
+    maxOpenSessions: 1
     javaOpts: ""
     frontier:
       host: ""
@@ -82,7 +86,17 @@ proxy:
     cache:
       host: ""
       port: ""
-
+    rethinkdb:
+      host: ""
+      port: ""
+      name: ""
+    jaeger:
+      agent:
+        host: ""
+        port: ""
+      sampler:
+        type: ""
+        param: ""
 
 browser:
   image:
@@ -111,10 +125,16 @@ browser:
   config:
     connectionTimeout: "600000"
 
-
 global:
   veidemann:
-    mesh:
+    rethinkdb:
       host: ""
       port: ""
-    jaeger: {}
+      name: ""
+    jaeger:
+      agent:
+        host: ""
+        port: ""
+      sampler:
+        type: ""
+        param: ""

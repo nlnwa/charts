@@ -1,32 +1,36 @@
 #!/usr/bin/env sh
 
+function is_linkerd_installed {
+    version=$(linkerd version | grep 'Server version' | cut -d':' -f 2 | tr -d '[:space:]')
+    [ ${version} != 'unavailable' ]
+}
+
 RELEASE=local
+CHART=../repo/veidemann
 
 set -e
 
 # Enforce minikube context (not production)
 kubectl config use-context minikube
 
-rm -f ../veidemann/charts/*
-rm -f ../mesh/charts/*
+if ! is_linkerd_installed; then
+    linkerd install --proxy-auto-inject | kubectl apply -f -
+    linkerd check
+fi
 
 # Initialize helm on client and server, wait for it to be ready
 helm init --wait
 
-# Add/update helm repo
-helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
-
-# need to resolve dependencies for mesh first because requirements is not resolved recursively for subcharts
-helm dep up ../repo/mesh
-helm dep up ../repo/veidemann
+rm -f ${CHART}/charts/*
+helm dep up ${CHART}
 
 # Upgrade/install nlnwa/veidemann into default namespace with release name "dev"
-
+#
 # Add entry to veidemann-controller's /etc/hosts file with minikube's ip pointing to the name
 # of the name of the generated certs
 # See (https://kubernetes.io/docs/concepts/services-networking/add-entries-to-pod-etc-hosts-with-host-aliases/)
 
-helm upgrade ${RELEASE} ../repo/veidemann --install \
+helm upgrade ${RELEASE} ${CHART} --install \
 --values values.yaml \
 --set tls.create=true \
 --set-file tls.key=certs/veidemann.local/key.pem \

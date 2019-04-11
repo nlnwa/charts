@@ -1,118 +1,125 @@
 dependencies:
-# Core
-- name: veidemann-cache
-  version: 1.1.1
-  repository: file://../veidemann-cache
+  # Core
+  - name: veidemann-cache
+    version: 1.2.0
+    repository: file://../veidemann-cache
 
-- name: veidemann-contentwriter
-  version: 1.0.12
-  repository: file://../veidemann-contentwriter
+  - name: veidemann-contentwriter
+    version: 1.1.0
+    repository: file://../veidemann-contentwriter
 
-- name: veidemann-controller
-  version: 1.1.18
-  repository: file://../veidemann-controller
+  - name: veidemann-controller
+    version: 1.2.0
+    repository: file://../veidemann-controller
 
-- name: veidemann-db-initializer
-  version: 1.0.28
-  repository: file://../veidemann-db-initializer
+  - name: veidemann-db-initializer
+    version: 1.0.28
+    repository: file://../veidemann-db-initializer
 
-- name: veidemann-dns-resolver
-  version: 1.0.9
-  repository: file://../veidemann-dns-resolver
+  - name: veidemann-dns-resolver
+    version: 1.1.0
+    repository: file://../veidemann-dns-resolver
 
-- name: veidemann-frontier
-  version: 1.1.5
-  repository: file://../veidemann-frontier
+  - name: veidemann-frontier
+    version: 1.2.0
+    repository: file://../veidemann-frontier
 
-- name: veidemann-harvester
-  version: 1.1.23
-  repository: file://../veidemann-harvester
+  - name: veidemann-harvester
+    version: 1.2.0
+    repository: file://../veidemann-harvester
 
-- name: veidemann-robotsevaluator-service
-  version: 1.0.18
-  repository: file://../veidemann-robotsevaluator-service
+  - name: veidemann-robotsevaluator-service
+    version: 1.1.0
+    repository: file://../veidemann-robotsevaluator-service
 
-- name: veidemann-contentexplorer
-  version: 1.0.23
-  repository: file://../veidemann-contentexplorer
+  - name: veidemann-contentexplorer
+    version: 1.0.23
+    repository: file://../veidemann-contentexplorer
 
-- name: veidemann-ooshandler
-  version: 0.1.4
-  repository: file://../veidemann-ooshandler
+  - name: veidemann-ooshandler
+    version: 0.2.0
+    repository: file://../veidemann-ooshandler
 
-# Dashboard
-- name: veidemann-dashboard
-  version: 1.0.5
-  repository: file://../veidemann-dashboard
-  condition: veidemann-dashboard.enabled
-  tags:
-  - dashboard
+  # Dashboard
+  - name: veidemann-dashboard
+    version: 1.1.0
+    repository: file://../veidemann-dashboard
+    condition: veidemann-dashboard.enabled
+    tags:
+      - dashboard
 
-- name: veidemann-api-gateway
-  version: 1.0.1
-  repository: file://../veidemann-api-gateway
-  condition: veidemann-api-gateway.enabled
-  tags:
-  - dashboard
+  - name: veidemann-api-gateway
+    version: 1.1.0
+    repository: file://../veidemann-api-gateway
+    condition: veidemann-api-gateway.enabled
+    tags:
+      - dashboard
 
-- name: veidemann-dashboard-documentation
-  version: 1.0.3
-  repository: file://../veidemann-dashboard-documentation
-  condition: veidemann-dashboard-documentation.enabled
-  tags:
-  - dashboard
+  - name: veidemann-dashboard-documentation
+    version: 1.0.3
+    repository: file://../veidemann-dashboard-documentation
+    condition: veidemann-dashboard-documentation.enabled
+    tags:
+      - dashboard
 
-# Validation
-- name: veidemann-warcvalidator
-  version: 1.1.5
-  repository: file://../veidemann-warcvalidator
-  condition: veidemann-warcvalidator.enabled
-  tags:
-  - validation
+  # Validation
+  - name: veidemann-warcvalidator
+    version: 1.2.0
+    repository: file://../veidemann-warcvalidator
+    condition: veidemann-warcvalidator.enabled
+    tags:
+      - validation
 
-- name: veidemann-warcvalidator-api
-  version: 1.0.1
-  repository: file://../veidemann-warcvalidator-api
-  condition: veidemann-warcvalidator-api.enabled
-  tags:
-  - validation
+  - name: veidemann-warcvalidator-api
+    version: 1.1.0
+    repository: file://../veidemann-warcvalidator-api
+    condition: veidemann-warcvalidator-api.enabled
+    tags:
+      - validation
 
-# Metrics
-- name: veidemann-metrics
-  version: 1.0.5
-  repository: file://../veidemann-metrics
-  condition: veidemann-metrics.enabled
-  tags:
-  - metrics
+  # Tracing
+  - name: jaeger-operator
+    version: 2.4.1
+    repository: "@stable"
+    condition: jaeger-operator.enabled
+    tags:
+      - tracing
 
-# Tracing
-- name: jaeger
-  version: 0.7.0
-  repository: "@incubator"
-  condition: jaeger.enabled
-  tags:
-  - tracing
+  - name: jaeger
+    version: 0.1.0
+    repository: file://../jaeger
+    condition: jaeger.enabled
+    tags:
+      - tracing
 
-# Identity provider
-- name: dex
-  version: 0.5.0
-  repository: "@stable"
-  condition: dex.enabled
-  tags:
-  - idp
+  # Metrics
+  - name: veidemann-metrics
+    version: 1.0.5
+    repository: file://../veidemann-metrics
+    condition: veidemann-metrics.enabled
+    tags:
+      - metrics
 
-# Service mesh
-- name: mesh
-  repository: file://../mesh
-  version: 0.2.5
-  condition: mesh.enabled
-  tags:
-  - mesh
+  # Identity provider
+  - name: dex
+    version: 0.8.0
+    repository: "@stable"
+    condition: dex.enabled
+    tags:
+      - idp
 
-# Database
-- name: rethinkdb
-  version: 0.2.3
-  repository: file://../rethinkdb
-  condition: rethinkdb.enabled
-  tags:
-  - database
+  # Database
+  - name: rethinkdb
+    version: 0.3.0
+    repository: file://../rethinkdb
+    condition: rethinkdb.enabled
+    tags:
+      - database
+
+  # Database backup
+  - name: rethinkdb-backup
+    version: 1.0.0
+    repository: file://../rethinkdb-backup
+    condition: rethinkdb-backup.enabled
+    tags:
+      - database-backup

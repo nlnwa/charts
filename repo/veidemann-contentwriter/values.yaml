@@ -59,9 +59,35 @@ tolerations: []
 
 affinity: {}
 
+annotations: {}
+
+podAnnotations: {}
+
 config:
   warcWriterPoolSize: 2
+  rethinkdb:
+    host: ""
+    port: ""
+    name: ""
+  jaeger:
+    agent:
+      host: ""
+      port: ""
+    sampler:
+      type: ""
+      param: ""
+
 
 global:
   veidemann:
-    jaeger: {}
+    rethinkdb:
+      host: ""
+      port: ""
+      name: ""
+    jaeger:
+      agent:
+        host: ""
+        port: ""
+      sampler:
+        type: ""
+        param: ""

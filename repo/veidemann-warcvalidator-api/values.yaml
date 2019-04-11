@@ -46,3 +46,16 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+config:
+  rethinkdb:
+    host: ""
+    port: ""
+    name: ""
+
+global:
+  veidemann:
+    rethinkdb:
+      host: ""
+      port: ""
+      name: ""

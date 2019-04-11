@@ -30,6 +30,10 @@ tolerations: []
 
 affinity: {}
 
+annotations: {}
+
+podAnnotations: {}
+
 livenessProbe:
   httpGet:
     path: /health
@@ -44,16 +48,21 @@ readinessProbe:
   initialDelaySeconds: 15
   periodSeconds: 15
 
-# global overrides config
-global:
-  veidemann:
-    mesh:
-      host: ""
-      port: ""
-
 config:
   contentWriter:
     host: ""
     port: ""
 
   dnsServer: "8.8.8.8"
+
+  rethinkdb:
+    host: ""
+    port: ""
+    name: ""
+
+global:
+  veidemann:
+    rethinkdb:
+      host: ""
+      port: ""
+      name: ""

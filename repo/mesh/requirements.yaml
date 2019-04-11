@@ -1,7 +1,0 @@
-dependencies:
-  - name: linkerd
-    repository: file://../linkerd
-    version: ~0.7.2
-  - name: namerd
-    version: ~0.3.1
-    repository: file://../namerd
