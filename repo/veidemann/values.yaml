@@ -235,16 +235,11 @@ rethinkdb:
     replicas: 1
 
 dex:
+  image: norsknettarkiv/dex
+  imageTag: "latest"
   ingress:
+    enabled: true
     path: /dex
   config:
-    storage:
-      type: kubernetes
-      config:
-        inCluster: true
-    logger:
-      level: "debug"
-      format: "text"
     oauth2:
-      skipApprovalScreen: true
       responseTypes: ["code", "token", "id_token"]

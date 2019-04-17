@@ -102,7 +102,7 @@ dependencies:
 
   # Identity provider
   - name: dex
-    version: 0.8.0
+    version: 1.0.0
     repository: "@stable"
     condition: dex.enabled
     tags:
