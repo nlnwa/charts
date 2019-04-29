@@ -16,10 +16,15 @@ kubectl config use-context minikube
 if ! is_linkerd_installed; then
     linkerd install --proxy-auto-inject | kubectl apply -f -
     linkerd check
+else
+    linkerd upgrade --proxy-auto-inject | kubectl apply -f -
+    linkerd check
 fi
 
 # Initialize helm on client and server, wait for it to be ready
 helm init --wait
+
+helm repo update
 
 rm -f ${CHART}/charts/*
 helm dep up ${CHART}
