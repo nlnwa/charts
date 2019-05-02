@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ template "veidemann-cache.fullname" . }}
   labels:
@@ -9,7 +9,9 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
+  serviceName: {{ template "veidemann-cache.fullname" . }}
   replicas: {{ .Values.replicaCount }}
+  podManagementPolicy: OrderedReady
   selector:
     matchLabels:
       component: {{ template "veidemann-cache.name" . }}
@@ -25,20 +27,6 @@ spec:
 {{ toYaml . | indent 8 }}
     {{- end }}
     spec:
-      volumes:
-        - name: workdir
-        {{- if .Values.persistence.enabled }}
-          persistentVolumeClaim:
-            claimName: {{ .Values.persistence.existingClaim | default (include "veidemann-cache.fullname" .) }}
-        {{- else }}
-          emptyDir: {}
-        {{- end }}
-        - name: dshm
-          emptyDir:
-            medium: Memory
-        - name: cache-certificate
-          secret:
-            secretName: {{ template "veidemann-cache.fullname" . }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.cache.image.repository }}:{{ default .Chart.AppVersion .Values.cache.image.tag }}"
@@ -84,3 +72,39 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+      volumes:
+        - name: dshm
+          emptyDir:
+            medium: Memory
+        - name: cache-certificate
+          secret:
+            secretName: {{ template "veidemann-cache.fullname" . }}
+        - name: workdir
+{{- if not .Values.persistence.enabled }}
+          emptyDir: {}
+{{- else }}
+  volumeClaimTemplates:
+    - metadata:
+        name: workdir
+        labels:
+          app: veidemann
+          component: {{ template "veidemann-cache.name" . }}
+          release: {{ .Release.Name }}
+      {{- with .Values.persistence.annotations }}
+        annotations:
+{{ toYaml . | indent 10 }}
+      {{- end }}
+      spec:
+        accessModes:
+          - {{ .Values.persistence.accessMode | quote }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.size | quote }}
+      {{- if .Values.persistence.storageClass }}
+      {{- if (eq "-" .Values.persistence.storageClass) }}
+        storageClassName: ""
+      {{- else }}
+        storageClassName: {{ .Values.persistence.storageClass | quote }}
+      {{- end }}
+      {{- end }}
+{{- end }}

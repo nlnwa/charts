@@ -28,11 +28,6 @@ persistence:
   annotations: {}
   # helm.sh/resource-policy: keep
 
-  ## A manually managed Persistent Volume and Claim
-  ## Requires persistence.enabled: true
-  ## If defined, PVC must be created manually before volume will be bound with the name e.g `cache-data`
-  existingClaim: ""
-
 nodeSelector: {}
 
 tolerations: []
