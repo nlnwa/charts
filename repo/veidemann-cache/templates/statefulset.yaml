@@ -79,8 +79,8 @@ spec:
         - name: cache-certificate
           secret:
             secretName: {{ template "veidemann-cache.fullname" . }}
-        - name: workdir
 {{- if not .Values.persistence.enabled }}
+        - name: workdir
           emptyDir: {}
 {{- else }}
   volumeClaimTemplates:
