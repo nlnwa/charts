@@ -97,6 +97,8 @@ spec:
             - name: JAEGER_SAMPLER_PARAM
               value: {{ default .Values.global.veidemann.jaeger.sampler.param .Values.config.jaeger.sampler.param | quote }}
             {{- end }}
+            - name: JAVA_TOOL_OPTIONS
+              value: "-Dfile.encoding=UTF-8"
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
