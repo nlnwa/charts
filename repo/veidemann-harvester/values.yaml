@@ -35,6 +35,23 @@ podAnnotations: {}
 
 proxy:
   image:
+    repository: norsknettarkiv/veidemann-recorderproxy
+    tag: "0.1.2"
+    pullPolicy: IfNotPresent
+  ports:
+    - name: http
+      containerPort: 9900
+      protocol: TCP
+  config:
+    dnsResolver:
+      host: ""
+      port: ""
+    cache:
+      host: ""
+      port: ""
+
+browserController:
+  image:
     repository: norsknettarkiv/veidemann-harvester
     tag: ""
     pullPolicy: IfNotPresent
@@ -60,30 +77,27 @@ proxy:
     #  memory: 128Mi
 
   livenessProbe: {}
-  #    tcpSocket:
-  #      port: http
-  #    initialDelaySeconds: 10
-  #    periodSeconds: 10
+    #    tcpSocket:
+    #      port: http
+    #    initialDelaySeconds: 10
+    #    periodSeconds: 10
   readinessProbe: {}
-  #    tcpSocket:
-  #      port: http
-  #    initialDelaySeconds: 10
-  #    periodSeconds: 10
+    #    tcpSocket:
+    #      port: http
+    #    initialDelaySeconds: 10
+    #    periodSeconds: 10
 
   config:
     browserWSEndpoint: ws://localhost:3000/?--proxy-server=localhost:8080
-    maxOpenSessions: 1
+    maxOpenSessions: 2
     javaOpts: ""
     frontier:
       host: ""
       port: ""
+    robotsEvaluator:
+      host: ""
+      port: ""
     contentWriter:
-      host: ""
-      port: ""
-    dnsResolver:
-      host: ""
-      port: ""
-    cache:
       host: ""
       port: ""
     rethinkdb:
@@ -101,7 +115,7 @@ proxy:
 browser:
   image:
     repository:  browserless/chrome
-    tag: 1.2.0-puppeteer-1.10.0
+    tag: 1.5.0-puppeteer-1.14.0
     pullPolicy: IfNotPresent
   ports:
     - name: debug

@@ -46,9 +46,9 @@ spec:
             secretName: {{ .Release.Name }}-veidemann-cache
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.proxy.image.repository }}:{{ default .Chart.AppVersion .Values.proxy.image.tag }}"
-          imagePullPolicy: {{ .Values.proxy.image.pullPolicy }}
-        {{- with .Values.proxy.ports }}
+          image: "{{ .Values.browserController.image.repository }}:{{ default .Chart.AppVersion .Values.browserController.image.tag }}"
+          imagePullPolicy: {{ .Values.browserController.image.pullPolicy }}
+        {{- with .Values.browserController.ports }}
           ports:
 {{ toYaml . | indent 12 }}
         {{- end }}
@@ -62,18 +62,22 @@ spec:
                 fieldRef:
                   fieldPath: status.hostIP
             - name: DB_HOST
-              value: {{ default .Values.global.veidemann.rethinkdb.host .Values.proxy.config.rethinkdb.host | quote }}
+              value: {{ default .Values.global.veidemann.rethinkdb.host .Values.browserController.config.rethinkdb.host | quote }}
             - name: DB_PORT
-              value: {{ default .Values.global.veidemann.rethinkdb.port .Values.proxy.config.rethinkdb.port | quote }}
+              value: {{ default .Values.global.veidemann.rethinkdb.port .Values.browserController.config.rethinkdb.port | quote }}
             - name: DB_NAME
-              value: {{ default .Values.global.veidemann.rethinkdb.name .Values.proxy.config.rethinkdb.name | quote }}
+              value: {{ default .Values.global.veidemann.rethinkdb.name .Values.browserController.config.rethinkdb.name | quote }}
             - name: BROWSER_WS_ENDPOINT
-              value: {{ .Values.proxy.config.browserWSEndpoint | quote }}
+              value: {{ .Values.browserController.config.browserWSEndpoint | quote }}
             - name: MAX_OPEN_SESSIONS
-              value: {{ .Values.proxy.config.maxOpenSessions | quote }}
+              value: {{ .Values.browserController.config.maxOpenSessions | quote }}
+            - name: PROXY_HOST
+              value: "localhost"
+            - name: PROXY_PORT
+              value: "9900"
             - name: FRONTIER_HOST
-            {{- if .Values.proxy.config.frontier.host }}
-              value: {{ .Values.proxy.config.frontier.host | quote }}
+            {{- if .Values.browserController.config.frontier.host }}
+              value: {{ .Values.browserController.config.frontier.host | quote }}
             {{- else }}
               valueFrom:
                 configMapKeyRef:
@@ -81,8 +85,8 @@ spec:
                   key: frontier.host
             {{- end }}
             - name: FRONTIER_PORT
-            {{- if .Values.proxy.config.frontier.port }}
-              value: {{ .Values.proxy.config.frontier.port | quote }}
+            {{- if .Values.browserController.config.frontier.port }}
+              value: {{ .Values.browserController.config.frontier.port | quote }}
             {{- else }}
               valueFrom:
                 configMapKeyRef:
@@ -90,8 +94,8 @@ spec:
                   key: frontier.port
             {{- end }}
             - name: CONTENT_WRITER_HOST
-            {{- if .Values.proxy.config.contentWriter.host }}
-              value: {{ default .Values.proxy.config.contentWriter.host | quote }}
+            {{- if .Values.browserController.config.contentWriter.host }}
+              value: {{ default .Values.browserController.config.contentWriter.host | quote }}
             {{- else }}
               valueFrom:
                 configMapKeyRef:
@@ -99,14 +103,83 @@ spec:
                   key: contentWriter.host
             {{- end }}
             - name: CONTENT_WRITER_PORT
-            {{- if .Values.proxy.config.contentWriter.port }}
-              value: {{ .Values.proxy.config.contentWriter.port | quote }}
+            {{- if .Values.browserController.config.contentWriter.port }}
+              value: {{ .Values.browserController.config.contentWriter.port | quote }}
             {{- else }}
               valueFrom:
                 configMapKeyRef:
                   name: {{ template "veidemann-harvester.configPrefix" . }}
                   key: contentWriter.port
             {{- end }}
+            - name: ROBOTS_EVALUATOR_HOST
+            {{- if .Values.browserController.config.robotsEvaluator.host }}
+              value: {{ default .Values.browserController.config.robotsEvaluator.host | quote }}
+            {{- else }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "veidemann-harvester.configPrefix" . }}
+                  key: robotsEvaluator.host
+            {{- end }}
+            - name: ROBOTS_EVALUATOR_PORT
+            {{- if .Values.browserController.config.robotsEvaluator.port }}
+              value: {{ .Values.browserController.config.robotsEvaluator.port | quote }}
+            {{- else }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "veidemann-harvester.configPrefix" . }}
+                  key: robotsEvaluator.port
+            {{- end }}
+            - name: JAVA_OPTS
+              value: {{ .Values.browserController.config.javaOpts | quote }}
+            - name: JAEGER_SERVICE_NAME
+              value: {{ include "veidemann-harvester.fullname" . | quote }}
+            - name: JAEGER_AGENT_HOST
+              value: {{ default .Values.global.veidemann.jaeger.agent.host .Values.browserController.config.jaeger.agent.host | quote }}
+            - name: JAEGER_AGENT_PORT
+              value: {{ default .Values.global.veidemann.jaeger.agent.port .Values.browserController.config.jaeger.agent.port | quote }}
+            {{- if or .Values.global.veidemann.jaeger.sampler.type .Values.browserController.config.jaeger.sampler.type }}
+            - name: JAEGER_SAMPLER_TYPE
+              value: {{ default .Values.global.veidemann.jaeger.sampler.type .Values.browserController.config.jaeger.sampler.type | quote }}
+            {{- end }}
+            {{- if or .Values.global.veidemann.jaeger.sampler.param .Values.browserController.config.jaeger.sampler.param }}
+            - name: JAEGER_SAMPLER_PARAM
+              value: {{ default .Values.global.veidemann.jaeger.sampler.param .Values.browserController.config.jaeger.sampler.param | quote }}
+            {{- end }}
+            - name: JAVA_TOOL_OPTIONS
+              value: "-Dfile.encoding=UTF-8"
+        {{- with .Values.browserController.livenessProbe }}
+          livenessProbe:
+{{ toYaml . | indent 12 }}
+        {{- end }}
+          readinessProbe:
+        {{- with .Values.browserController.readinessProbe }}
+{{ toYaml . | indent 12 }}
+        {{- end }}
+          volumeMounts:
+            - mountPath: /workdir
+              name: workdir
+            - name: log4j-config
+              mountPath: /veidemann/config/log4j2.xml
+              subPath: log4j2.xml
+            - name: cache-certificate
+              mountPath: "/ca-certificates"
+              readOnly: true
+          resources:
+{{ toYaml .Values.browserController.resources | indent 12 }}
+
+        # Recorder proxy container
+        - name: {{ .Chart.Name }}-proxy
+          image: "{{ .Values.proxy.image.repository }}:{{ .Values.proxy.image.tag }}"
+          imagePullPolicy: {{ .Values.proxy.image.pullPolicy }}
+          ports:
+{{ toYaml .Values.proxy.ports | indent 12 }}
+          env:
+            - name: PORT
+              value: "9900"
+            - name: BROWSER_CONTROLLER_PORT
+              value: "9999"
+            - name: PROXY_COUNT
+              value: {{ .Values.browserController.config.maxOpenSessions | quote }}
             - name: DNS_RESOLVER_HOST
             {{- if .Values.proxy.config.dnsResolver.host }}
               value: {{ .Values.proxy.config.dnsResolver.host | quote }}
@@ -124,6 +197,24 @@ spec:
                 configMapKeyRef:
                   name: {{ template "veidemann-harvester.configPrefix" . }}
                   key: dnsResolver.port
+            {{- end }}
+            - name: CONTENT_WRITER_HOST
+            {{- if .Values.browserController.config.contentWriter.host }}
+              value: {{ default .Values.browserController.config.contentWriter.host | quote }}
+            {{- else }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "veidemann-harvester.configPrefix" . }}
+                  key: contentWriter.host
+            {{- end }}
+            - name: CONTENT_WRITER_PORT
+            {{- if .Values.browserController.config.contentWriter.port }}
+              value: {{ .Values.browserController.config.contentWriter.port | quote }}
+            {{- else }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "veidemann-harvester.configPrefix" . }}
+                  key: contentWriter.port
             {{- end }}
             - name: CACHE_HOST
             {{- if .Values.proxy.config.cache.host }}
@@ -143,43 +234,6 @@ spec:
                   name: {{ template "veidemann-harvester.configPrefix" . }}
                   key: cache.port
             {{- end }}
-            - name: JAVA_OPTS
-              value: {{ .Values.proxy.config.javaOpts | quote }}
-            - name: JAEGER_SERVICE_NAME
-              value: {{ include "veidemann-harvester.fullname" . | quote }}
-            - name: JAEGER_AGENT_HOST
-              value: {{ default .Values.global.veidemann.jaeger.agent.host .Values.proxy.config.jaeger.agent.host | quote }}
-            - name: JAEGER_AGENT_PORT
-              value: {{ default .Values.global.veidemann.jaeger.agent.port .Values.proxy.config.jaeger.agent.port | quote }}
-            {{- if or .Values.global.veidemann.jaeger.sampler.type .Values.proxy.config.jaeger.sampler.type }}
-            - name: JAEGER_SAMPLER_TYPE
-              value: {{ default .Values.global.veidemann.jaeger.sampler.type .Values.proxy.config.jaeger.sampler.type | quote }}
-            {{- end }}
-            {{- if or .Values.global.veidemann.jaeger.sampler.param .Values.proxy.config.jaeger.sampler.param }}
-            - name: JAEGER_SAMPLER_PARAM
-              value: {{ default .Values.global.veidemann.jaeger.sampler.param .Values.proxy.config.jaeger.sampler.param | quote }}
-            {{- end }}
-            - name: JAVA_TOOL_OPTIONS
-              value: "-Dfile.encoding=UTF-8"
-        {{- with .Values.proxy.livenessProbe }}
-          livenessProbe:
-{{ toYaml . | indent 12 }}
-        {{- end }}
-          readinessProbe:
-        {{- with .Values.proxy.readinessProbe }}
-{{ toYaml . | indent 12 }}
-        {{- end }}
-          volumeMounts:
-            - mountPath: /workdir
-              name: workdir
-            - name: log4j-config
-              mountPath: /veidemann/config/log4j2.xml
-              subPath: log4j2.xml
-            - name: cache-certificate
-              mountPath: "/ca-certificates"
-              readOnly: true
-          resources:
-{{ toYaml .Values.proxy.resources | indent 12 }}
 
         # Browser container
         - name: {{ .Chart.Name }}-browser
@@ -190,6 +244,8 @@ spec:
           env:
           - name: CONNECTION_TIMEOUT
             value: {{ .Values.browser.config.connectionTimeout | quote }}
+          - name: ENABLE_CORS
+            value: "true"
           livenessProbe:
 {{ toYaml .Values.browser.livenessProbe | indent 12 }}
           readinessProbe:
