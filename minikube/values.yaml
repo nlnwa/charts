@@ -114,6 +114,8 @@ veidemann-controller:
     sidecar.jaegertracing.io/inject: "true"
 
 veidemann-harvester:
+  browserController:
+    <<: *latest-image
   proxy:
     <<: *latest-image
   podAnnotations:
