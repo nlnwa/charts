@@ -3,26 +3,23 @@ kind: StatefulSet
 metadata:
   name: "{{ template "rethinkdb.fullname" . }}-cluster"
   labels:
-    app: "{{ template "rethinkdb.name" . }}-cluster"
-    chart: {{ template "rethinkdb.chart" . }}
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
+{{ include "rethinkdb.labels" . | indent 4 }}
+    app.kubernetes.io/component: cluster
 spec:
   serviceName: "{{ template "rethinkdb.fullname" . }}-cluster"
   replicas: {{ .Values.cluster.replicas }}
   selector:
     matchLabels:
-      app: "{{ template "rethinkdb.name" . }}-cluster"
-      heritage: {{ .Release.Service | quote }}
-      release: {{ .Release.Name | quote }}
+      app.kubernetes.io/name: {{ include "rethinkdb.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: cluster
   template:
     metadata:
       name: "{{ template "rethinkdb.fullname" . }}-cluster"
       labels:
-        app: "{{ template "rethinkdb.name" . }}-cluster"
-        chart: {{ template "rethinkdb.chart" . }}
-        heritage: {{ .Release.Service | quote }}
-        release: {{ .Release.Name | quote }}
+        app.kubernetes.io/name: {{ include "rethinkdb.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: cluster
       annotations:
       {{- if .Values.cluster.podAnnotations }}
 {{ toYaml .Values.cluster.podAnnotations | indent 8 }}
@@ -52,6 +49,10 @@ spec:
             - "all"
             - "--no-http-admin"
             - "--no-update-check"
+            {{- if .Values.cluster.cores }}
+            - "--cores"
+            - {{ .Values.cluster.cores | quote }}
+            {{- end }}
             - "--cache-size"
             - {{ .Values.cluster.rethinkCacheSize | quote }}
           volumeMounts:

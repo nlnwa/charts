@@ -1,39 +1,39 @@
-{{- if eq .Values.proxy.kind "Deployment" }}
+{{- if not (eq .Values.proxy.kind "Deployment") }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{ template "rethinkdb.fullname" . }}-proxy"
+  name: "{{ template "rethinkdb.fullname" . }}-admin"
   labels:
 {{ include "rethinkdb.labels" . | indent 4 }}
-    app.kubernetes.io/component: proxy
+    app.kubernetes.io/component: admin
 spec:
   replicas: 1
-  minReadySeconds: {{ .Values.proxy.minReadySeconds }}
+  minReadySeconds: {{ .Values.admin.minReadySeconds }}
   updateStrategy:
-{{ toYaml .Values.proxy.updateStrategy | indent 4 }}
+{{ toYaml .Values.admin.updateStrategy | indent 4 }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "rethinkdb.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
-      app.kubernetes.io/component: proxy
+      app.kubernetes.io/component: admin
   template:
     metadata:
-      name: {{ template "rethinkdb.fullname" . }}-proxy
+      name: {{ template "rethinkdb.fullname" . }}-admin
       labels:
         app.kubernetes.io/name: {{ include "rethinkdb.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
-        app.kubernetes.io/component: proxy
+        app.kubernetes.io/component: admin
       annotations:
-      {{- if .Values.proxy.podAnnotations }}
-{{ toYaml .Values.proxy.podAnnotations | indent 8 }}
+      {{- if .Values.admin.podAnnotations }}
+{{ toYaml .Values.admin.podAnnotations | indent 8 }}
       {{- end }}
     spec:
-{{- if .Values.proxy.priorityClassName }}
-      priorityClassName: {{ .Values.proxy.priorityClassName | quote }}
+{{- if .Values.admin.priorityClassName }}
+      priorityClassName: {{ .Values.admin.priorityClassName | quote }}
 {{- end }}
       serviceAccountName: {{ template "rethinkdb.serviceAccountName" . }}
       containers:
-        - name: {{ template "rethinkdb.name" . }}-proxy
+        - name: {{ template "rethinkdb.name" . }}-admin
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           ports:
@@ -41,13 +41,13 @@ spec:
               containerPort: {{ .Values.ports.cluster }}
             - name: driver
               containerPort: {{ .Values.ports.driver }}
-            - name: admin
+            - name: http-admin
               containerPort: {{ .Values.ports.admin }}
           args:
             - "--bind"
             - "$(POD_IP)"
             - "--no-update-check"
-            {{- if .Values.proxy.driverTLS.enabled }}
+            {{- if .Values.admin.driverTLS.enabled }}
             - "--driver-tls-key"
             - "/secrets/driver-key.pem"
             - "--driver-tls-cert"
@@ -80,18 +80,18 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
           resources:
-          {{ toYaml .Values.proxy.resources | indent 12 }}
-    {{- if .Values.proxy.nodeSelector }}
+{{ toYaml .Values.admin.resources | indent 12 }}
+    {{- if .Values.admin.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.proxy.nodeSelector | indent 8 }}
+{{ toYaml .Values.admin.nodeSelector | indent 8 }}
     {{- end }}
-    {{- if .Values.proxy.tolerations }}
+    {{- if .Values.admin.tolerations }}
       tolerations:
-{{ toYaml .Values.proxy.tolerations | indent 8 }}
+{{ toYaml .Values.admin.tolerations | indent 8 }}
     {{- end }}
-    {{- if .Values.proxy.affinity }}
+    {{- if .Values.admin.affinity }}
       affinity:
-{{ toYaml .Values.proxy.affinity | indent 8 }}
+{{ toYaml .Values.admin.affinity | indent 8 }}
     {{- end }}
       volumes:
         - name: secrets

@@ -1,6 +1,6 @@
 name: rethinkdb
 description: The open-source database for the realtime web
-version: 0.3.0
+version: 0.4.0
 appVersion: 2.3.5
 keywords:
 - rethinkdb
@@ -9,6 +9,7 @@ keywords:
 home: https://www.rethinkdb.com
 sources:
 - https://hub.docker.com/r/codylundquist/helm-rethinkdb-cluster/
+- https://github.com/helm/charts/tree/master/stable/rethinkdb
 icon: http://i.imgur.com/bZ75N6r.jpg
 maintainers:
 - email: cody.lundquist@gmail.com

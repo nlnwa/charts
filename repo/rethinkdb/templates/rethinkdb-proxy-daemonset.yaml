@@ -4,26 +4,24 @@ kind: DaemonSet
 metadata:
   name: "{{ template "rethinkdb.fullname" . }}-proxy"
   labels:
-    app: "{{ template "rethinkdb.name" . }}-proxy"
-    chart: {{ template "rethinkdb.chart" . }}
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
+{{ include "rethinkdb.labels" . | indent 4 }}
+    app.kubernetes.io/component: proxy
 spec:
   minReadySeconds: {{ .Values.proxy.minReadySeconds }}
   updateStrategy:
 {{ toYaml .Values.proxy.updateStrategy | indent 4 }}
   selector:
     matchLabels:
-      app: {{ template "rethinkdb.name" . }}-proxy
-      release: {{ .Release.Name | quote }}
+      app.kubernetes.io/name: {{ include "rethinkdb.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: proxy
   template:
     metadata:
       name: {{ template "rethinkdb.fullname" . }}-proxy
       labels:
-        app: {{ template "rethinkdb.name" . }}-proxy
-        heritage: {{ .Release.Service | quote }}
-        release: {{ .Release.Name | quote }}
-        chart: {{ template "rethinkdb.chart" . }}
+        app.kubernetes.io/name: {{ include "rethinkdb.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: proxy
       annotations:
       {{- if .Values.proxy.podAnnotations }}
 {{ toYaml .Values.proxy.podAnnotations | indent 8 }}
@@ -43,12 +41,11 @@ spec:
               containerPort: {{ .Values.ports.cluster }}
             - name: driver
               containerPort: {{ .Values.ports.driver }}
-            - name: admin
-              containerPort: {{ .Values.ports.admin }}
           args:
             - "--bind"
             - "$(POD_IP)"
             - "--no-update-check"
+            - "--no-http-admin"
             {{- if .Values.proxy.driverTLS.enabled }}
             - "--driver-tls-key"
             - "/secrets/driver-key.pem"
@@ -81,6 +78,8 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
+          resources:
+{{ toYaml .Values.proxy.resources | indent 12 }}
       hostNetwork: {{ .Values.proxy.hostNetwork }}
     {{- if .Values.proxy.nodeSelector }}
       nodeSelector:
@@ -94,8 +93,6 @@ spec:
       affinity:
 {{ toYaml .Values.proxy.affinity | indent 8 }}
     {{- end }}
-      resources:
-{{ toYaml .Values.proxy.resources | indent 12 }}
       volumes:
         - name: secrets
           projected:

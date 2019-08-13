@@ -3,15 +3,30 @@ kind: Service
 metadata:
   name: "{{ template "rethinkdb.fullname" . }}-admin"
   labels:
-    app: "{{ template "rethinkdb.name" . }}-admin"
-    chart: {{ template "rethinkdb.chart" . }}
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
+{{ include "rethinkdb.labels" . | indent 4 }}
+    app.kubernetes.io/component: admin
 spec:
-  clusterIP: None
+  type: {{ .Values.admin.service.type }}
+  clusterIP: "{{ .Values.admin.service.clusterIP }}"
+{{- if .Values.admin.service.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.admin.service.externalIPs | indent 4 }}
+{{- end }}
+{{- if .Values.admin.service.loadBalancerIP }}
+  loadBalancerIP: "{{ .Values.admin.service.loadBalancerIP }}"
+{{- end }}
+{{- if .Values.admin.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+{{ toYaml .Values.admin.service.loadBalancerSourceRanges | indent 4 }}
+{{- end }}
   ports:
     - port: {{ .Values.ports.admin }}
-      targetPort: admin
+      targetPort: http-admin
   selector:
-    app: "{{ template "rethinkdb.name" . }}-proxy"
-    release: {{ .Release.Name | quote }}
+    app.kubernetes.io/name: {{ include "rethinkdb.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  {{- if eq .Values.proxy.kind "Deployment" }}
+    app.kubernetes.io/component: proxy
+  {{- else }}
+    app.kubernetes.io/component: admin
+  {{- end }}
