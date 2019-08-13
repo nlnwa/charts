@@ -47,7 +47,7 @@ spec:
               containerPort: {{ .Values.ports.admin }}
           args:
             - "--bind"
-            - "all"
+            - "$(POD_IP)"
             - "--no-update-check"
             {{- if .Values.proxy.driverTLS.enabled }}
             - "--driver-tls-key"
