@@ -14,10 +14,10 @@ set -e
 kubectl config use-context minikube
 
 if ! is_linkerd_installed; then
-    linkerd install --proxy-auto-inject | kubectl apply -f -
+    linkerd install | kubectl apply -f -
     linkerd check
 else
-    linkerd upgrade --proxy-auto-inject | kubectl apply -f -
+    linkerd upgrade | kubectl apply -f -
     linkerd check
 fi
 
