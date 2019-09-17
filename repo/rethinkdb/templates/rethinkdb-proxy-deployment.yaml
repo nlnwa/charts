@@ -47,6 +47,7 @@ spec:
             - "--bind"
             - "$(POD_IP)"
             - "--no-update-check"
+            - "--no-http-admin"
             {{- if .Values.proxy.driverTLS.enabled }}
             - "--driver-tls-key"
             - "/secrets/driver-key.pem"

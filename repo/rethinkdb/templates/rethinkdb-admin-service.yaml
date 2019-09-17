@@ -25,8 +25,4 @@ spec:
   selector:
     app.kubernetes.io/name: {{ include "rethinkdb.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-  {{- if eq .Values.proxy.kind "Deployment" }}
-    app.kubernetes.io/component: rethinkdb-proxy
-  {{- else }}
     app.kubernetes.io/component: rethinkdb-admin
-  {{- end }}
