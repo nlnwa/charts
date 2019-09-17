@@ -4,14 +4,14 @@ metadata:
   name: {{ template "rethinkdb.fullname" . }}-proxy
   labels:
 {{ include "rethinkdb.labels" . | indent 4 }}
-    app.kubernetes.io/component: proxy
+    app.kubernetes.io/component: rethinkdb-proxy
   annotations:
   {{- if .Values.proxy.service.annotations }}
 {{ toYaml .Values.proxy.service.annotations | indent 4 }}
   {{- end }}
 spec:
   type: {{ .Values.proxy.service.type }}
-  clusterIP: "{{ .Values.proxy.service.clusterIP }}"
+  clusterIP: {{ .Values.proxy.service.clusterIP }}
 {{- if .Values.proxy.service.externalIPs }}
   externalIPs:
 {{ toYaml .Values.proxy.service.externalIPs | indent 4 }}
@@ -29,4 +29,4 @@ spec:
   selector:
     app.kubernetes.io/name: {{ include "rethinkdb.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/component: proxy
+    app.kubernetes.io/component: rethinkdb-proxy

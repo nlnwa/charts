@@ -2,10 +2,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{ template "rethinkdb.fullname" . }}-proxy"
+  name: {{ template "rethinkdb.fullname" . }}-proxy
   labels:
 {{ include "rethinkdb.labels" . | indent 4 }}
-    app.kubernetes.io/component: proxy
+    app.kubernetes.io/component: rethinkdb-proxy
 spec:
   replicas: 1
   minReadySeconds: {{ .Values.proxy.minReadySeconds }}
@@ -15,14 +15,14 @@ spec:
     matchLabels:
       app.kubernetes.io/name: {{ include "rethinkdb.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
-      app.kubernetes.io/component: proxy
+      app.kubernetes.io/component: rethinkdb-proxy
   template:
     metadata:
       name: {{ template "rethinkdb.fullname" . }}-proxy
       labels:
         app.kubernetes.io/name: {{ include "rethinkdb.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
-        app.kubernetes.io/component: proxy
+        app.kubernetes.io/component: rethinkdb-proxy
       annotations:
       {{- if .Values.proxy.podAnnotations }}
 {{ toYaml .Values.proxy.podAnnotations | indent 8 }}
@@ -34,8 +34,8 @@ spec:
       serviceAccountName: {{ template "rethinkdb.serviceAccountName" . }}
       containers:
         - name: {{ template "rethinkdb.name" . }}-proxy
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: cluster
               containerPort: {{ .Values.ports.cluster }}
@@ -54,13 +54,13 @@ spec:
             - "/secrets/driver-cert.pem"
             {{- end }}
           volumeMounts:
-            - name: "secrets"
-              mountPath: "/secrets"
+            - name: secrets
+              mountPath: /secrets
           env:
             - name: PROXY
               value: "true"
             - name: RETHINK_CLUSTER_SERVICE
-              value: "{{ template "rethinkdb.fullname" . }}-cluster"
+              value: {{ template "rethinkdb.fullname" . }}-cluster
             - name: RETHINKDB_PASSWORD
               valueFrom:
                 secretKeyRef:

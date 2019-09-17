@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: "{{ template "rethinkdb.fullname" . }}-cluster"
+  name: {{ template "rethinkdb.fullname" . }}-cluster
   labels:
 {{ include "rethinkdb.labels" . | indent 4 }}
-    app.kubernetes.io/component: cluster
+    app.kubernetes.io/component: rethinkdb-cluster
   annotations:
   {{- if .Values.cluster.service.annotations }}
 {{ toYaml .Values.cluster.service.annotations | indent 4 }}
@@ -18,4 +18,4 @@ spec:
   selector:
     app.kubernetes.io/name: {{ include "rethinkdb.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/component: cluster
+    app.kubernetes.io/component: rethinkdb-cluster

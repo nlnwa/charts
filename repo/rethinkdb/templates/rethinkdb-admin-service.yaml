@@ -1,19 +1,19 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: "{{ template "rethinkdb.fullname" . }}-admin"
+  name: {{ template "rethinkdb.fullname" . }}-admin
   labels:
 {{ include "rethinkdb.labels" . | indent 4 }}
-    app.kubernetes.io/component: admin
+    app.kubernetes.io/component: rethinkdb-admin
 spec:
   type: {{ .Values.admin.service.type }}
-  clusterIP: "{{ .Values.admin.service.clusterIP }}"
+  clusterIP: {{ .Values.admin.service.clusterIP }}
 {{- if .Values.admin.service.externalIPs }}
   externalIPs:
 {{ toYaml .Values.admin.service.externalIPs | indent 4 }}
 {{- end }}
 {{- if .Values.admin.service.loadBalancerIP }}
-  loadBalancerIP: "{{ .Values.admin.service.loadBalancerIP }}"
+  loadBalancerIP: {{ .Values.admin.service.loadBalancerIP }}
 {{- end }}
 {{- if .Values.admin.service.loadBalancerSourceRanges }}
   loadBalancerSourceRanges:
@@ -26,7 +26,7 @@ spec:
     app.kubernetes.io/name: {{ include "rethinkdb.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
   {{- if eq .Values.proxy.kind "Deployment" }}
-    app.kubernetes.io/component: proxy
+    app.kubernetes.io/component: rethinkdb-proxy
   {{- else }}
-    app.kubernetes.io/component: admin
+    app.kubernetes.io/component: rethinkdb-admin
   {{- end }}
