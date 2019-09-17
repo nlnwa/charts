@@ -10,6 +10,9 @@ fullnameOverride: ""
 # RethinkDB Cluster Config
 cluster:
   replicas: 3
+  # cores should match resources.limits.cpu below and must be an integer between 1 and 128
+  # or if cores is 0 then rethinkdb will use as many cores as the cpu has got
+  cores: 0
   resources: {}
     # limits:
     #   cpu: 500m
@@ -21,7 +24,7 @@ cluster:
   podAnnotations: {}
   affinity: {}
   tolerations: []
-  terminationGracePeriodSeconds:
+  terminationGracePeriodSeconds: 0
   service:
     annotations: {}
   storageClass:
@@ -37,12 +40,20 @@ cluster:
       - ReadWriteOnce
     size: 1Gi
     annotations: {}
+    ## Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    storageClass: ""
   # If peristentVolume not enabled override default volumes
   volumes: []
   # If persistentVolume not enabled
   volumeMounts: []
-  # RethinkDB Cache Size in MB
-  rethinkCacheSize: 100
+  # RethinkDB Cache Size in MB, can be "auto"
+  rethinkCacheSize: auto
   livenessProbe:
     exec:
       command:
@@ -66,7 +77,6 @@ cluster:
 proxy:
   # one of "Deployment" or "DaemonSet"
   kind: Deployment
-  replicas: 1
   resources: {}
     # limits:
     #   cpu: 100m
@@ -81,6 +91,49 @@ proxy:
   # type: RollingUpdate
   hostNetwork: false
   dnsPolicy: ClusterFirst
+  affinity: {}
+  nodeSelector: {}
+  tolerations: []
+  priorityClassName: ""
+  podAnnotations: {}
+
+  service:
+    annotations: {}
+    type: ClusterIP
+    clusterIP: ""
+    # List of IP addresses at which the proxy service is available
+    # Ref: https://kubernetes.io/docs/concepts/services-networking/service/#external-ips
+    #
+    externalIPs: []
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+  # Secure your RethinkDB Driver using TLS.
+  # Hint: You'll need to create your cert with a domain that is pointing
+  # to the External IP Address returned from the LoadBalancer
+  # More Info: https://www.rethinkdb.com/docs/security/#using-tls
+  driverTLS:
+    enabled: false
+    # key: |-
+    #   << RSA PRIVATE KEY >>
+    # cert: |-
+    #   << CERTIFICATE >>
+
+# RethinkDB Admin Config
+admin:
+  # one of "Deployment" or "DaemonSet"
+  kind: Deployment
+  resources: {}
+    # limits:
+    #   cpu: 1
+    #   memory: 512Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 512Mi
+  minReadySeconds: 5
+  updateStrategy: {}
+  # rollingUpdate:
+  #   maxUnavailable: 1
+  # type: RollingUpdate
   affinity: {}
   nodeSelector: {}
   tolerations: []
@@ -126,4 +179,4 @@ serviceAccount:
   create: true
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
-  name:
+  name: ""

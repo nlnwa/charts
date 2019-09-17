@@ -1,28 +1,25 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: "{{ template "rethinkdb.fullname" . }}-cluster"
+  name: {{ template "rethinkdb.fullname" . }}-cluster
   labels:
-    app: "{{ template "rethinkdb.name" . }}-cluster"
-    chart: {{ template "rethinkdb.chart" . }}
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
+{{ include "rethinkdb.labels" . | indent 4 }}
+    app.kubernetes.io/component: rethinkdb-cluster
 spec:
-  serviceName: "{{ template "rethinkdb.fullname" . }}-cluster"
+  serviceName: {{ template "rethinkdb.fullname" . }}-cluster
   replicas: {{ .Values.cluster.replicas }}
   selector:
     matchLabels:
-      app: "{{ template "rethinkdb.name" . }}-cluster"
-      heritage: {{ .Release.Service | quote }}
-      release: {{ .Release.Name | quote }}
+      app.kubernetes.io/name: {{ include "rethinkdb.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: rethinkdb-cluster
   template:
     metadata:
-      name: "{{ template "rethinkdb.fullname" . }}-cluster"
+      name: {{ template "rethinkdb.fullname" . }}-cluster
       labels:
-        app: "{{ template "rethinkdb.name" . }}-cluster"
-        chart: {{ template "rethinkdb.chart" . }}
-        heritage: {{ .Release.Service | quote }}
-        release: {{ .Release.Name | quote }}
+        app.kubernetes.io/name: {{ include "rethinkdb.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: rethinkdb-cluster
       annotations:
       {{- if .Values.cluster.podAnnotations }}
 {{ toYaml .Values.cluster.podAnnotations | indent 8 }}
@@ -40,8 +37,8 @@ spec:
       serviceAccountName: {{ template "rethinkdb.serviceAccountName" . }}
       containers:
         - name: {{ template "rethinkdb.name" . }}-cluster
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: cluster
               containerPort: {{ .Values.ports.cluster }}
@@ -52,6 +49,10 @@ spec:
             - "all"
             - "--no-http-admin"
             - "--no-update-check"
+            {{- if .Values.cluster.cores }}
+            - "--cores"
+            - {{ .Values.cluster.cores | quote }}
+            {{- end }}
             - "--cache-size"
             - {{ .Values.cluster.rethinkCacheSize | quote }}
           volumeMounts:
@@ -63,7 +64,7 @@ spec:
           {{- end }}
           env:
             - name: RETHINK_CLUSTER_SERVICE
-              value: "{{ template "rethinkdb.fullname" . }}-cluster"
+              value: {{ template "rethinkdb.fullname" . }}-cluster
             - name: RETHINKDB_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -92,21 +93,27 @@ spec:
   volumeClaimTemplates:
   - metadata:
       name: datadir
+    {{- if .Values.cluster.persistentVolume.annotations }}
       annotations:
-      {{- if .Values.cluster.storageClass.enabled }}
-        volume.beta.kubernetes.io/storage-class: {{ template "rethinkdb.fullname" . }}
-      {{- end }}
       {{- range $key, $value := .Values.cluster.persistentVolume.annotations }}
         {{ $key }}: {{ $value }}
       {{- end }}
+    {{- end }}
     spec:
       accessModes:
       {{- range .Values.cluster.persistentVolume.accessModes }}
-        - {{ . | quote }}
+        - {{ . }}
       {{- end }}
       resources:
         requests:
-          storage: {{ .Values.cluster.persistentVolume.size | quote }}
+          storage: {{ .Values.cluster.persistentVolume.size }}
+    {{- if .Values.cluster.persistentVolume.storageClass }}
+    {{- if (eq "-" .Values.cluster.persistentVolume.storageClass) }}
+      storageClassName: ""
+    {{- else }}
+      storageClassName: {{ .Values.cluster.persistentVolume.storageClass }}
+    {{- end }}
+    {{- end }}
 {{- else }}
       volumes:
       {{- if .Values.cluster.volumes }}

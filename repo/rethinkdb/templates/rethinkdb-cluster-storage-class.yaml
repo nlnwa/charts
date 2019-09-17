@@ -1,16 +1,10 @@
 {{- if .Values.cluster.storageClass.enabled }}
-apiVersion: {{ if .Capabilities.APIVersions.Has "storage.k8s.io/v1" -}}
-  storage.k8s.io/v1
-{{- else -}}
-  storage.k8s.io/v1beta1
-{{- end }}
+apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   labels:
-    app: "{{ template "rethinkdb.name" . }}-cluster"
-    chart: {{ template "rethinkdb.chart" . }}
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
+{{ include "rethinkdb.labels" . | indent 4 }}
+    app.kubernetes.io/component: cluster
   name: {{ template "rethinkdb.fullname" . }}
 provisioner: {{ .Values.cluster.storageClass.provisioner }}
 parameters:

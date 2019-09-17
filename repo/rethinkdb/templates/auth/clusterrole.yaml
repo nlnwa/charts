@@ -4,10 +4,7 @@ kind: ClusterRole
 metadata:
   name: {{ template "rethinkdb.fullname" . }}
   labels:
-    app: {{ template "rethinkdb.name" . }}
-    chart: {{ template "rethinkdb.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+{{ include "rethinkdb.labels" . | indent 4 }}
 rules:
   - apiGroups: [""]
     resources: ["endpoints"]

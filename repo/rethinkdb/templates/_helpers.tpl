@@ -23,6 +23,19 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{/*
+Common labels
+*/}}
+{{- define "rethinkdb.labels" -}}
+app.kubernetes.io/name: {{ include "rethinkdb.name" . }}
+helm.sh/chart: {{ include "rethinkdb.chart" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end -}}
+
+{{/*
 Create the name of the service account to use
 */}}
 {{- define "rethinkdb.serviceAccountName" -}}

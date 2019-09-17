@@ -1,44 +1,41 @@
 {{- if eq .Values.proxy.kind "Deployment" }}
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{ template "rethinkdb.fullname" . }}-proxy"
+  name: {{ template "rethinkdb.fullname" . }}-proxy
   labels:
-    app: "{{ template "rethinkdb.name" . }}-proxy"
-    chart: {{ template "rethinkdb.chart" . }}
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
+{{ include "rethinkdb.labels" . | indent 4 }}
+    app.kubernetes.io/component: rethinkdb-proxy
 spec:
-  replicas: {{ .Values.proxy.replicas }}
+  replicas: 1
   minReadySeconds: {{ .Values.proxy.minReadySeconds }}
   updateStrategy:
 {{ toYaml .Values.proxy.updateStrategy | indent 4 }}
   selector:
     matchLabels:
-      app: {{ template "rethinkdb.name" . }}-proxy
-      release: {{ .Release.Name | quote }}
+      app.kubernetes.io/name: {{ include "rethinkdb.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: rethinkdb-proxy
   template:
     metadata:
       name: {{ template "rethinkdb.fullname" . }}-proxy
       labels:
-        app: {{ template "rethinkdb.name" . }}-proxy
-        heritage: {{ .Release.Service | quote }}
-        release: {{ .Release.Name | quote }}
-        chart: {{ template "rethinkdb.chart" . }}
+        app.kubernetes.io/name: {{ include "rethinkdb.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: rethinkdb-proxy
       annotations:
       {{- if .Values.proxy.podAnnotations }}
 {{ toYaml .Values.proxy.podAnnotations | indent 8 }}
       {{- end }}
     spec:
-      dnsPolicy: {{ .Values.proxy.dnsPolicy }}
 {{- if .Values.proxy.priorityClassName }}
       priorityClassName: {{ .Values.proxy.priorityClassName | quote }}
 {{- end }}
       serviceAccountName: {{ template "rethinkdb.serviceAccountName" . }}
       containers:
         - name: {{ template "rethinkdb.name" . }}-proxy
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: cluster
               containerPort: {{ .Values.ports.cluster }}
@@ -48,8 +45,9 @@ spec:
               containerPort: {{ .Values.ports.admin }}
           args:
             - "--bind"
-            - "all"
+            - "$(POD_IP)"
             - "--no-update-check"
+            - "--no-http-admin"
             {{- if .Values.proxy.driverTLS.enabled }}
             - "--driver-tls-key"
             - "/secrets/driver-key.pem"
@@ -57,13 +55,13 @@ spec:
             - "/secrets/driver-cert.pem"
             {{- end }}
           volumeMounts:
-            - name: "secrets"
-              mountPath: "/secrets"
+            - name: secrets
+              mountPath: /secrets
           env:
             - name: PROXY
               value: "true"
             - name: RETHINK_CLUSTER_SERVICE
-              value: "{{ template "rethinkdb.fullname" . }}-cluster"
+              value: {{ template "rethinkdb.fullname" . }}-cluster
             - name: RETHINKDB_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -82,7 +80,8 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
-      hostNetwork: {{ .Values.proxy.hostNetwork }}
+          resources:
+          {{ toYaml .Values.proxy.resources | indent 12 }}
     {{- if .Values.proxy.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.proxy.nodeSelector | indent 8 }}
@@ -95,8 +94,6 @@ spec:
       affinity:
 {{ toYaml .Values.proxy.affinity | indent 8 }}
     {{- end }}
-      resources:
-{{ toYaml .Values.proxy.resources | indent 12 }}
       volumes:
         - name: secrets
           projected:

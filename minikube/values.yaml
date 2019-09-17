@@ -23,6 +23,11 @@ tags:
     tag: latest
     pullPolicy: Always
 
+global:
+  veidemann:
+    rethinkdb:
+      host: local-rethinkdb-proxy
+
 veidemann-cache:
   cache:
     <<: *latest-image
@@ -127,17 +132,15 @@ veidemann-frontier:
     sidecar.jaegertracing.io/inject: "true"
 
 rethinkdb:
-  proxy:
-    kind: DaemonSet
-    dnsPolicy: ClusterFirstWithHostNet
-    hostNetwork: true
   cluster:
-    rethinkCacheSize: "auto"
+    cores: 1
     resources:
       requests:
-        memory: "500Mi"
+        cpu: 500m
+        memory: 500Mi
       limits:
-        memory: "5Gi"
+        cpu: 1
+        memory: 4Gi
 
 jaeger:
   storage:
