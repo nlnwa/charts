@@ -235,8 +235,6 @@ rethinkdb:
     replicas: 1
 
 dex:
-  image: norsknettarkiv/dex
-  imageTag: "latest"
   ingress:
     enabled: true
     path: /dex
