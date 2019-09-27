@@ -4,6 +4,7 @@ tags:
   dashboard: true
   idp: true
   tracing: true
+  metrics: true
 
 .hostname: &hostname veidemann.local
 
@@ -57,6 +58,9 @@ veidemann-db-initializer:
   annotations:
     "helm.sh/hook": "post-install,pre-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
+
+veidemann-metrics:
+  affinity: ""
 
 veidemann-dashboard:
   <<: *latest-image
