@@ -23,7 +23,13 @@ nodeSelector: {}
 
 tolerations: []
 
-affinity: {}
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchLabels:
+            component: veidemann-frontier
+        topologyKey: kubernetes.io/hostname
 
 livenessProbe: {}
 
