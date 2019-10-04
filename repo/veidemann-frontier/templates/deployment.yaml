@@ -29,6 +29,7 @@ spec:
 {{ toYaml . | nindent 8 }}
     {{- end }}
     spec:
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       volumes:
         - name: workdir
           emptyDir: {}
@@ -117,6 +118,8 @@ spec:
                   name: {{ template "veidemann-frontier.configPrefix" . }}
                   key: oosHandler.port
             {{- end }}
+            - name: TERMINATION_GRACE_PERIOD_SECONDS
+              value: {{ .Values.config.terminationGracePeriodSeconds | quote }}
             - name: JAVA_OPTS
               value: {{ default .Values.config.javaOpts | quote }}
             - name: JAEGER_SERVICE_NAME

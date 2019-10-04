@@ -29,6 +29,7 @@ spec:
 {{ toYaml . | indent 8 }}
     {{- end }}
     spec:
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       volumes:
         - emptyDir: {}
           name: workdir
@@ -80,7 +81,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: TERMINATION_GRACE_PERIOD_SECONDS
-              value: {{ .Values.config.terminationGracePeriodSeconds }}
+              value: {{ .Values.config.terminationGracePeriodSeconds | quote }}
             - name: API_PORT
               value: {{ .Values.service.port | quote }}
             - name: WARC_WRITER_POOL_SIZE

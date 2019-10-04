@@ -38,7 +38,12 @@ annotations: {}
 
 podAnnotations: {}
 
+# How long kubernetes will wait before terminating pod
+# Should be set higher than config value of same name
+terminationGracePeriodSeconds: 100
+
 config:
+  terminationGracePeriodSeconds: 60
   robotsEvaluator:
     host: ""
     port: ""
