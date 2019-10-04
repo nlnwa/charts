@@ -119,7 +119,7 @@ spec:
                   key: oosHandler.port
             {{- end }}
             - name: TERMINATION_GRACE_PERIOD_SECONDS
-              value: {{ .Values.config.terminationGracePeriodSeconds }}
+              value: {{ .Values.config.terminationGracePeriodSeconds | quote }}
             - name: JAVA_OPTS
               value: {{ default .Values.config.javaOpts | quote }}
             - name: JAEGER_SERVICE_NAME
