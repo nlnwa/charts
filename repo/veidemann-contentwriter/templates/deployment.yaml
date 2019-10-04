@@ -29,6 +29,7 @@ spec:
 {{ toYaml . | indent 8 }}
     {{- end }}
     spec:
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       volumes:
         - emptyDir: {}
           name: workdir
