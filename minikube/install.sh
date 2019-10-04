@@ -29,6 +29,9 @@ helm repo update
 rm -f ${CHART}/charts/*
 helm dep up ${CHART}
 
+# Create persistent volum claims
+kubectl apply -f pvc/
+
 # Upgrade/install nlnwa/veidemann into default namespace with release name "dev"
 #
 # Add entry to veidemann-controller's /etc/hosts file with minikube's ip pointing to the name
