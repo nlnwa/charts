@@ -214,18 +214,18 @@ veidemann-db-initializer:
 veidemann-contentwriter:
   persistence:
     enabled: true
-    existingClaim: "warcs"
+    existingClaim: veidemann-warcs
 
 veidemann-contentexplorer:
   persistence:
     enabled: true
-    existingClaim: "warcs"
+    existingClaim: veidemann-warcs
 
 veidemann-warcvalidator:
   persistence:
     warcs:
       enabled: true
-      existingClaim: "warcs"
+      existingClaim: veidemann-warcs
 
 veidemann-cache:
   cache:

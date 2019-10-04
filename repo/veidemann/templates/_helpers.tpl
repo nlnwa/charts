@@ -32,7 +32,7 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{/*
-Create a config prefix used as prefix when naming resources like configmaps, secrets and pvcs.
+Create a config prefix used as prefix when naming resources like configmaps, secrets.
 If release name contains chart name it will be used as a config prefix.
 */}}
 {{- define "veidemann.configPrefix" -}}
