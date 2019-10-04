@@ -64,6 +64,7 @@ annotations: {}
 podAnnotations: {}
 
 config:
+  terminationGracePeriodSeconds: 60
   warcWriterPoolSize: 2
   rethinkdb:
     host: ""

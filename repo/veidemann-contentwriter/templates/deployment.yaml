@@ -79,6 +79,8 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
+            - name: TERMINATION_GRACE_PERIOD_SECONDS
+              value: {{ .Values.config.terminationGracePeriodSeconds }}
             - name: API_PORT
               value: {{ .Values.service.port | quote }}
             - name: WARC_WRITER_POOL_SIZE
