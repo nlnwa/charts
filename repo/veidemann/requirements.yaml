@@ -5,7 +5,7 @@ dependencies:
     repository: file://../veidemann-cache
 
   - name: veidemann-contentwriter
-    version: 1.2.4
+    version: 1.2.5
     repository: file://../veidemann-contentwriter
 
   - name: veidemann-controller
