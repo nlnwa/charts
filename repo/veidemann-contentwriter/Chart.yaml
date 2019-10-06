@@ -2,4 +2,4 @@ apiVersion: v1
 appVersion: 0.2.7-dirty
 description: A Helm chart for Kubernetes
 name: veidemann-contentwriter
-version: 1.2.8
+version: 1.2.9
