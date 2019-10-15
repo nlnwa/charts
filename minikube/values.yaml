@@ -5,17 +5,20 @@ tags:
   idp: true
   tracing: true
   metrics: true
+  database-backup: false
+  validation: false
+  database-metrics: false
 
 .hostname: &hostname veidemann.local
 
 .ingress: &ingress
   enabled: true
   hosts:
-  - *hostname
-  tls:
-  - secretName: local-veidemann-ingress-tls-cert
-    hosts:
     - *hostname
+  tls:
+    - secretName: local-veidemann-ingress-tls-cert
+      hosts:
+        - *hostname
 
 .issuer: &issuer "https://veidemann.local/dex"
 
@@ -146,6 +149,13 @@ rethinkdb:
         cpu: 1
         memory: 4Gi
 
+rethinkdb-exporter:
+  rethinkdb_exporter:
+    db:
+      addr: "local-rethinkdb-proxy:28015"
+      secretName: local-veidemann-rethinkdb-env
+    count_rows: false
+
 jaeger:
   storage:
     type: memory
@@ -170,29 +180,29 @@ dex:
     issuer: "https://veidemann.local/dex"
     web:
       allowedOrigins:
-      - https://veidemann.local
-      - https://localhost:4200
+        - https://veidemann.local
+        - https://localhost:4200
     enablePasswordDB: true
     staticPasswords:
-    - email: "admin@example.com"
-      # bcrypt hash of the string "password"
-      hash: "$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W"
-      username: "admin"
-      userID: "08a8684b-db88-4b73-90a9-3cd1661f5466"
+      - email: "admin@example.com"
+        # bcrypt hash of the string "password"
+        hash: "$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W"
+        username: "admin"
+        userID: "08a8684b-db88-4b73-90a9-3cd1661f5466"
     staticClients:
-    - id: veidemann-dashboard
-      redirectURIs:
-      - "https://veidemann.local/veidemann"
-      - "https://localhost:4200/veidemann"
-      name: "Veidemann Admin Dashboard"
-      secret: ZXhhbXBsZS1hcHAtc2VjcmV0
-    - id: veidemann-cli
-      public: true
-      name: "Veidemann CLI"
-      secret: cli-app-secret
-    - id: veidemann-api
-      name: "Veidemann API"
-      secret: VerySecret
-      trustedPeers:
-      - veidemann-cli
-      - veidemann-dashboard
+      - id: veidemann-dashboard
+        redirectURIs:
+          - "https://veidemann.local/veidemann"
+          - "https://localhost:4200/veidemann"
+        name: "Veidemann Admin Dashboard"
+        secret: ZXhhbXBsZS1hcHAtc2VjcmV0
+      - id: veidemann-cli
+        public: true
+        name: "Veidemann CLI"
+        secret: cli-app-secret
+      - id: veidemann-api
+        name: "Veidemann API"
+        secret: VerySecret
+        trustedPeers:
+          - veidemann-cli
+          - veidemann-dashboard
