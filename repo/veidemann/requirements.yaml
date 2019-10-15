@@ -95,7 +95,7 @@ dependencies:
 
   # Database metrics
   - name: rethinkdb-exporter
-    version: 0.2.0
+    version: 0.2.1
     repository: file://../rethinkdb-exporter
     condition: rethinkdb-exporter.enabled
     tags:
