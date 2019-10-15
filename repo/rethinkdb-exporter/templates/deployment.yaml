@@ -1,0 +1,69 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "rethinkdb_exporter.fullname" . }}
+  labels:
+    app: {{ template "rethinkdb_exporter.name" . }}
+    chart: {{ template "rethinkdb_exporter.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "rethinkdb_exporter.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "rethinkdb_exporter.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- if .Values.rethinkdb_exporter.db.secretName }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.rethinkdb_exporter.db.secretName }}
+                optional: false
+        {{- else }}
+          env:
+            - name: DB_PASSWORD
+              value: {{ .Values.rethinkdb_exporter.db.password | quote }}
+        {{- end }}
+          args: [
+            "--db.addr={{ .Values.rethinkdb_exporter.db.addr }}",
+            "--db.auth={{ .Values.rethinkdb_exporter.db.auth }}",
+            "--db.user={{ .Values.rethinkdb_exporter.db.user }}",
+            "--db.pass=$(DB_PASSWORD)",
+            "--db.count-rows={{ .Values.rethinkdb_exporter.count_rows }}",
+            "--clustername={{ .Values.rethinkdb_exporter.clustername }}"
+          ]
+          ports:
+            - name: http
+              containerPort: 9123
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

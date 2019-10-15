@@ -10,6 +10,7 @@ tags:
   metrics: false
   validation: false
   dashboard: false
+  database-metrics: false
 
 nameOverride: ""
 fullnameOverride: ""
