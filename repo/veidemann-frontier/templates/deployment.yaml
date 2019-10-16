@@ -43,10 +43,10 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- with .Values.ports }}
           ports:
-            - name: grpc
-              containerPort: {{ .Values.service.port }}
-              protocol: TCP
+{{ toYaml . | indent 12 }}
+        {{- end }}
           envFrom:
             - secretRef:
                 name: {{ template "veidemann-frontier.configPrefix" . }}-rethinkdb-env
@@ -63,7 +63,7 @@ spec:
             - name: DB_NAME
               value: {{ default .Values.global.veidemann.rethinkdb.name .Values.config.rethinkdb.name | quote }}
             - name: API_PORT
-              value: {{ .Values.service.port | quote }}
+              value: {{ .Values.service.ports.grpc.port | quote }}
             - name: ROBOTS_EVALUATOR_HOST
             {{- if .Values.config.robotsEvaluator.host }}
               value: {{ .Values.config.robotsEvaluator.host | quote }}

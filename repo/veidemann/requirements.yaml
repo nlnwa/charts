@@ -21,7 +21,7 @@ dependencies:
     repository: file://../veidemann-dns-resolver
 
   - name: veidemann-frontier
-    version: 1.3.0
+    version: 1.4.0
     repository: file://../veidemann-frontier
 
   - name: veidemann-harvester

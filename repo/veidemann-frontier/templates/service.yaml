@@ -8,13 +8,14 @@ metadata:
     chart: {{ template "veidemann-frontier.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    k8s-app: veidemann
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - name: grpc
-      port: {{ .Values.service.port }}
-      targetPort: grpc
-      protocol: TCP
+    {{- range $key, $value := .Values.service.ports }}
+    - name: {{ $key }}
+{{ toYaml $value | indent 6 }}
+  {{- end }}
   selector:
     component: {{ template "veidemann-frontier.name" . }}
     release: {{ .Release.Name }}
