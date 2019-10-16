@@ -14,7 +14,23 @@ fullnameOverride: ""
 
 service:
   type: ClusterIP
-  port: 7700
+  ports:
+    grpc:
+      port: 7700
+      targetPort: grpc
+      protocol: TCP
+    http-metrics:
+      port: 9301
+      targetPort: http-metrics
+      protocol: TCP
+
+ports:
+  - name: grpc
+    containerPort: 7700
+    protocol: TCP
+  - name: http-metrics
+    containerPort: 9301
+    protocol: TCP
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
