@@ -36,7 +36,10 @@ veidemann-cache:
   cache:
     <<: *latest-image
   podAnnotations:
+    config.linkerd.io/skip-inbound-ports: "9301"
     linkerd.io/inject: "enabled"
+  exporter:
+    enabled: true
 
 veidemann-robotsevaluator-service:
   <<: *latest-image
@@ -126,6 +129,7 @@ veidemann-harvester:
     <<: *latest-image
   podAnnotations:
     linkerd.io/inject: "enabled"
+    config.linkerd.io/skip-inbound-ports: "9301"
     config.linkerd.io/skip-outbound-ports: "3128,14250"
   annotations:
     sidecar.jaegertracing.io/inject: "true"
@@ -134,6 +138,7 @@ veidemann-frontier:
   <<: *latest-image
   podAnnotations:
     linkerd.io/inject: "enabled"
+    config.linkerd.io/skip-inbound-ports: "9301"
     config.linkerd.io/skip-outbound-ports: "14250"
   annotations:
     sidecar.jaegertracing.io/inject: "true"

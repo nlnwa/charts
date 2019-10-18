@@ -1,0 +1,26 @@
+{
+   "apiVersion": "monitoring.coreos.com/v1",
+   "kind": "ServiceMonitor",
+   "metadata": {
+      "name": "veidemann-servicemonitor"
+   },
+   "spec": {
+      "endpoints": [
+         {
+            "path": "/metrics",
+            "port": "http-metrics"
+         }
+      ],
+      "jobLabel": "app",
+      "namespaceSelector": {
+         "matchNames": [
+            "default"
+         ]
+      },
+      "selector": {
+         "matchLabels": {
+            "k8s-app": "veidemann"
+         }
+      }
+   }
+}
