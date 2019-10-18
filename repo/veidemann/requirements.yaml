@@ -33,7 +33,7 @@ dependencies:
     repository: file://../veidemann-robotsevaluator-service
 
   - name: veidemann-contentexplorer
-    version: 1.0.28
+    version: 1.0.29
     repository: file://../veidemann-contentexplorer
 
   - name: veidemann-ooshandler
