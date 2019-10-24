@@ -30,6 +30,12 @@ spec:
     {{- end }}
     spec:
       volumes:
+        - name: api-key
+          secret:
+            secretName: {{ template "veidemann-controller.fullname" . }}-api-key
+            items:
+              - key: apiKeyRoleMapping
+                path: apiKeyRoleMapping.txt
         - name: log4j-config
           configMap:
             name: {{ template "veidemann-controller.configPrefix" . }}
@@ -116,6 +122,9 @@ spec:
             - name: JAVA_TOOL_OPTIONS
               value: "-Dfile.encoding=UTF-8"
           volumeMounts:
+            - name: api-key
+              mountPath: /app/resources/apiKeyRoleMapping.txt
+              subPath: apiKeyRoleMapping.txt
             - name: log4j-config
               mountPath: /veidemann/config/log4j2.xml
               subPath: log4j2.xml
