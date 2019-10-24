@@ -1,0 +1,36 @@
+kind: Kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+
+namespace: default
+
+commonLabels:
+  app.kubernetes.io/instance: minikube
+
+bases:
+  - ../base
+
+resources:
+  - ingress.yaml
+
+images:
+  - name: veidemann-health-check-api
+    newName: norsknettarkiv/veidemann-health-check-api
+    newTag: latest
+
+patchesStrategicMerge:
+  - patch-mount-config-file.yaml
+  - patch-add-env.yaml
+
+secretGenerator:
+  - name: veidemann-health-check-api-secrets
+    literals:
+      - RETHINKDB_PASSWORD=rethinkdb
+      - CONTROLLER_API_KEY=ABCD-1234
+
+configMapGenerator:
+  - name: veidemann-health-check-api-config
+    literals:
+      - PROMETHEUS_URL=http://prometheus-k8s.monitoring:9090/
+      - CONTROLLER_ADDRESS=local-veidemann-controller:7700
+      - RETHINKDB_HOST=local-rethinkdb-proxy
+      - VEIDEMANN_DASHBOARD_URL=http://local-veidemann-dashboard/veidemann
