@@ -48,4 +48,8 @@ helm upgrade ${RELEASE} ${CHART} --install \
 --set veidemann-controller.hostAliases[0].hostnames[0]=veidemann.local \
 $@
 
+# Apply monitoring
 kubectl apply -f monitoring
+
+# Apply health check api
+kubectl apply --validate=true -k ../kustomize/veidemann-health-check-api/minikube
