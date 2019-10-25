@@ -50,3 +50,5 @@ helm upgrade ${RELEASE} ${CHART} --install \
 --set veidemann-controller.hostAliases[0].ip=$(minikube ip) \
 --set veidemann-controller.hostAliases[0].hostnames[0]=veidemann.local \
 $@
+
+kubectl apply -f monitoring
