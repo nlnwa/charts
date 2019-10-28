@@ -27,6 +27,10 @@ tags:
     tag: latest
     pullPolicy: Always
 
+persistence:
+  warcs:
+    enabled: false
+
 global:
   veidemann:
     rethinkdb:
