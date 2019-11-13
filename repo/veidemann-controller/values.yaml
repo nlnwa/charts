@@ -93,6 +93,8 @@ config:
       type: ""
       param: ""
 
+  apiKeyRoleMapping: ""
+
 global:
   veidemann:
     rethinkdb:
