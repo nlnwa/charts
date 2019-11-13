@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: veidemann-health-check-api
+spec:
+  template:
+    spec:
+      containers:
+        - name: veidemann-health-check-api
+          image: veidemann-health-check-api
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+          envFrom:
+            - configMapRef:
+                name: veidemann-health-check-api-env
