@@ -1,0 +1,14 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: veidemann-health-check-api
+spec:
+  template:
+    spec:
+      containers:
+        - name: veidemann-health-check-api
+          envFrom:
+            - secretRef:
+                name: veidemann-health-check-api-secrets
+            - configMapRef:
+                name: veidemann-health-check-api-config
