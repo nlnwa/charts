@@ -13,7 +13,7 @@ dependencies:
     repository: file://../veidemann-controller
 
   - name: veidemann-db-initializer
-    version: 1.0.31
+    version: 1.0.32
     repository: file://../veidemann-db-initializer
 
   - name: veidemann-dns-resolver
@@ -21,11 +21,11 @@ dependencies:
     repository: file://../veidemann-dns-resolver
 
   - name: veidemann-frontier
-    version: 1.4.1
+    version: 1.4.2
     repository: file://../veidemann-frontier
 
   - name: veidemann-harvester
-    version: 1.4.3
+    version: 1.4.5
     repository: file://../veidemann-harvester
 
   - name: veidemann-robotsevaluator-service
@@ -33,7 +33,7 @@ dependencies:
     repository: file://../veidemann-robotsevaluator-service
 
   - name: veidemann-contentexplorer
-    version: 1.0.30
+    version: 1.0.31
     repository: file://../veidemann-contentexplorer
 
   - name: veidemann-ooshandler
@@ -42,7 +42,7 @@ dependencies:
 
   # Dashboard
   - name: veidemann-dashboard
-    version: 1.1.10
+    version: 1.1.11
     repository: file://../veidemann-dashboard
     condition: veidemann-dashboard.enabled
     tags:

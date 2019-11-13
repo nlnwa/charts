@@ -27,6 +27,10 @@ tags:
     tag: latest
     pullPolicy: Always
 
+persistence:
+  warcs:
+    enabled: false
+
 global:
   veidemann:
     rethinkdb:
@@ -84,6 +88,21 @@ veidemann-dashboard-documentation:
       kubernetes.io/ingress.class: "nginx"
   baseUrl: https://veidemann.local/veidemann/docs
 
+veidemann-warcvalidator:
+  persistence:
+    warcs:
+      enabled: true
+      existingClaim: "veidemann-warcs"
+    invalidwarcs:
+      enabled: true
+      existingClaim: "veidemann-invalidwarcs"
+    validwarcs:
+      enabled: true
+      existingClaim: "veidemann-validwarcs"
+    delivery:
+      enabled: true
+      existingClaim: "veidemann-delivery"
+
 veidemann-warcvalidator-api:
   ingress:
     <<: *ingress
@@ -92,6 +111,9 @@ veidemann-warcvalidator-api:
 
 veidemann-contentexplorer:
   <<: *latest-image
+  persistence:
+    enabled: true
+    existingClaim: "veidemann-warcs"
   ingress:
     <<: *ingress
     annotations:
@@ -99,6 +121,9 @@ veidemann-contentexplorer:
 
 veidemann-contentwriter:
   <<: *latest-image
+  persistence:
+    enabled: true
+    existingClaim: "veidemann-warcs"
   podAnnotations:
     linkerd.io/inject: "enabled"
     config.linkerd.io/skip-outbound-ports: "14250"
@@ -155,6 +180,12 @@ rethinkdb:
       limits:
         cpu: 1
         memory: 4Gi
+
+rethinkdb-backup:
+  persistence:
+    data:
+      enabled: true
+      existingClaim: "veidemann-backup"
 
 rethinkdb-exporter:
   rethinkdb_exporter:
