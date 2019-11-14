@@ -1,9 +1,0 @@
-kind: Kustomization
-apiVersion: kustomize.config.k8s.io/v1beta1
-
-commonLabels:
-  app.kubernetes.io/name: veidemann-health-check-api
-
-resources:
-  - deployment.yaml
-  - service.yaml

@@ -7,7 +7,7 @@ commonLabels:
   app.kubernetes.io/instance: minikube
 
 bases:
-  - ../base
+  - https://github.com/nlnwa/veidemann-deploy/veidemann-health-check-api/base
 
 resources:
   - ingress.yaml
