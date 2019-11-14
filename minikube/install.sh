@@ -52,7 +52,9 @@ helm upgrade ${RELEASE} ${CHART} --install \
 $@
 
 # Apply monitoring
-kubectl apply -f monitoring
+kubectl apply -f monitoring/setup
+until kubectl get servicemonitors --all-namespaces ; do date; sleep 1; echo ""; done
+kubectl apply -f monitoring/
 
 # Apply health check api
 kubectl apply --validate=true -k ../kustomize/veidemann-health-check-api/minikube

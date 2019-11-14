@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: rethinkdb-servicemonitor
+spec:
+  endpoints:
+  - path: /metrics
+    port: http-metrics
+  jobLabel: app
+  namespaceSelector:
+    matchNames:
+    - default
+  selector:
+    matchLabels:
+      app: rethinkdb-exporter

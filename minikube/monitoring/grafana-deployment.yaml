@@ -19,7 +19,7 @@ spec:
       - env:
         - name: GF_INSTALL_PLUGINS
           value: grafana-piechart-panel
-        image: grafana/grafana:6.2.2
+        image: grafana/grafana:6.4.3
         name: grafana
         ports:
         - containerPort: 3000
@@ -48,6 +48,9 @@ spec:
         - mountPath: /grafana-dashboard-definitions/0/apiserver
           name: grafana-dashboard-apiserver
           readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/cluster-total
+          name: grafana-dashboard-cluster-total
+          readOnly: false
         - mountPath: /grafana-dashboard-definitions/0/controller-manager
           name: grafana-dashboard-controller-manager
           readOnly: false
@@ -72,6 +75,12 @@ spec:
         - mountPath: /grafana-dashboard-definitions/0/kubelet
           name: grafana-dashboard-kubelet
           readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/namespace-by-pod
+          name: grafana-dashboard-namespace-by-pod
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/namespace-by-workload
+          name: grafana-dashboard-namespace-by-workload
+          readOnly: false
         - mountPath: /grafana-dashboard-definitions/0/node-cluster-rsrc-use
           name: grafana-dashboard-node-cluster-rsrc-use
           readOnly: false
@@ -84,6 +93,9 @@ spec:
         - mountPath: /grafana-dashboard-definitions/0/persistentvolumesusage
           name: grafana-dashboard-persistentvolumesusage
           readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/pod-total
+          name: grafana-dashboard-pod-total
+          readOnly: false
         - mountPath: /grafana-dashboard-definitions/0/pods
           name: grafana-dashboard-pods
           readOnly: false
@@ -95,6 +107,9 @@ spec:
           readOnly: false
         - mountPath: /grafana-dashboard-definitions/0/proxy
           name: grafana-dashboard-proxy
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/rethinkdb
+          name: grafana-dashboard-rethinkdb
           readOnly: false
         - mountPath: /grafana-dashboard-definitions/0/scheduler
           name: grafana-dashboard-scheduler
@@ -117,6 +132,9 @@ spec:
         - mountPath: /grafana-dashboard-definitions/0/veidemann-overview
           name: grafana-dashboard-veidemann-overview
           readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/workload-total
+          name: grafana-dashboard-workload-total
+          readOnly: false
         - mountPath: /etc/grafana
           name: grafana-config
           readOnly: false
@@ -138,6 +156,9 @@ spec:
       - configMap:
           name: grafana-dashboard-apiserver
         name: grafana-dashboard-apiserver
+      - configMap:
+          name: grafana-dashboard-cluster-total
+        name: grafana-dashboard-cluster-total
       - configMap:
           name: grafana-dashboard-controller-manager
         name: grafana-dashboard-controller-manager
@@ -163,6 +184,12 @@ spec:
           name: grafana-dashboard-kubelet
         name: grafana-dashboard-kubelet
       - configMap:
+          name: grafana-dashboard-namespace-by-pod
+        name: grafana-dashboard-namespace-by-pod
+      - configMap:
+          name: grafana-dashboard-namespace-by-workload
+        name: grafana-dashboard-namespace-by-workload
+      - configMap:
           name: grafana-dashboard-node-cluster-rsrc-use
         name: grafana-dashboard-node-cluster-rsrc-use
       - configMap:
@@ -175,6 +202,9 @@ spec:
           name: grafana-dashboard-persistentvolumesusage
         name: grafana-dashboard-persistentvolumesusage
       - configMap:
+          name: grafana-dashboard-pod-total
+        name: grafana-dashboard-pod-total
+      - configMap:
           name: grafana-dashboard-pods
         name: grafana-dashboard-pods
       - configMap:
@@ -186,6 +216,9 @@ spec:
       - configMap:
           name: grafana-dashboard-proxy
         name: grafana-dashboard-proxy
+      - configMap:
+          name: grafana-dashboard-rethinkdb
+        name: grafana-dashboard-rethinkdb
       - configMap:
           name: grafana-dashboard-scheduler
         name: grafana-dashboard-scheduler
@@ -207,6 +240,9 @@ spec:
       - configMap:
           name: grafana-dashboard-veidemann-overview
         name: grafana-dashboard-veidemann-overview
+      - configMap:
+          name: grafana-dashboard-workload-total
+        name: grafana-dashboard-workload-total
       - name: grafana-config
         secret:
           secretName: grafana-config
