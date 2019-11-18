@@ -12,6 +12,7 @@ spec:
       namespace: monitoring
       port: web
   baseImage: quay.io/prometheus/prometheus
+  externalUrl: https://veidemann.local/prometheus
   nodeSelector:
     kubernetes.io/os: linux
   podMonitorSelector: {}
@@ -19,7 +20,8 @@ spec:
   resources:
     requests:
       memory: 400Mi
-  retention: 30d
+  retention: 1d
+  retentionSize: 1GB
   ruleSelector:
     matchLabels:
       prometheus: k8s
@@ -40,6 +42,6 @@ spec:
         - ReadWriteOnce
         resources:
           requests:
-            storage: 100Mi
+            storage: 1Gi
         storageClassName: standard
   version: v2.12.0

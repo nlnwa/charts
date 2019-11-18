@@ -7,7 +7,7 @@ tags:
   metrics: true
   database-backup: false
   validation: false
-  database-metrics: false
+  database-metrics: true
 
 .hostname: &hostname veidemann.local
 
