@@ -123,6 +123,12 @@ spec:
         - mountPath: /grafana-dashboard-definitions/0/veidemann-dns
           name: grafana-dashboard-veidemann-dns
           readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/veidemann-frontier-jvm
+          name: grafana-dashboard-veidemann-frontier-jvm
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/veidemann-harvester-jvm
+          name: grafana-dashboard-veidemann-harvester-jvm
+          readOnly: false
         - mountPath: /grafana-dashboard-definitions/0/veidemann-harvesters
           name: grafana-dashboard-veidemann-harvesters
           readOnly: false
@@ -231,6 +237,12 @@ spec:
       - configMap:
           name: grafana-dashboard-veidemann-dns
         name: grafana-dashboard-veidemann-dns
+      - configMap:
+          name: grafana-dashboard-veidemann-frontier-jvm
+        name: grafana-dashboard-veidemann-frontier-jvm
+      - configMap:
+          name: grafana-dashboard-veidemann-harvester-jvm
+        name: grafana-dashboard-veidemann-harvester-jvm
       - configMap:
           name: grafana-dashboard-veidemann-harvesters
         name: grafana-dashboard-veidemann-harvesters

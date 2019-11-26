@@ -269,7 +269,7 @@ items:
                           "steppedLine": false,
                           "targets": [
                               {
-                                  "expr": "histogram_quantile(0.99, sum(rate(apiserver_request_duration_seconds_bucket{job=\"apiserver\", instance=~\"$instance\"}[5m])) by (verb, le))",
+                                  "expr": "histogram_quantile(0.99, sum(rate(apiserver_request_duration_seconds_bucket{job=\"apiserver\", instance=~\"$instance\", verb!=\"WATCH\"}[5m])) by (verb, le))",
                                   "format": "time_series",
                                   "intervalFactor": 2,
                                   "legendFormat": "{{verb}}",
@@ -24915,7 +24915,7 @@ items:
                           "steppedLine": false,
                           "targets": [
                               {
-                                  "expr": "sum by(container) (container_memory_usage_bytes{job=\"kubelet\", cluster=\"$cluster\", namespace=\"$namespace\", pod=\"$pod\", container=~\"$container\", container!=\"POD\"})",
+                                  "expr": "sum by(container) (container_memory_working_set_bytes{job=\"kubelet\", cluster=\"$cluster\", namespace=\"$namespace\", pod=\"$pod\", container=~\"$container\", container!=\"POD\"})",
                                   "format": "time_series",
                                   "intervalFactor": 2,
                                   "legendFormat": "Current: {{ container }}",
@@ -25856,12 +25856,9 @@ items:
                           "pointradius": 5,
                           "points": false,
                           "renderer": "flot",
-                          "repeat": "queue",
+                          "repeat": null,
                           "seriesOverrides": [
-                              {
-                                  "alias": "/max_shards/",
-                                  "yaxis": 2
-                              }
+
                           ],
                           "spaceLength": 10,
                           "span": 12,
@@ -25869,32 +25866,11 @@ items:
                           "steppedLine": false,
                           "targets": [
                               {
-                                  "expr": "prometheus_remote_storage_shards_max{cluster=~\"$cluster\", instance=~\"$instance\"}",
-                                  "format": "time_series",
-                                  "intervalFactor": 2,
-                                  "legendFormat": "max_shards:{{queue}}",
-                                  "refId": "A"
-                              },
-                              {
-                                  "expr": "prometheus_remote_storage_shards_min{cluster=~\"$cluster\", instance=~\"$instance\"}",
-                                  "format": "time_series",
-                                  "intervalFactor": 2,
-                                  "legendFormat": "min_shards:{{queue}}",
-                                  "refId": "B"
-                              },
-                              {
-                                  "expr": "prometheus_remote_storage_shards_desired{cluster=~\"$cluster\", instance=~\"$instance\"}",
-                                  "format": "time_series",
-                                  "intervalFactor": 2,
-                                  "legendFormat": "desired_shards:{{queue}}",
-                                  "refId": "C"
-                              },
-                              {
                                   "expr": "prometheus_remote_storage_shards{cluster=~\"$cluster\", instance=~\"$instance\"}",
                                   "format": "time_series",
                                   "intervalFactor": 2,
-                                  "legendFormat": "current_shards:{{queue}}",
-                                  "refId": "D"
+                                  "legendFormat": "{{cluster}}:{{instance}}-{{queue}}",
+                                  "refId": "A"
                               }
                           ],
                           "thresholds": [
@@ -25902,7 +25878,7 @@ items:
                           ],
                           "timeFrom": null,
                           "timeShift": null,
-                          "title": "Shards: $queue",
+                          "title": "Current Shards",
                           "tooltip": {
                               "shared": true,
                               "sort": 0,
@@ -25936,20 +25912,7 @@ items:
                                   "show": true
                               }
                           ]
-                      }
-                  ],
-                  "repeat": null,
-                  "repeatIteration": null,
-                  "repeatRowId": null,
-                  "showTitle": true,
-                  "title": "Shards",
-                  "titleSize": "h6",
-                  "type": "row"
-              },
-              {
-                  "collapse": false,
-                  "collapsed": false,
-                  "panels": [
+                      },
                       {
                           "aliasColors": {
 
@@ -25984,17 +25947,17 @@ items:
                           "pointradius": 5,
                           "points": false,
                           "renderer": "flot",
-                          "repeat": "queue",
+                          "repeat": null,
                           "seriesOverrides": [
 
                           ],
                           "spaceLength": 10,
-                          "span": 6,
+                          "span": 4,
                           "stack": false,
                           "steppedLine": false,
                           "targets": [
                               {
-                                  "expr": "prometheus_remote_storage_shard_capacity{cluster=~\"$cluster\", instance=~\"$instance\"}",
+                                  "expr": "prometheus_remote_storage_shards_max{cluster=~\"$cluster\", instance=~\"$instance\"}",
                                   "format": "time_series",
                                   "intervalFactor": 2,
                                   "legendFormat": "{{cluster}}:{{instance}}-{{queue}}",
@@ -26006,7 +25969,7 @@ items:
                           ],
                           "timeFrom": null,
                           "timeShift": null,
-                          "title": "Shard Capacity: $queue",
+                          "title": "Max Shards",
                           "tooltip": {
                               "shared": true,
                               "sort": 0,
@@ -26075,7 +26038,293 @@ items:
                           "pointradius": 5,
                           "points": false,
                           "renderer": "flot",
-                          "repeat": "queue",
+                          "repeat": null,
+                          "seriesOverrides": [
+
+                          ],
+                          "spaceLength": 10,
+                          "span": 4,
+                          "stack": false,
+                          "steppedLine": false,
+                          "targets": [
+                              {
+                                  "expr": "prometheus_remote_storage_shards_min{cluster=~\"$cluster\", instance=~\"$instance\"}",
+                                  "format": "time_series",
+                                  "intervalFactor": 2,
+                                  "legendFormat": "{{cluster}}:{{instance}}-{{queue}}",
+                                  "refId": "A"
+                              }
+                          ],
+                          "thresholds": [
+
+                          ],
+                          "timeFrom": null,
+                          "timeShift": null,
+                          "title": "Min Shards",
+                          "tooltip": {
+                              "shared": true,
+                              "sort": 0,
+                              "value_type": "individual"
+                          },
+                          "type": "graph",
+                          "xaxis": {
+                              "buckets": null,
+                              "mode": "time",
+                              "name": null,
+                              "show": true,
+                              "values": [
+
+                              ]
+                          },
+                          "yaxes": [
+                              {
+                                  "format": "short",
+                                  "label": null,
+                                  "logBase": 1,
+                                  "max": null,
+                                  "min": null,
+                                  "show": true
+                              },
+                              {
+                                  "format": "short",
+                                  "label": null,
+                                  "logBase": 1,
+                                  "max": null,
+                                  "min": null,
+                                  "show": true
+                              }
+                          ]
+                      },
+                      {
+                          "aliasColors": {
+
+                          },
+                          "bars": false,
+                          "dashLength": 10,
+                          "dashes": false,
+                          "datasource": "$datasource",
+                          "fill": 1,
+                          "gridPos": {
+
+                          },
+                          "id": 8,
+                          "legend": {
+                              "alignAsTable": false,
+                              "avg": false,
+                              "current": false,
+                              "max": false,
+                              "min": false,
+                              "rightSide": false,
+                              "show": true,
+                              "total": false,
+                              "values": false
+                          },
+                          "lines": true,
+                          "linewidth": 1,
+                          "links": [
+
+                          ],
+                          "nullPointMode": "null",
+                          "percentage": false,
+                          "pointradius": 5,
+                          "points": false,
+                          "renderer": "flot",
+                          "repeat": null,
+                          "seriesOverrides": [
+
+                          ],
+                          "spaceLength": 10,
+                          "span": 4,
+                          "stack": false,
+                          "steppedLine": false,
+                          "targets": [
+                              {
+                                  "expr": "prometheus_remote_storage_shards_desired{cluster=~\"$cluster\", instance=~\"$instance\"}",
+                                  "format": "time_series",
+                                  "intervalFactor": 2,
+                                  "legendFormat": "{{cluster}}:{{instance}}-{{queue}}",
+                                  "refId": "A"
+                              }
+                          ],
+                          "thresholds": [
+
+                          ],
+                          "timeFrom": null,
+                          "timeShift": null,
+                          "title": "Desired Shards",
+                          "tooltip": {
+                              "shared": true,
+                              "sort": 0,
+                              "value_type": "individual"
+                          },
+                          "type": "graph",
+                          "xaxis": {
+                              "buckets": null,
+                              "mode": "time",
+                              "name": null,
+                              "show": true,
+                              "values": [
+
+                              ]
+                          },
+                          "yaxes": [
+                              {
+                                  "format": "short",
+                                  "label": null,
+                                  "logBase": 1,
+                                  "max": null,
+                                  "min": null,
+                                  "show": true
+                              },
+                              {
+                                  "format": "short",
+                                  "label": null,
+                                  "logBase": 1,
+                                  "max": null,
+                                  "min": null,
+                                  "show": true
+                              }
+                          ]
+                      }
+                  ],
+                  "repeat": null,
+                  "repeatIteration": null,
+                  "repeatRowId": null,
+                  "showTitle": true,
+                  "title": "Shards",
+                  "titleSize": "h6",
+                  "type": "row"
+              },
+              {
+                  "collapse": false,
+                  "collapsed": false,
+                  "panels": [
+                      {
+                          "aliasColors": {
+
+                          },
+                          "bars": false,
+                          "dashLength": 10,
+                          "dashes": false,
+                          "datasource": "$datasource",
+                          "fill": 1,
+                          "gridPos": {
+
+                          },
+                          "id": 9,
+                          "legend": {
+                              "alignAsTable": false,
+                              "avg": false,
+                              "current": false,
+                              "max": false,
+                              "min": false,
+                              "rightSide": false,
+                              "show": true,
+                              "total": false,
+                              "values": false
+                          },
+                          "lines": true,
+                          "linewidth": 1,
+                          "links": [
+
+                          ],
+                          "nullPointMode": "null",
+                          "percentage": false,
+                          "pointradius": 5,
+                          "points": false,
+                          "renderer": "flot",
+                          "repeat": null,
+                          "seriesOverrides": [
+
+                          ],
+                          "spaceLength": 10,
+                          "span": 6,
+                          "stack": false,
+                          "steppedLine": false,
+                          "targets": [
+                              {
+                                  "expr": "prometheus_remote_storage_shard_capacity{cluster=~\"$cluster\", instance=~\"$instance\"}",
+                                  "format": "time_series",
+                                  "intervalFactor": 2,
+                                  "legendFormat": "{{cluster}}:{{instance}}-{{queue}}",
+                                  "refId": "A"
+                              }
+                          ],
+                          "thresholds": [
+
+                          ],
+                          "timeFrom": null,
+                          "timeShift": null,
+                          "title": "Shard Capacity",
+                          "tooltip": {
+                              "shared": true,
+                              "sort": 0,
+                              "value_type": "individual"
+                          },
+                          "type": "graph",
+                          "xaxis": {
+                              "buckets": null,
+                              "mode": "time",
+                              "name": null,
+                              "show": true,
+                              "values": [
+
+                              ]
+                          },
+                          "yaxes": [
+                              {
+                                  "format": "short",
+                                  "label": null,
+                                  "logBase": 1,
+                                  "max": null,
+                                  "min": null,
+                                  "show": true
+                              },
+                              {
+                                  "format": "short",
+                                  "label": null,
+                                  "logBase": 1,
+                                  "max": null,
+                                  "min": null,
+                                  "show": true
+                              }
+                          ]
+                      },
+                      {
+                          "aliasColors": {
+
+                          },
+                          "bars": false,
+                          "dashLength": 10,
+                          "dashes": false,
+                          "datasource": "$datasource",
+                          "fill": 1,
+                          "gridPos": {
+
+                          },
+                          "id": 10,
+                          "legend": {
+                              "alignAsTable": false,
+                              "avg": false,
+                              "current": false,
+                              "max": false,
+                              "min": false,
+                              "rightSide": false,
+                              "show": true,
+                              "total": false,
+                              "values": false
+                          },
+                          "lines": true,
+                          "linewidth": 1,
+                          "links": [
+
+                          ],
+                          "nullPointMode": "null",
+                          "percentage": false,
+                          "pointradius": 5,
+                          "points": false,
+                          "renderer": "flot",
+                          "repeat": null,
                           "seriesOverrides": [
 
                           ],
@@ -26097,7 +26346,7 @@ items:
                           ],
                           "timeFrom": null,
                           "timeShift": null,
-                          "title": "Pending Samples: $queue",
+                          "title": "Pending Samples",
                           "tooltip": {
                               "shared": true,
                               "sort": 0,
@@ -26157,7 +26406,7 @@ items:
                           "gridPos": {
 
                           },
-                          "id": 8,
+                          "id": 11,
                           "legend": {
                               "alignAsTable": false,
                               "avg": false,
@@ -26248,7 +26497,7 @@ items:
                           "gridPos": {
 
                           },
-                          "id": 9,
+                          "id": 12,
                           "legend": {
                               "alignAsTable": false,
                               "avg": false,
@@ -26352,7 +26601,7 @@ items:
                           "gridPos": {
 
                           },
-                          "id": 10,
+                          "id": 13,
                           "legend": {
                               "alignAsTable": false,
                               "avg": false,
@@ -26443,7 +26692,7 @@ items:
                           "gridPos": {
 
                           },
-                          "id": 11,
+                          "id": 14,
                           "legend": {
                               "alignAsTable": false,
                               "avg": false,
@@ -26534,7 +26783,7 @@ items:
                           "gridPos": {
 
                           },
-                          "id": 12,
+                          "id": 15,
                           "legend": {
                               "alignAsTable": false,
                               "avg": false,
@@ -26625,7 +26874,7 @@ items:
                           "gridPos": {
 
                           },
-                          "id": 13,
+                          "id": 16,
                           "legend": {
                               "alignAsTable": false,
                               "avg": false,
@@ -26806,16 +27055,7 @@ items:
                   {
                       "allValue": null,
                       "current": {
-                          "text": {
-                              "selected": true,
-                              "text": "All",
-                              "value": "$__all"
-                          },
-                          "value": {
-                              "selected": true,
-                              "text": "All",
-                              "value": "$__all"
-                          }
+
                       },
                       "datasource": "$datasource",
                       "hide": 0,
@@ -26826,7 +27066,7 @@ items:
                       "options": [
 
                       ],
-                      "query": "label_values(prometheus_remote_storage_shards, queue)",
+                      "query": "label_values(prometheus_remote_storage_shards{cluster=~\"$cluster\", instance=~\"$instance\"}, queue)",
                       "refresh": 2,
                       "regex": "",
                       "sort": 0,
@@ -36309,6 +36549,1352 @@ items:
   kind: ConfigMap
   metadata:
     name: grafana-dashboard-veidemann-dns
+    namespace: monitoring
+- apiVersion: v1
+  data:
+    veidemann-frontier-jvm.json: |-
+      {
+          "annotations": {
+              "list": [
+
+              ]
+          },
+          "description": "JVM metrics Dashboard for Veidemann frontier",
+          "editable": true,
+          "gnetId": 3066,
+          "graphTooltip": 0,
+          "id": 187,
+          "iteration": 1573563217641,
+          "links": [
+
+          ],
+          "panels": [
+              {
+                  "aliasColors": {
+
+                  },
+                  "bars": false,
+                  "dashLength": 10,
+                  "dashes": false,
+                  "datasource": "$datasource",
+                  "fill": 1,
+                  "gridPos": {
+                      "h": 11,
+                      "w": 24,
+                      "x": 0,
+                      "y": 0
+                  },
+                  "id": 2,
+                  "legend": {
+                      "alignAsTable": true,
+                      "avg": true,
+                      "current": true,
+                      "max": true,
+                      "min": true,
+                      "rightSide": true,
+                      "show": true,
+                      "total": false,
+                      "values": true
+                  },
+                  "lines": true,
+                  "linewidth": 1,
+                  "links": [
+
+                  ],
+                  "nullPointMode": "null",
+                  "options": {
+
+                  },
+                  "percentage": false,
+                  "pointradius": 5,
+                  "points": false,
+                  "renderer": "flot",
+                  "repeat": null,
+                  "seriesOverrides": [
+                      {
+                          "alias": "/total for/",
+                          "color": "#fce2de",
+                          "fill": 0,
+                          "linewidth": 3,
+                          "yaxis": 2
+                      },
+                      {
+                          "alias": "average heap use",
+                          "color": "#bf1b00",
+                          "fill": 0,
+                          "linewidth": 3
+                      }
+                  ],
+                  "spaceLength": 10,
+                  "stack": false,
+                  "steppedLine": false,
+                  "targets": [
+                      {
+                          "expr": "label_replace(jvm_memory_bytes_used{pod=~\"$pod\"}, \"pod\", \"$1\", \"pod\", \"local-veidemann-frontier-(.*)\")",
+                          "format": "time_series",
+                          "instant": false,
+                          "interval": "",
+                          "intervalFactor": 1,
+                          "legendFormat": "{{area}} memory [{{pod}}]",
+                          "metric": "jvm_memory_bytes_used",
+                          "refId": "A",
+                          "step": 5
+                      },
+                      {
+                          "expr": "sum(deriv(jvm_memory_bytes_used{area=\"heap\", pod=~\"$pod\"}[5m])) by (service)",
+                          "format": "time_series",
+                          "intervalFactor": 1,
+                          "legendFormat": "total for {{ service }}",
+                          "refId": "B"
+                      },
+                      {
+                          "expr": "sum(avg_over_time(jvm_memory_bytes_used{area=\"heap\", pod=~\"$pod\"}[5m])) / count(jvm_memory_bytes_used{area=\"heap\", pod=~\"$pod\"})",
+                          "format": "time_series",
+                          "intervalFactor": 1,
+                          "legendFormat": "average heap use",
+                          "refId": "C"
+                      }
+                  ],
+                  "thresholds": [
+
+                  ],
+                  "timeFrom": null,
+                  "timeRegions": [
+
+                  ],
+                  "timeShift": null,
+                  "title": "Memory used",
+                  "tooltip": {
+                      "shared": true,
+                      "sort": 0,
+                      "value_type": "individual"
+                  },
+                  "type": "graph",
+                  "xaxis": {
+                      "buckets": null,
+                      "mode": "time",
+                      "name": null,
+                      "show": true,
+                      "values": [
+
+                      ]
+                  },
+                  "yaxes": [
+                      {
+                          "format": "bytes",
+                          "label": null,
+                          "logBase": 1,
+                          "max": null,
+                          "min": null,
+                          "show": true
+                      },
+                      {
+                          "format": "bytes",
+                          "label": null,
+                          "logBase": 1,
+                          "max": null,
+                          "min": null,
+                          "show": true
+                      }
+                  ],
+                  "yaxis": {
+                      "align": true,
+                      "alignLevel": null
+                  }
+              },
+              {
+                  "aliasColors": {
+
+                  },
+                  "bars": false,
+                  "dashLength": 10,
+                  "dashes": false,
+                  "datasource": "$datasource",
+                  "fill": 1,
+                  "gridPos": {
+                      "h": 11,
+                      "w": 12,
+                      "x": 0,
+                      "y": 11
+                  },
+                  "id": 3,
+                  "legend": {
+                      "avg": false,
+                      "current": false,
+                      "max": false,
+                      "min": false,
+                      "show": true,
+                      "total": false,
+                      "values": false
+                  },
+                  "lines": true,
+                  "linewidth": 1,
+                  "links": [
+
+                  ],
+                  "nullPointMode": "null",
+                  "options": {
+
+                  },
+                  "percentage": false,
+                  "pointradius": 5,
+                  "points": false,
+                  "renderer": "flot",
+                  "seriesOverrides": [
+
+                  ],
+                  "spaceLength": 10,
+                  "stack": false,
+                  "steppedLine": false,
+                  "targets": [
+                      {
+                          "expr": "label_replace(jvm_threads_current{pod=~\"$pod\"}, \"pod\", \"$1\", \"pod\", \"local-veidemann-frontier-(.*)\")",
+                          "format": "time_series",
+                          "intervalFactor": 1,
+                          "legendFormat": "current [{{pod}}]",
+                          "metric": "jvm_threads_current",
+                          "refId": "A",
+                          "step": 10
+                      },
+                      {
+                          "expr": "label_replace(jvm_threads_daemon{pod=~\"$pod\"}, \"pod\", \"$1\", \"pod\", \"local-veidemann-frontier-(.*)\")",
+                          "format": "time_series",
+                          "intervalFactor": 1,
+                          "legendFormat": "daemon [{{pod}}]",
+                          "metric": "jvm_threads_daemon",
+                          "refId": "B",
+                          "step": 10
+                      }
+                  ],
+                  "thresholds": [
+
+                  ],
+                  "timeFrom": null,
+                  "timeRegions": [
+
+                  ],
+                  "timeShift": null,
+                  "title": "Threads used",
+                  "tooltip": {
+                      "shared": true,
+                      "sort": 0,
+                      "value_type": "individual"
+                  },
+                  "type": "graph",
+                  "xaxis": {
+                      "buckets": null,
+                      "mode": "time",
+                      "name": null,
+                      "show": true,
+                      "values": [
+
+                      ]
+                  },
+                  "yaxes": [
+                      {
+                          "decimals": 0,
+                          "format": "short",
+                          "label": null,
+                          "logBase": 1,
+                          "max": null,
+                          "min": null,
+                          "show": true
+                      },
+                      {
+                          "format": "short",
+                          "label": null,
+                          "logBase": 1,
+                          "max": null,
+                          "min": null,
+                          "show": true
+                      }
+                  ],
+                  "yaxis": {
+                      "align": false,
+                      "alignLevel": null
+                  }
+              },
+              {
+                  "aliasColors": {
+
+                  },
+                  "bars": false,
+                  "dashLength": 10,
+                  "dashes": false,
+                  "datasource": "$datasource",
+                  "fill": 1,
+                  "gridPos": {
+                      "h": 11,
+                      "w": 12,
+                      "x": 12,
+                      "y": 11
+                  },
+                  "id": 4,
+                  "legend": {
+                      "avg": false,
+                      "current": false,
+                      "max": false,
+                      "min": false,
+                      "show": true,
+                      "total": false,
+                      "values": false
+                  },
+                  "lines": true,
+                  "linewidth": 1,
+                  "links": [
+
+                  ],
+                  "nullPointMode": "null",
+                  "options": {
+
+                  },
+                  "percentage": false,
+                  "pointradius": 5,
+                  "points": false,
+                  "renderer": "flot",
+                  "seriesOverrides": [
+
+                  ],
+                  "spaceLength": 10,
+                  "stack": false,
+                  "steppedLine": false,
+                  "targets": [
+                      {
+                          "expr": "label_replace(jvm_classes_loaded{pod=~\"$pod\"}, \"pod\", \"$1\", \"pod\", \"local-veidemann-frontier-(.*)\")",
+                          "format": "time_series",
+                          "interval": "",
+                          "intervalFactor": 1,
+                          "legendFormat": "loaded [{{pod}}]",
+                          "metric": "jvm_classes_loaded",
+                          "refId": "A",
+                          "step": 10
+                      }
+                  ],
+                  "thresholds": [
+
+                  ],
+                  "timeFrom": null,
+                  "timeRegions": [
+
+                  ],
+                  "timeShift": null,
+                  "title": "Class loading",
+                  "tooltip": {
+                      "shared": true,
+                      "sort": 0,
+                      "value_type": "individual"
+                  },
+                  "type": "graph",
+                  "xaxis": {
+                      "buckets": null,
+                      "mode": "time",
+                      "name": null,
+                      "show": true,
+                      "values": [
+
+                      ]
+                  },
+                  "yaxes": [
+                      {
+                          "decimals": 0,
+                          "format": "short",
+                          "label": "",
+                          "logBase": 1,
+                          "max": null,
+                          "min": null,
+                          "show": true
+                      },
+                      {
+                          "format": "short",
+                          "label": null,
+                          "logBase": 1,
+                          "max": null,
+                          "min": null,
+                          "show": true
+                      }
+                  ],
+                  "yaxis": {
+                      "align": false,
+                      "alignLevel": null
+                  }
+              },
+              {
+                  "aliasColors": {
+
+                  },
+                  "bars": false,
+                  "dashLength": 10,
+                  "dashes": false,
+                  "datasource": "$datasource",
+                  "fill": 1,
+                  "gridPos": {
+                      "h": 11,
+                      "w": 12,
+                      "x": 0,
+                      "y": 22
+                  },
+                  "id": 5,
+                  "legend": {
+                      "avg": false,
+                      "current": false,
+                      "max": false,
+                      "min": false,
+                      "show": true,
+                      "total": false,
+                      "values": false
+                  },
+                  "lines": true,
+                  "linewidth": 1,
+                  "links": [
+
+                  ],
+                  "nullPointMode": "null",
+                  "options": {
+
+                  },
+                  "percentage": false,
+                  "pointradius": 5,
+                  "points": false,
+                  "renderer": "flot",
+                  "seriesOverrides": [
+
+                  ],
+                  "spaceLength": 10,
+                  "stack": false,
+                  "steppedLine": false,
+                  "targets": [
+                      {
+                          "expr": "label_replace(rate(jvm_gc_collection_seconds_sum{pod=~\"$pod\"}[1m]), \"pod\", \"$1\", \"pod\", \"local-veidemann-frontier-(.*)\")",
+                          "format": "time_series",
+                          "interval": "",
+                          "intervalFactor": 1,
+                          "legendFormat": "{{gc}} [{{pod}}]",
+                          "metric": "jvm_gc_collection_seconds_sum",
+                          "refId": "A",
+                          "step": 10
+                      }
+                  ],
+                  "thresholds": [
+
+                  ],
+                  "timeFrom": null,
+                  "timeRegions": [
+
+                  ],
+                  "timeShift": null,
+                  "title": "GC time / 1 min. rate",
+                  "tooltip": {
+                      "shared": true,
+                      "sort": 0,
+                      "value_type": "individual"
+                  },
+                  "type": "graph",
+                  "xaxis": {
+                      "buckets": null,
+                      "mode": "time",
+                      "name": null,
+                      "show": true,
+                      "values": [
+
+                      ]
+                  },
+                  "yaxes": [
+                      {
+                          "format": "s",
+                          "label": null,
+                          "logBase": 1,
+                          "max": null,
+                          "min": null,
+                          "show": true
+                      },
+                      {
+                          "format": "short",
+                          "label": null,
+                          "logBase": 1,
+                          "max": null,
+                          "min": null,
+                          "show": true
+                      }
+                  ],
+                  "yaxis": {
+                      "align": false,
+                      "alignLevel": null
+                  }
+              },
+              {
+                  "aliasColors": {
+
+                  },
+                  "bars": false,
+                  "dashLength": 10,
+                  "dashes": false,
+                  "datasource": "$datasource",
+                  "fill": 1,
+                  "gridPos": {
+                      "h": 11,
+                      "w": 12,
+                      "x": 12,
+                      "y": 22
+                  },
+                  "id": 6,
+                  "legend": {
+                      "avg": false,
+                      "current": false,
+                      "max": false,
+                      "min": false,
+                      "show": true,
+                      "total": false,
+                      "values": false
+                  },
+                  "lines": true,
+                  "linewidth": 1,
+                  "links": [
+
+                  ],
+                  "nullPointMode": "null",
+                  "options": {
+
+                  },
+                  "percentage": false,
+                  "pointradius": 5,
+                  "points": false,
+                  "renderer": "flot",
+                  "seriesOverrides": [
+
+                  ],
+                  "spaceLength": 10,
+                  "stack": false,
+                  "steppedLine": false,
+                  "targets": [
+                      {
+                          "expr": "label_replace(jvm_gc_collection_seconds_count{pod=~\"$pod\"}, \"pod\", \"$1\", \"pod\", \"local-veidemann-frontier-(.*)\")",
+                          "format": "time_series",
+                          "interval": "",
+                          "intervalFactor": 1,
+                          "legendFormat": "{{gc}} [{{pod}}]",
+                          "metric": "",
+                          "refId": "A",
+                          "step": 10
+                      }
+                  ],
+                  "thresholds": [
+
+                  ],
+                  "timeFrom": null,
+                  "timeRegions": [
+
+                  ],
+                  "timeShift": null,
+                  "title": "GC count",
+                  "tooltip": {
+                      "shared": true,
+                      "sort": 0,
+                      "value_type": "individual"
+                  },
+                  "type": "graph",
+                  "xaxis": {
+                      "buckets": null,
+                      "mode": "time",
+                      "name": null,
+                      "show": true,
+                      "values": [
+
+                      ]
+                  },
+                  "yaxes": [
+                      {
+                          "decimals": 0,
+                          "format": "short",
+                          "label": null,
+                          "logBase": 1,
+                          "max": null,
+                          "min": null,
+                          "show": true
+                      },
+                      {
+                          "format": "short",
+                          "label": null,
+                          "logBase": 1,
+                          "max": null,
+                          "min": null,
+                          "show": true
+                      }
+                  ],
+                  "yaxis": {
+                      "align": false,
+                      "alignLevel": null
+                  }
+              }
+          ],
+          "refresh": "30s",
+          "schemaVersion": 18,
+          "style": "dark",
+          "tags": [
+              "JVM",
+              "prometheus"
+          ],
+          "templating": {
+              "list": [
+                  {
+                      "allValue": "",
+                      "current": {
+                          "text": "All",
+                          "value": [
+                              "$__all"
+                          ]
+                      },
+                      "datasource": "$datasource",
+                      "definition": "label_values(up{service=\"local-veidemann-frontier\"}, pod)",
+                      "hide": 0,
+                      "includeAll": true,
+                      "label": "pod",
+                      "multi": true,
+                      "name": "pod",
+                      "options": [
+
+                      ],
+                      "query": "label_values(up{service=\"local-veidemann-frontier\"}, pod)",
+                      "refresh": 2,
+                      "regex": "",
+                      "skipUrlSync": false,
+                      "sort": 0,
+                      "tagValuesQuery": "",
+                      "tags": [
+
+                      ],
+                      "tagsQuery": "",
+                      "type": "query",
+                      "useTags": false
+                  },
+                  {
+                      "current": {
+                          "text": "prometheus",
+                          "value": "prometheus"
+                      },
+                      "hide": 0,
+                      "label": null,
+                      "multi": false,
+                      "name": "datasource",
+                      "options": [
+
+                      ],
+                      "query": "prometheus",
+                      "refresh": 1,
+                      "regex": "",
+                      "type": "datasource"
+                  }
+              ]
+          },
+          "time": {
+              "from": "now-30m",
+              "to": "now"
+          },
+          "timepicker": {
+              "refresh_intervals": [
+                  "5s",
+                  "10s",
+                  "30s",
+                  "1m",
+                  "5m",
+                  "15m",
+                  "30m",
+                  "1h",
+                  "2h",
+                  "1d"
+              ],
+              "time_options": [
+                  "5m",
+                  "15m",
+                  "1h",
+                  "6h",
+                  "12h",
+                  "24h",
+                  "2d",
+                  "7d",
+                  "30d"
+              ]
+          },
+          "timezone": "UTC",
+          "title": "Veidemann / Frontier JVM",
+          "uid": "UlZjgpTZk",
+          "version": 7
+      }
+  kind: ConfigMap
+  metadata:
+    name: grafana-dashboard-veidemann-frontier-jvm
+    namespace: monitoring
+- apiVersion: v1
+  data:
+    veidemann-harvester-jvm.json: |-
+      {
+          "annotations": {
+              "list": [
+
+              ]
+          },
+          "description": "JVM metrics Dashboard for Veidemann harvester",
+          "editable": true,
+          "gnetId": 3066,
+          "graphTooltip": 0,
+          "id": 114,
+          "iteration": 1573563272900,
+          "links": [
+
+          ],
+          "panels": [
+              {
+                  "aliasColors": {
+
+                  },
+                  "bars": false,
+                  "dashLength": 10,
+                  "dashes": false,
+                  "datasource": "$datasource",
+                  "fill": 1,
+                  "gridPos": {
+                      "h": 11,
+                      "w": 24,
+                      "x": 0,
+                      "y": 0
+                  },
+                  "id": 2,
+                  "legend": {
+                      "alignAsTable": true,
+                      "avg": true,
+                      "current": true,
+                      "max": true,
+                      "min": true,
+                      "rightSide": true,
+                      "show": true,
+                      "total": false,
+                      "values": true
+                  },
+                  "lines": true,
+                  "linewidth": 1,
+                  "links": [
+
+                  ],
+                  "nullPointMode": "null",
+                  "options": {
+
+                  },
+                  "percentage": false,
+                  "pointradius": 5,
+                  "points": false,
+                  "renderer": "flot",
+                  "repeat": null,
+                  "seriesOverrides": [
+                      {
+                          "alias": "/total for/",
+                          "color": "#fce2de",
+                          "fill": 0,
+                          "linewidth": 3,
+                          "yaxis": 2
+                      },
+                      {
+                          "alias": "average heap use",
+                          "color": "#bf1b00",
+                          "fill": 0,
+                          "linewidth": 3
+                      }
+                  ],
+                  "spaceLength": 10,
+                  "stack": false,
+                  "steppedLine": false,
+                  "targets": [
+                      {
+                          "expr": "label_replace(jvm_memory_bytes_used{pod=~\"$pod\"}, \"pod\", \"$1\", \"pod\", \"local-veidemann-harvester-(.*)\")",
+                          "format": "time_series",
+                          "instant": false,
+                          "interval": "",
+                          "intervalFactor": 1,
+                          "legendFormat": "{{area}} memory [{{pod}}]",
+                          "metric": "jvm_memory_bytes_used",
+                          "refId": "A",
+                          "step": 5
+                      },
+                      {
+                          "expr": "sum(deriv(jvm_memory_bytes_used{area=\"heap\"}[5m])) by (service)",
+                          "format": "time_series",
+                          "intervalFactor": 1,
+                          "legendFormat": "total for {{ service }}",
+                          "refId": "B"
+                      },
+                      {
+                          "expr": "sum(avg_over_time(jvm_memory_bytes_used{area=\"heap\"}[5m])) / count(jvm_memory_bytes_used{area=\"heap\"})",
+                          "format": "time_series",
+                          "intervalFactor": 1,
+                          "legendFormat": "average heap use",
+                          "refId": "C"
+                      }
+                  ],
+                  "thresholds": [
+
+                  ],
+                  "timeFrom": null,
+                  "timeRegions": [
+
+                  ],
+                  "timeShift": null,
+                  "title": "Memory used",
+                  "tooltip": {
+                      "shared": true,
+                      "sort": 0,
+                      "value_type": "individual"
+                  },
+                  "type": "graph",
+                  "xaxis": {
+                      "buckets": null,
+                      "mode": "time",
+                      "name": null,
+                      "show": true,
+                      "values": [
+
+                      ]
+                  },
+                  "yaxes": [
+                      {
+                          "format": "bytes",
+                          "label": null,
+                          "logBase": 1,
+                          "max": null,
+                          "min": null,
+                          "show": true
+                      },
+                      {
+                          "format": "bytes",
+                          "label": null,
+                          "logBase": 1,
+                          "max": null,
+                          "min": null,
+                          "show": true
+                      }
+                  ],
+                  "yaxis": {
+                      "align": true,
+                      "alignLevel": null
+                  }
+              },
+              {
+                  "aliasColors": {
+
+                  },
+                  "bars": false,
+                  "dashLength": 10,
+                  "dashes": false,
+                  "datasource": "$datasource",
+                  "fill": 1,
+                  "gridPos": {
+                      "h": 11,
+                      "w": 12,
+                      "x": 0,
+                      "y": 11
+                  },
+                  "id": 3,
+                  "legend": {
+                      "avg": false,
+                      "current": false,
+                      "max": false,
+                      "min": false,
+                      "show": true,
+                      "total": false,
+                      "values": false
+                  },
+                  "lines": true,
+                  "linewidth": 1,
+                  "links": [
+
+                  ],
+                  "nullPointMode": "null",
+                  "options": {
+
+                  },
+                  "percentage": false,
+                  "pointradius": 5,
+                  "points": false,
+                  "renderer": "flot",
+                  "seriesOverrides": [
+
+                  ],
+                  "spaceLength": 10,
+                  "stack": false,
+                  "steppedLine": false,
+                  "targets": [
+                      {
+                          "expr": "label_replace(jvm_threads_current{pod=~\"$pod\"}, \"pod\", \"$1\", \"pod\", \"local-veidemann-harvester-(.*)\")",
+                          "format": "time_series",
+                          "intervalFactor": 1,
+                          "legendFormat": "current [{{pod}}]",
+                          "metric": "jvm_threads_current",
+                          "refId": "A",
+                          "step": 10
+                      },
+                      {
+                          "expr": "label_replace(jvm_threads_daemon{pod=~\"$pod\"}, \"pod\", \"$1\", \"pod\", \"local-veidemann-harvester-(.*)\")",
+                          "format": "time_series",
+                          "intervalFactor": 1,
+                          "legendFormat": "daemon [{{pod}}]",
+                          "metric": "jvm_threads_daemon",
+                          "refId": "B",
+                          "step": 10
+                      }
+                  ],
+                  "thresholds": [
+
+                  ],
+                  "timeFrom": null,
+                  "timeRegions": [
+
+                  ],
+                  "timeShift": null,
+                  "title": "Threads used",
+                  "tooltip": {
+                      "shared": true,
+                      "sort": 0,
+                      "value_type": "individual"
+                  },
+                  "type": "graph",
+                  "xaxis": {
+                      "buckets": null,
+                      "mode": "time",
+                      "name": null,
+                      "show": true,
+                      "values": [
+
+                      ]
+                  },
+                  "yaxes": [
+                      {
+                          "decimals": 0,
+                          "format": "short",
+                          "label": null,
+                          "logBase": 1,
+                          "max": null,
+                          "min": null,
+                          "show": true
+                      },
+                      {
+                          "format": "short",
+                          "label": null,
+                          "logBase": 1,
+                          "max": null,
+                          "min": null,
+                          "show": true
+                      }
+                  ],
+                  "yaxis": {
+                      "align": false,
+                      "alignLevel": null
+                  }
+              },
+              {
+                  "aliasColors": {
+
+                  },
+                  "bars": false,
+                  "dashLength": 10,
+                  "dashes": false,
+                  "datasource": "$datasource",
+                  "fill": 1,
+                  "gridPos": {
+                      "h": 11,
+                      "w": 12,
+                      "x": 12,
+                      "y": 11
+                  },
+                  "id": 4,
+                  "legend": {
+                      "avg": false,
+                      "current": false,
+                      "max": false,
+                      "min": false,
+                      "show": true,
+                      "total": false,
+                      "values": false
+                  },
+                  "lines": true,
+                  "linewidth": 1,
+                  "links": [
+
+                  ],
+                  "nullPointMode": "null",
+                  "options": {
+
+                  },
+                  "percentage": false,
+                  "pointradius": 5,
+                  "points": false,
+                  "renderer": "flot",
+                  "seriesOverrides": [
+
+                  ],
+                  "spaceLength": 10,
+                  "stack": false,
+                  "steppedLine": false,
+                  "targets": [
+                      {
+                          "expr": "label_replace(jvm_classes_loaded{pod=~\"$pod\"}, \"pod\", \"$1\", \"pod\", \"local-veidemann-harvester-(.*)\")",
+                          "format": "time_series",
+                          "interval": "",
+                          "intervalFactor": 1,
+                          "legendFormat": "loaded [{{pod}}]",
+                          "metric": "jvm_classes_loaded",
+                          "refId": "A",
+                          "step": 10
+                      }
+                  ],
+                  "thresholds": [
+
+                  ],
+                  "timeFrom": null,
+                  "timeRegions": [
+
+                  ],
+                  "timeShift": null,
+                  "title": "Class loading",
+                  "tooltip": {
+                      "shared": true,
+                      "sort": 0,
+                      "value_type": "individual"
+                  },
+                  "type": "graph",
+                  "xaxis": {
+                      "buckets": null,
+                      "mode": "time",
+                      "name": null,
+                      "show": true,
+                      "values": [
+
+                      ]
+                  },
+                  "yaxes": [
+                      {
+                          "decimals": 0,
+                          "format": "short",
+                          "label": "",
+                          "logBase": 1,
+                          "max": null,
+                          "min": null,
+                          "show": true
+                      },
+                      {
+                          "format": "short",
+                          "label": null,
+                          "logBase": 1,
+                          "max": null,
+                          "min": null,
+                          "show": true
+                      }
+                  ],
+                  "yaxis": {
+                      "align": false,
+                      "alignLevel": null
+                  }
+              },
+              {
+                  "aliasColors": {
+
+                  },
+                  "bars": false,
+                  "dashLength": 10,
+                  "dashes": false,
+                  "datasource": "$datasource",
+                  "fill": 1,
+                  "gridPos": {
+                      "h": 11,
+                      "w": 12,
+                      "x": 0,
+                      "y": 22
+                  },
+                  "id": 5,
+                  "legend": {
+                      "avg": false,
+                      "current": false,
+                      "max": false,
+                      "min": false,
+                      "show": true,
+                      "total": false,
+                      "values": false
+                  },
+                  "lines": true,
+                  "linewidth": 1,
+                  "links": [
+
+                  ],
+                  "nullPointMode": "null",
+                  "options": {
+
+                  },
+                  "percentage": false,
+                  "pointradius": 5,
+                  "points": false,
+                  "renderer": "flot",
+                  "seriesOverrides": [
+
+                  ],
+                  "spaceLength": 10,
+                  "stack": false,
+                  "steppedLine": false,
+                  "targets": [
+                      {
+                          "expr": "label_replace(rate(jvm_gc_collection_seconds_sum{pod=~\"$pod\"}[1m]), \"pod\", \"$1\", \"pod\", \"local-veidemann-harvester-(.*)\")",
+                          "format": "time_series",
+                          "interval": "",
+                          "intervalFactor": 1,
+                          "legendFormat": "{{gc}} [{{pod}}]",
+                          "metric": "jvm_gc_collection_seconds_sum",
+                          "refId": "A",
+                          "step": 10
+                      }
+                  ],
+                  "thresholds": [
+
+                  ],
+                  "timeFrom": null,
+                  "timeRegions": [
+
+                  ],
+                  "timeShift": null,
+                  "title": "GC time / 1 min. rate",
+                  "tooltip": {
+                      "shared": true,
+                      "sort": 0,
+                      "value_type": "individual"
+                  },
+                  "type": "graph",
+                  "xaxis": {
+                      "buckets": null,
+                      "mode": "time",
+                      "name": null,
+                      "show": true,
+                      "values": [
+
+                      ]
+                  },
+                  "yaxes": [
+                      {
+                          "format": "s",
+                          "label": null,
+                          "logBase": 1,
+                          "max": null,
+                          "min": null,
+                          "show": true
+                      },
+                      {
+                          "format": "short",
+                          "label": null,
+                          "logBase": 1,
+                          "max": null,
+                          "min": null,
+                          "show": true
+                      }
+                  ],
+                  "yaxis": {
+                      "align": false,
+                      "alignLevel": null
+                  }
+              },
+              {
+                  "aliasColors": {
+
+                  },
+                  "bars": false,
+                  "dashLength": 10,
+                  "dashes": false,
+                  "datasource": "$datasource",
+                  "fill": 1,
+                  "gridPos": {
+                      "h": 11,
+                      "w": 12,
+                      "x": 12,
+                      "y": 22
+                  },
+                  "id": 6,
+                  "legend": {
+                      "avg": false,
+                      "current": false,
+                      "max": false,
+                      "min": false,
+                      "show": true,
+                      "total": false,
+                      "values": false
+                  },
+                  "lines": true,
+                  "linewidth": 1,
+                  "links": [
+
+                  ],
+                  "nullPointMode": "null",
+                  "options": {
+
+                  },
+                  "percentage": false,
+                  "pointradius": 5,
+                  "points": false,
+                  "renderer": "flot",
+                  "seriesOverrides": [
+
+                  ],
+                  "spaceLength": 10,
+                  "stack": false,
+                  "steppedLine": false,
+                  "targets": [
+                      {
+                          "expr": "label_replace(jvm_gc_collection_seconds_count{pod=~\"$pod\"}, \"pod\", \"$1\", \"pod\", \"local-veidemann-harvester-(.*)\")",
+                          "format": "time_series",
+                          "interval": "",
+                          "intervalFactor": 1,
+                          "legendFormat": "{{gc}} [{{pod}}]",
+                          "metric": "",
+                          "refId": "A",
+                          "step": 10
+                      }
+                  ],
+                  "thresholds": [
+
+                  ],
+                  "timeFrom": null,
+                  "timeRegions": [
+
+                  ],
+                  "timeShift": null,
+                  "title": "GC count",
+                  "tooltip": {
+                      "shared": true,
+                      "sort": 0,
+                      "value_type": "individual"
+                  },
+                  "type": "graph",
+                  "xaxis": {
+                      "buckets": null,
+                      "mode": "time",
+                      "name": null,
+                      "show": true,
+                      "values": [
+
+                      ]
+                  },
+                  "yaxes": [
+                      {
+                          "decimals": 0,
+                          "format": "short",
+                          "label": null,
+                          "logBase": 1,
+                          "max": null,
+                          "min": null,
+                          "show": true
+                      },
+                      {
+                          "format": "short",
+                          "label": null,
+                          "logBase": 1,
+                          "max": null,
+                          "min": null,
+                          "show": true
+                      }
+                  ],
+                  "yaxis": {
+                      "align": false,
+                      "alignLevel": null
+                  }
+              }
+          ],
+          "refresh": "30s",
+          "schemaVersion": 18,
+          "style": "dark",
+          "tags": [
+              "JVM",
+              "prometheus"
+          ],
+          "templating": {
+              "list": [
+                  {
+                      "allValue": "",
+                      "current": {
+                          "text": "All",
+                          "value": [
+                              "$__all"
+                          ]
+                      },
+                      "datasource": "$datasource",
+                      "definition": "",
+                      "hide": 0,
+                      "includeAll": true,
+                      "label": "pod",
+                      "multi": true,
+                      "name": "pod",
+                      "options": [
+
+                      ],
+                      "query": "label_values(up{service=\"local-veidemann-harvester\"}, pod)",
+                      "refresh": 2,
+                      "regex": "",
+                      "skipUrlSync": false,
+                      "sort": 0,
+                      "tagValuesQuery": "",
+                      "tags": [
+
+                      ],
+                      "tagsQuery": "",
+                      "type": "query",
+                      "useTags": false
+                  },
+                  {
+                      "current": {
+                          "text": "prometheus",
+                          "value": "prometheus"
+                      },
+                      "hide": 0,
+                      "label": null,
+                      "multi": false,
+                      "name": "datasource",
+                      "options": [
+
+                      ],
+                      "query": "prometheus",
+                      "refresh": 1,
+                      "regex": "",
+                      "type": "datasource"
+                  }
+              ]
+          },
+          "time": {
+              "from": "now-30m",
+              "to": "now"
+          },
+          "timepicker": {
+              "refresh_intervals": [
+                  "5s",
+                  "10s",
+                  "30s",
+                  "1m",
+                  "5m",
+                  "15m",
+                  "30m",
+                  "1h",
+                  "2h",
+                  "1d"
+              ],
+              "time_options": [
+                  "5m",
+                  "15m",
+                  "1h",
+                  "6h",
+                  "12h",
+                  "24h",
+                  "2d",
+                  "7d",
+                  "30d"
+              ]
+          },
+          "timezone": "UTC",
+          "title": "Veidemann / Harvester JVM",
+          "uid": "3mGl58xmz",
+          "version": 10
+      }
+  kind: ConfigMap
+  metadata:
+    name: grafana-dashboard-veidemann-harvester-jvm
     namespace: monitoring
 - apiVersion: v1
   data:
