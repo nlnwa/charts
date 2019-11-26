@@ -75,6 +75,7 @@ envoy:
 # config overrides common configmap values
 config:
   issuer: ""
+  skipAuthentication: false
 
   rethinkdb:
     host: ""
