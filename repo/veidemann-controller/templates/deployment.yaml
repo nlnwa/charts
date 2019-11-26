@@ -105,6 +105,10 @@ spec:
             {{- if .Values.config.issuer }}
               value: {{ .Values.config.issuer | quote }}
             {{- end }}
+            {{- if .Values.config.skipAuthentication }}
+            - name: SKIP_AUTHENTICATION
+              value: "true"
+            {{- end }}
             - name: JAEGER_SERVICE_NAME
               value: {{ include "veidemann-controller.fullname" . | quote }}
             - name: JAEGER_AGENT_HOST
